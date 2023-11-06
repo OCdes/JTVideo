@@ -1,0 +1,6 @@
+framework module Pods_JTVideo_Example {
+  umbrella header "Pods-JTVideo_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

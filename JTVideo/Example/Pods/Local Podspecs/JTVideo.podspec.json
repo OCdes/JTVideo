@@ -1,0 +1,60 @@
+{
+  "name": "JTVideo",
+  "version": "0.0.1",
+  "summary": "精特视频组件",
+  "description": "精特视频组件",
+  "homepage": "https://github.com/OCdes/JTVideo",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "OCdes": "76515226@qq.com"
+  },
+  "source": {
+    "git": "https://github.com/OCdes/JTVideo.git",
+    "tag": "0.0.1"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "JTVideo/Classes/**/*",
+  "resource_bundles": {
+    "JTVideo": [
+      "JTVideo/Assets/*"
+    ]
+  },
+  "public_header_files": "Pod/Classes/Video/*",
+  "dependencies": {
+    "AliPlayerSDK_iOS": [
+
+    ],
+    "Moya": [
+      "~> 13.0.0"
+    ],
+    "HandyJSON": [
+
+    ],
+    "IQKeyboardManagerSwift": [
+
+    ],
+    "RxSwift": [
+
+    ],
+    "RxCocoa": [
+
+    ],
+    "SnapKit": [
+      "~>4.0.0"
+    ],
+    "Kingfisher": [
+
+    ],
+    "MJRefresh": [
+
+    ],
+    "SVProgressHUD": [
+
+    ]
+  }
+}

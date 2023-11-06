@@ -1,0 +1,6 @@
+framework module JTVideo {
+  umbrella header "JTVideo-umbrella.h"
+
+  export *
+  module * { export * }
+}
