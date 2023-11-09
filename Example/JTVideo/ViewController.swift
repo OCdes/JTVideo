@@ -7,8 +7,8 @@
 //
 
 import UIKit
-
-class ViewController: UIViewController {
+import JTVideo
+class ViewController: JTVideoHomeVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()

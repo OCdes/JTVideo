@@ -8,9 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'JTVideo'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of JTVideo.'
-
+  s.version          = '0.0.1'
+  s.summary          = '精特视频组件'
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
 #   * Try to keep it short, snappy and to the point.
@@ -18,7 +17,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+精特视频组件
                        DESC
 
   s.homepage         = 'https://github.com/OCdes/JTVideo'
@@ -32,11 +31,21 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'JTVideo/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'JTVideo' => ['JTVideo/Assets/*.png']
-  # }
+   s.resource_bundles = {
+     'JTVideo' => ['JTVideo/Assets/*']
+   }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+   s.public_header_files = 'Pod/Classes/Video/*'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'AliPlayerSDK_iOS'
+  s.dependency "Moya", "~> 13.0.0"
+  s.dependency "HandyJSON"
+  s.dependency "IQKeyboardManagerSwift"
+  s.dependency "RxSwift"
+  s.dependency "RxCocoa"
+  s.dependency "SnapKit", "~>4.0.0"
+  s.dependency "Kingfisher"
+  s.dependency "MJRefresh"
+  s.dependency "SVProgressHUD"
+#  s.dependency "ZAAlivcBasicVideo"
 end

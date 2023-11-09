@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>AlivcLicenseFile</key>
+	<string>AliVideoCert-com_jingteyuhui_jtyh.crt</string>
+	<key>AlivcLicenseKey</key>
+	<string>dP7c80CZ9eHDyD1HY92590f6f238646e185b04e6535bcacb0</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
