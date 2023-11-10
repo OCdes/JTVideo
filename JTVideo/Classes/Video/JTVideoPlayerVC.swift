@@ -8,7 +8,51 @@
 import UIKit
 import AliyunPlayer
 
-class JTVideoPlayerVC: UIViewController {
+class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
+    func fullScreen(isMini: Bool) {
+//        self.player.rotateMode = AVP_ROTATE_90
+        var animation = CABasicAnimation(keyPath: "transform.rotation.z")
+        animation.fromValue = 0
+        animation.toValue = Double.pi/2
+        animation.duration = 0.3
+        animation.fillMode = kCAFillModeForwards
+        animation.isRemovedOnCompletion = false
+        self.playerView.layer.add(animation, forKey: nil)
+        
+        var animationSize = CABasicAnimation(keyPath: "bounds.size")
+        var rect = self.playerView.bounds
+        rect.size = CGSize(width: kScreenHeight, height: kScreenWidth)
+        self.playerView.bounds = rect
+        animationSize.fromValue = NSValue(cgSize: self.playerView.frame.size)
+        animationSize.toValue = NSValue(cgSize: CGSize(width: kScreenHeight, height: kScreenWidth))
+        animationSize.duration = 0.3
+        animationSize.fillMode = kCAFillModeForwards
+        animationSize.isRemovedOnCompletion = false
+        self.playerView.layer.add(animationSize, forKey: nil)
+        
+//        var animationPosition = CABasicAnimation(keyPath: "position")
+//        self.playerView.layer.position = CGPoint(x: kScreenHeight/2, y: kScreenWidth/2)
+//        animationPosition.fromValue = NSValue(cgPoint: self.playerView.layer.position)
+//        animationPosition.toValue = NSValue(cgPoint: CGPoint(x: kScreenHeight/2, y: kScreenWidth/2))
+//        animationPosition.duration = 0.3
+//        animationPosition.fillMode = kCAFillModeForwards
+//        animationPosition.isRemovedOnCompletion = false
+//        self.playerView.layer.add(animationPosition, forKey: nil)
+//        let group = CAAnimationGroup()
+//        group.animations = [animation, animationSize, animationPosition]
+//        group.duration = 0.3
+//        
+//        self.playerView.layer.add(group, forKey: nil)
+    }
+    
+    func panSeek(to: Int64) {
+        self.player.seek(toTime: to, seekMode: AVPSeekMode.init(0))
+    }
+    
+    func playerBtnisClicked(btn: UIButton) {
+        playBtnClicked(btn: btn)
+    }
+    
     var player: AliPlayer = {
         let p = AliPlayer.init()
         return p!
@@ -23,17 +67,14 @@ class JTVideoPlayerVC: UIViewController {
     
     var model: ViewHomeListModel = ViewHomeListModel() {
         didSet {
-            let urlSource = AVPUrlSource().url(with: "http://video.hzjtyh.com/sv/5303158b-18b8f0b9811/5303158b-18b8f0b9811.mp4?auth_key=1699016793-9086088771a24109ae5335e9f4308440-1111-dfd512dda8a863d0c59123eef1a55be5")
+            let urlSource = AVPUrlSource().url(with: "http://video.hzjtyh.com/sv/5303158b-18b8f0b9811/5303158b-18b8f0b9811.mp4?auth_key=1699617334-8bc917111c3a4ff1ae8572e77b145b7c-1111-2560ceb7eb4d8f89a55626b578041d24")
             self.player.setUrlSource(urlSource)
             self.player.playerView = self.playerView
             self.playerView.addSubview(self.controlBar)
+            self.controlBar.snp_makeConstraints { make in
+                make.edges.equalTo(UIEdgeInsets.zero)
+            }
             self.player.prepare()
-//            let vipSource = AVPVidAuthSource()
-//            vipSource.vid = "23bf6b3074a471ee800a6632b68f0102"
-//            vipSource.playAuth = "1698948179-064887918b5247dc9292ff9e9694c89b-1111-a754c062004615d56d33351324e2b28a"
-//            vipSource.region = "cn-shanghai"
-//            self.player.setAuthSource(vipSource)
-//            self.player.prepare()
         }
     }
     var playerView: UIView = {
@@ -44,7 +85,7 @@ class JTVideoPlayerVC: UIViewController {
     
     lazy var controlBar: JTVideoControlBar = {
         let cb = JTVideoControlBar.init(frame: self.playerView.bounds, isMiniScreen: true, totalTime: "00:00")
-        cb.playBtn.addTarget(self, action: #selector(playBtnClicked(btn:)), for: .touchUpInside)
+        cb.delegate = self
         return cb
     }()
     
@@ -60,10 +101,8 @@ class JTVideoPlayerVC: UIViewController {
         self.player.delegate = self
     }
     
-    @objc func playBtnClicked(btn: UIButton) {
-        btn.isSelected = !btn.isSelected
+    func playBtnClicked(btn: UIButton) {
         if btn.isSelected {
-            self.player.seek(toTime: 0, seekMode: AVPSeekMode.init(0))
             self.player.start()
         } else {
             self.player.pause()
@@ -101,7 +140,8 @@ extension JTVideoPlayerVC: AVPDelegate {
             break
         case AVPEventCompletion:
             // 播放完成
-            playBtnClicked(btn: self.controlBar.playBtn)
+            self.player.seek(toTime: 0, seekMode: AVPSeekMode.init(0))
+            self.controlBar.playBtn.isSelected = false
             break
         case AVPEventLoadingStart:
             // 缓冲开始
@@ -139,7 +179,7 @@ extension JTVideoPlayerVC: AVPDelegate {
      */
     func onBufferedPositionUpdate(_ player: AliPlayer!, position: Int64) {
         // 更新缓冲进度
-        if (position != self.controlBar.animationBufferTo) {
+        if (position > self.controlBar.animationBufferTo) {
             self.controlBar.progressAnimate(targetLayer: self.controlBar.bufferLayer, to: position)
         }
     }
