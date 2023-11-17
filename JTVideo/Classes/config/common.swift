@@ -17,8 +17,12 @@ import Photos
 
 let USERDEFAULT = UserDefaults.standard
 //屏幕尺寸
-let kScreenWidth: CGFloat = UIScreen.main.bounds.width
-let kScreenHeight: CGFloat = UIScreen.main.bounds.height
+var kScreenWidth: CGFloat {
+    return UIScreen.main.bounds.width
+}
+var kScreenHeight: CGFloat {
+    return UIScreen.main.bounds.height
+}
 //tabbar是否隐藏及其高度
 let kTabbarHidden: Bool = true
 let kTabBarHeight: CGFloat = 49

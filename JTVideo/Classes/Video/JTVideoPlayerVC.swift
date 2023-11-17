@@ -9,48 +9,15 @@ import UIKit
 import AliyunPlayer
 
 class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
-    func fullScreen(isMini: Bool) {
-//        self.player.rotateMode = AVP_ROTATE_90
-        var animation = CABasicAnimation(keyPath: "transform.rotation.z")
-        animation.fromValue = 0
-        animation.toValue = Double.pi/2
-        animation.duration = 0.3
-        animation.fillMode = kCAFillModeForwards
-        animation.isRemovedOnCompletion = false
-        self.playerView.layer.add(animation, forKey: nil)
-        
-        var animationSize = CABasicAnimation(keyPath: "bounds.size")
-        var rect = self.playerView.bounds
-        rect.size = CGSize(width: kScreenHeight, height: kScreenWidth)
-        self.playerView.bounds = rect
-        animationSize.fromValue = NSValue(cgSize: self.playerView.frame.size)
-        animationSize.toValue = NSValue(cgSize: CGSize(width: kScreenHeight, height: kScreenWidth))
-        animationSize.duration = 0.3
-        animationSize.fillMode = kCAFillModeForwards
-        animationSize.isRemovedOnCompletion = false
-        self.playerView.layer.add(animationSize, forKey: nil)
-        
-//        var animationPosition = CABasicAnimation(keyPath: "position")
-//        self.playerView.layer.position = CGPoint(x: kScreenHeight/2, y: kScreenWidth/2)
-//        animationPosition.fromValue = NSValue(cgPoint: self.playerView.layer.position)
-//        animationPosition.toValue = NSValue(cgPoint: CGPoint(x: kScreenHeight/2, y: kScreenWidth/2))
-//        animationPosition.duration = 0.3
-//        animationPosition.fillMode = kCAFillModeForwards
-//        animationPosition.isRemovedOnCompletion = false
-//        self.playerView.layer.add(animationPosition, forKey: nil)
-//        let group = CAAnimationGroup()
-//        group.animations = [animation, animationSize, animationPosition]
-//        group.duration = 0.3
-//        
-//        self.playerView.layer.add(group, forKey: nil)
-    }
     
-    func panSeek(to: Int64) {
-        self.player.seek(toTime: to, seekMode: AVPSeekMode.init(0))
-    }
-    
-    func playerBtnisClicked(btn: UIButton) {
-        playBtnClicked(btn: btn)
+    var ori: UIInterfaceOrientationMask = .portrait {
+        didSet {
+            if ori.contains(.portrait) {
+                
+            } else {
+                UIDevice.current.setValue(UIInterfaceOrientationMask.landscapeLeft, forKey: "orientation")
+            }
+        }
     }
     
     var player: AliPlayer = {
@@ -67,9 +34,10 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
     
     var model: ViewHomeListModel = ViewHomeListModel() {
         didSet {
-            let urlSource = AVPUrlSource().url(with: "http://video.hzjtyh.com/sv/5303158b-18b8f0b9811/5303158b-18b8f0b9811.mp4?auth_key=1699617334-8bc917111c3a4ff1ae8572e77b145b7c-1111-2560ceb7eb4d8f89a55626b578041d24")
+            let urlSource = AVPUrlSource().url(with: "http://player.alicdn.com/video/aliyunmedia.mp4")
             self.player.setUrlSource(urlSource)
             self.player.playerView = self.playerView
+            self.player.scalingMode = AVPScalingMode(1)
             self.playerView.addSubview(self.controlBar)
             self.controlBar.snp_makeConstraints { make in
                 make.edges.equalTo(UIEdgeInsets.zero)
@@ -77,9 +45,10 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
             self.player.prepare()
         }
     }
+    
     var playerView: UIView = {
         let v = UIView(frame: CGRect(x: 0, y: 0, width: kScreenWidth, height: kScreenWidth))
-        v.backgroundColor = HEX_333
+        v.backgroundColor = UIColor.green
         return v
     }()
     
@@ -89,28 +58,101 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
         return cb
     }()
     
+    
+    var playerOrignCenter: CGPoint = CGPoint.zero
+    var playerOriginSize: CGSize = CGSize.zero
+    var isFullScreen: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(playerView)
+        playerView.snp_makeConstraints { make in
+            make.left.top.right.equalTo(self.view)
+            make.height.equalTo(kScreenWidth)
+        }
         view.backgroundColor = HEX_FFF
         initPlayer()
         // Do any additional setup after loading the view.
     }
     
+    override var prefersStatusBarHidden: Bool {
+        return false
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return self.isFullScreen ? .lightContent : .default
+    }
+    
+    override func prefersHomeIndicatorAutoHidden() -> Bool {
+        return self.isFullScreen ? true : false
+    }
+    
+    // MARK: view即将旋转时,修改playview的布局
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        print("当前屏幕高度:\(kScreenHeight);当前屏幕宽度:\(kScreenWidth)")
+        if !isFullScreen {
+            self.playerView.snp_remakeConstraints({ make in
+                make.left.top.right.equalTo(self.view)
+                make.height.equalTo(kScreenWidth)
+            })
+        } else {
+            self.playerView.snp_remakeConstraints({ make in
+                make.edges.equalTo(UIEdgeInsets.zero)
+            })
+        }
+    }
+    
     func initPlayer() {
         self.player.delegate = self
     }
-    
+    //播放控件的play按钮被电击了
     func playBtnClicked(btn: UIButton) {
         if btn.isSelected {
             self.player.start()
         } else {
             self.player.pause()
         }
-        
     }
     
+    // MARK: ControlBarDelegate
+    func fullScreen(isMini: Bool) {
+        isFullScreen = !isMini
+        setOrientation(isFullScreen: !isMini)
+    }
+    
+    func panSeek(to: Int64) {
+        self.player.seek(toTime: to, seekMode: AVPSeekMode.init(0))
+    }
+    
+    func playerBtnisClicked(btn: UIButton) {
+        playBtnClicked(btn: btn)
+    }
+    // MARK: 设置屏幕旋转
+    func setOrientation(isFullScreen: Bool) {
+        if #available(iOS 16.0, *) {
+            setNeedsUpdateOfSupportedInterfaceOrientations()
+            let arr = (UIApplication.shared.connectedScenes as NSSet).allObjects
+            if  let firstWindowScene = arr.first as? UIWindowScene {
+                let geometryPerferenceIOS = UIWindowScene.GeometryPreferences.iOS(interfaceOrientations: isFullScreen ? .landscapeLeft : .portrait)
+                firstWindowScene.requestGeometryUpdate(geometryPerferenceIOS) { error in
+                    NSLog("%@", error.localizedDescription)
+                }
+            }
+        } else {
+            let orientation: UIInterfaceOrientation = isFullScreen ? .landscapeLeft : .portrait
+            UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+        }
+    }
+    
+    deinit {
+        player.pause()
+        player.stop()
+        player.playerView = nil
+        player.destroy()
+    }
 }
+
+
 
 extension JTVideoPlayerVC: AVPDelegate {
     /**
@@ -183,7 +225,7 @@ extension JTVideoPlayerVC: AVPDelegate {
             self.controlBar.progressAnimate(targetLayer: self.controlBar.bufferLayer, to: position)
         }
     }
-
+    
     /**
      @brief 获取track信息回调
      @param player 播放器player指针

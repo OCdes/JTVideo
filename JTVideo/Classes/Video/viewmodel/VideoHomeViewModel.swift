@@ -58,7 +58,7 @@ class VideoHomeViewModel: JTVideoBaseViewModel {
 
 class ViewHomeListModel: JTVideoBaseModel {
     var VideoId: String = ""
-    var source: String = ""
+    var source: String = "http://player.alicdn.com/video/aliyunmedia.mp4"
     var CoverURL: String = ""
     var Title: String = ""
     var Duration: String = ""
