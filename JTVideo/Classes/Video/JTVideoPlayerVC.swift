@@ -62,16 +62,9 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
     var playerOrignCenter: CGPoint = CGPoint.zero
     var playerOriginSize: CGSize = CGSize.zero
     var isFullScreen: Bool = false
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.addSubview(playerView)
-        playerView.snp_makeConstraints { make in
-            make.left.top.right.equalTo(self.view)
-            make.height.equalTo(kScreenWidth)
-        }
-        view.backgroundColor = HEX_FFF
-        initPlayer()
-        // Do any additional setup after loading the view.
+    
+    override var shouldAutorotate: Bool {
+        return false
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -79,7 +72,7 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return self.isFullScreen ? .lightContent : .default
+        return .lightContent
     }
     
     override func prefersHomeIndicatorAutoHidden() -> Bool {
@@ -102,9 +95,37 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
         }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(playerView)
+        playerView.snp_makeConstraints { make in
+            make.left.top.right.equalTo(self.view)
+            make.height.equalTo(kScreenWidth)
+        }
+        view.backgroundColor = HEX_FFF
+        initPlayer()
+        // Do any additional setup after loading the view.
+    }
+    
     func initPlayer() {
         self.player.delegate = self
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
+    
+    @objc func deviceOrientationDidChange() {
+        if UIDevice.current.orientation.isPortrait {
+            self.playerView.snp_remakeConstraints({ make in
+                make.left.top.right.equalTo(self.view)
+                make.height.equalTo(kScreenWidth)
+            })
+        } else {
+            self.playerView.snp_remakeConstraints({ make in
+                make.edges.equalTo(UIEdgeInsets.zero)
+            })
+        }
+    }
+    
     //播放控件的play按钮被电击了
     func playBtnClicked(btn: UIButton) {
         if btn.isSelected {

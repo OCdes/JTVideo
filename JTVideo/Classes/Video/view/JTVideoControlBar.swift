@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import MediaPlayer
 public protocol JTVideoControlBarDelegate: NSObjectProtocol {
     func playerBtnisClicked(btn: UIButton)
     func panSeek(to: Int64)
@@ -174,6 +174,21 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         didSet {
             self.endTimeLa.text = dealmimseconds(mimsecond: totalPostion)
             self.middleTimeLabel.text = "00:\(dealmimseconds(mimsecond: totalPostion))"
+            let totalSeconds = totalPostion/1000
+            let hour = totalSeconds / (60 * 60)
+            let min = (totalSeconds % (60 * 60)) / 60
+            let sec = (totalSeconds % (60 * 60)) % 60
+            if hour >= 1 {
+                progressStepinDistance = totalPostion/10
+            } else if (min > 30) {
+                progressStepinDistance = totalPostion/5
+            } else if (min > 10) {
+                progressStepinDistance = totalPostion/3
+            } else if (min > 3) {
+                progressStepinDistance = totalPostion/2
+            } else {
+                progressStepinDistance = totalPostion
+            }
         }
     }
     private var progressWidth: CGFloat {
@@ -196,6 +211,12 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
     private var barHide = false
     private var panTransitionX: Double = 0.0
     private var panTransitionY: Double = 0.0
+    private var aixasYDistance: CGFloat = 0
+    private var progressStepinDistance: Int64 = 0
+    private var brightnessStart: CGFloat {
+        return UIScreen.main.brightness
+    }
+    private var volumeView: UISlider?
     init(frame: CGRect, isMiniScreen: Bool, totalTime: String) {
         super.init(frame: frame)
         isUserInteractionEnabled = true
@@ -212,6 +233,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         } else {
             setFullView()
         }
+        dealVolumViewAndAirDrop()
     }
     
     public override func draw(_ rect: CGRect) {
@@ -541,8 +563,19 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         middleTimeLabel.snp_remakeConstraints { make in
             make.left.right.top.bottom.equalTo(self.middleView)
         }
-        
     }
+    
+    func dealVolumViewAndAirDrop() {
+        let mpVolumeView = MPVolumeView()
+        for v in mpVolumeView.subviews {
+            if v.isKind(of: UISlider.self) {
+                if let vv = v as? UISlider {
+                    volumeView = vv
+                }
+            }
+        }
+    }
+    
 // MARK: -控制条控制-
     open func progressAnimate(targetLayer: UIView, to: Int64) {
         if to > self.totalPostion {
@@ -603,6 +636,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         }
         return "00:00"
     }
+
 // MARK: -点击事件-
     //点击播放按钮
     @objc func playerBtnClicked() {
@@ -715,17 +749,20 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         let state = pan.state
         switch state {
         case .began:
-            let transitionPoint = pan.translation(in: pan.view)
-            panTransitionY = transitionPoint.y
+            let point = pan.location(in: pan.view)
+            panTransitionY = point.y
+            let rect = self.leftView.frame
+            aixasYDistance = rect.height
             break
         case .changed:
-            let transitionPoint = pan.translation(in: pan.view)
-            let stepY = transitionPoint.y-panTransitionY
-            if stepY <= 0 {
-                //向上
-                
-            } else {
-                //向下
+            let transitionPoint = pan.location(in: pan.view)
+            if self.leftView.point(inside: transitionPoint, with:nil) {
+                let stepY = transitionPoint.y-panTransitionY
+                let stepDistance = -Float(stepY/aixasYDistance)/10
+                if let vv = volumeView {
+                    let totalValue = vv.value + stepDistance
+                    vv.setValue(totalValue > 1 ? 1 : totalValue, animated: true)
+                }
             }
             break
         case .ended:
@@ -740,17 +777,18 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         let state = pan.state
         switch state {
         case .began:
-            let transitionPoint = pan.translation(in: pan.view)
-            panTransitionY = transitionPoint.y
+            let point = pan.location(in: pan.view)
+            panTransitionY = point.y
+            let rect = self.rightView.frame
+            aixasYDistance = rect.height
             break
         case .changed:
             let transitionPoint = pan.translation(in: pan.view)
-            let stepY = transitionPoint.y-panTransitionY
-            if stepY <= 0 {
-                //向上
-                
-            } else {
-                //向下
+            if self.rightView.point(inside: transitionPoint, with: nil) {
+                let stepY = transitionPoint.y-panTransitionY
+                let stepDistance = -stepY/aixasYDistance
+                let totalValue = brightnessStart + stepDistance/10
+                UIScreen.main.brightness = totalValue > 1 ? 1 : totalValue
             }
             break
         case .ended:
