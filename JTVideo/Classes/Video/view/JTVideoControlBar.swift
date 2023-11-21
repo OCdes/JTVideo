@@ -14,7 +14,7 @@ public protocol JTVideoControlBarDelegate: NSObjectProtocol {
 }
 
 public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecognizerDelegate {
-
+    
     open weak var delegate: JTVideoControlBarDelegate?
     lazy var topView: UIImageView = {
         let tv = UIImageView()
@@ -27,27 +27,43 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
     lazy var middleView: UIView = {
         let mmv = UIView()
         let singleTap = UITapGestureRecognizer.init(target: self, action: #selector(tapGesture))
-            mmv.addGestureRecognizer(singleTap)
+        mmv.addGestureRecognizer(singleTap)
         let doubleTap = UITapGestureRecognizer.init(target: self, action: #selector(doubleTapGesture))
         doubleTap.numberOfTapsRequired = 2
-            mmv.addGestureRecognizer(doubleTap)
+        mmv.addGestureRecognizer(doubleTap)
         singleTap.require(toFail: doubleTap)
+        let progressPan = UIPanGestureRecognizer(target: self, action: #selector(middelPan(pan:)))
+        mmv.addGestureRecognizer(progressPan)
+        //        let panl = UIPanGestureRecognizer(target: self, action: #selector(leftAxiasYPan(pan:)))
+        //        mmv.addGestureRecognizer(panl)
+        //        let panr = UIPanGestureRecognizer(target: self, action: #selector(rightAxiasYPan(pan:)))
+        //        mmv.addGestureRecognizer(pan)
         return mmv
     }()
+    
+    var leftRect: CGRect {
+        return CGRect(x: 0, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
+    }
+    
+    var rightRect: CGRect {
+        return CGRect(x: self.middleView.frame.width/2, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
+    }
     
     lazy var leftView: UIView = {
         let lv = UIView()
         lv.backgroundColor = UIColor.clear
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(leftAxiasYPan(pan:)))
-        lv.addGestureRecognizer(pan)
+        //        let pan = UIPanGestureRecognizer(target: self, action: #selector(leftAxiasYPan(pan:)))
+        //        lv.addGestureRecognizer(pan)
+        lv.isHidden = true
         return lv
     }()
     
     lazy var rightView: UIView = {
         let rv = UIView()
         rv.backgroundColor = UIColor.clear
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(rightAxiasYPan(pan:)))
-        rv.addGestureRecognizer(pan)
+        //        let pan = UIPanGestureRecognizer(target: self, action: #selector(rightAxiasYPan(pan:)))
+        //        rv.addGestureRecognizer(pan)
+        rv.isHidden = true
         return rv
     }()
     
@@ -177,7 +193,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             let totalSeconds = totalPostion/1000
             let hour = totalSeconds / (60 * 60)
             let min = (totalSeconds % (60 * 60)) / 60
-            let sec = (totalSeconds % (60 * 60)) % 60
             if hour >= 1 {
                 progressStepinDistance = totalPostion/10
             } else if (min > 30) {
@@ -210,9 +225,14 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
     private final var totalTime: String = ""
     private var barHide = false
     private var panTransitionX: Double = 0.0
+    private var leftPanTransitionY: Double = 0.0
+    private var rightPanTransitionY: Double = 0.0
     private var panTransitionY: Double = 0.0
     private var aixasYDistance: CGFloat = 0
     private var progressStepinDistance: Int64 = 0
+    private var middelStartPoint: CGPoint = CGPoint.zero
+    private var middelPanXEndPosition: Int64 = 0
+    private var middelPanYEndPostion: Float = 0
     private var brightnessStart: CGFloat {
         return UIScreen.main.brightness
     }
@@ -576,7 +596,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         }
     }
     
-// MARK: -控制条控制-
+    // MARK: -控制条控制-
     open func progressAnimate(targetLayer: UIView, to: Int64) {
         if to > self.totalPostion {
             return
@@ -636,8 +656,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         }
         return "00:00"
     }
-
-// MARK: -点击事件-
+    
+    // MARK: -点击事件-
     //点击播放按钮
     @objc func playerBtnClicked() {
         self.playBtn.isSelected = !self.playBtn.isSelected
@@ -655,7 +675,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             de.fullScreen(isMini: isMiniScreen)
         }
     }
-    //MARK: 手势相关方法
+    //MARK: 中部区域单机,双击,上下滑,左右滑手势相关方法
     //单击事件
     @objc func tapGesture() {
         barHide = !barHide
@@ -706,7 +726,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         case .began:
             if let v = pan.view, v == self.progressBtn {
                 panBeginPositionX = self.progressBtn.layer.position.x
-                setTimeViewShow(b: false)
+                setTimeViewHide(b: false)
             }
             break
         case .changed:
@@ -737,61 +757,97 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             }
             panBeginPositionX = 0
             panTransitionX = 0
-            setTimeViewShow(b: true)
+            setTimeViewHide(b: true)
             break
         default:
             break
         }
     }
     
-    //左视图y拖动事件
-    @objc func leftAxiasYPan(pan: UIPanGestureRecognizer) {
+    @objc func middelPan(pan: UIPanGestureRecognizer) {
         let state = pan.state
         switch state {
         case .began:
             let point = pan.location(in: pan.view)
-            panTransitionY = point.y
-            let rect = self.leftView.frame
-            aixasYDistance = rect.height
+            middelStartPoint = point
+            if leftRect.contains(point) {
+                leftPanTransitionY = point.y
+                let rect = self.leftView.frame
+                aixasYDistance = rect.height
+            }
+            if rightRect.contains(point) {
+                rightPanTransitionY = point.y
+                let rect = self.leftView.frame
+                aixasYDistance = rect.height
+            }
+            
+            let location = pan.location(in: pan.view)
+            panTransitionX = location.x
+            
             break
+            
         case .changed:
             let transitionPoint = pan.location(in: pan.view)
-            if self.leftView.point(inside: transitionPoint, with:nil) {
-                let stepY = transitionPoint.y-panTransitionY
-                let stepDistance = -Float(stepY/aixasYDistance)/10
-                if let vv = volumeView {
-                    let totalValue = vv.value + stepDistance
-                    vv.setValue(totalValue > 1 ? 1 : totalValue, animated: true)
+            let width = transitionPoint.x - middelStartPoint.x
+            let height = transitionPoint.y - middelStartPoint.y
+            let isUpdownPan = fabs(height/width) > 1
+            if isUpdownPan && middelPanXEndPosition == 0 {
+                //音量
+                if  leftPanTransitionY > 0 {
+                    if leftRect.contains(transitionPoint) {
+                        let stepY = transitionPoint.y-leftPanTransitionY
+                        let stepDistance = -Float(stepY/(aixasYDistance))
+                        if let vv = volumeView {
+                            let totalValue = vv.value + stepDistance
+                            middelPanYEndPostion = totalValue
+                            vv.setValue(totalValue > 1 ? 1 : totalValue, animated: true)
+                        }
+                    }
+                    break
+                }
+                //亮度
+                if rightPanTransitionY > 0 {
+                    if rightRect.contains(transitionPoint) {
+                        let stepY = transitionPoint.y-rightPanTransitionY
+                        let stepDistance = -stepY/aixasYDistance
+                        let totalValue = brightnessStart + stepDistance
+                        middelPanYEndPostion = Float(totalValue)
+                        print("本次调节亮度值:\(middelPanYEndPostion)")
+                        UIScreen.main.brightness = totalValue > 1 ? 1 : totalValue
+                    }
+                    
+                }
+                break
+            }
+            if middelPanYEndPostion == 0 {
+                setTimeViewHide(b: false)
+                if middleView.point(inside: transitionPoint, with: nil) {
+                    let xstepDistance = (transitionPoint.x - panTransitionX)*Double(progressStepinDistance)/kScreenWidth
+                    let toMimsecond = Int64(xstepDistance)+animationProgressTo
+                    if toMimsecond <= totalPostion, toMimsecond >= 0 {
+                        middelPanXEndPosition = toMimsecond
+                        let toFloat: CGFloat = CGFloat(CGFloat(toMimsecond)/CGFloat(self.totalPostion))*(progressWidth)
+                        var position = self.progressBtn.layer.position
+                        position.x = 6.5 + toFloat
+                        progressXAnimation(to: position, target: self.progressBtn)
+                        self.middleTimeLabel.text = "\(dealmimseconds(mimsecond: toMimsecond)):\(dealmimseconds(mimsecond: totalPostion))"
+                    }
                 }
             }
+            
             break
         case .ended:
-            break
-        default:
-            break
-        }
-    }
-    
-    //右视图y拖动事件
-    @objc func rightAxiasYPan(pan: UIPanGestureRecognizer) {
-        let state = pan.state
-        switch state {
-        case .began:
-            let point = pan.location(in: pan.view)
-            panTransitionY = point.y
-            let rect = self.rightView.frame
-            aixasYDistance = rect.height
-            break
-        case .changed:
-            let transitionPoint = pan.translation(in: pan.view)
-            if self.rightView.point(inside: transitionPoint, with: nil) {
-                let stepY = transitionPoint.y-panTransitionY
-                let stepDistance = -stepY/aixasYDistance
-                let totalValue = brightnessStart + stepDistance/10
-                UIScreen.main.brightness = totalValue > 1 ? 1 : totalValue
+            if middelPanYEndPostion == 0 {
+                if let de = delegate {
+                    de.panSeek(to: middelPanXEndPosition)
+                    setTimeViewHide(b: true)
+                }
             }
-            break
-        case .ended:
+            middelPanXEndPosition = 0
+            middelPanYEndPostion = 0
+            leftPanTransitionY = 0
+            rightPanTransitionY = 0
+            panTransitionX = 0
             break
         default:
             break
@@ -799,12 +855,12 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
     }
     
     //MARK: 设置事件拖动时middelview的事件显示
-    func setTimeViewShow(b: Bool) {
+    func setTimeViewHide(b: Bool) {
         self.middleTimeLabel.isHidden = b
     }
     
     
-//MARK: -pan代理-
+    //MARK: -pan代理-
     public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if let panges = gestureRecognizer as? UIPanGestureRecognizer {
             let transitionPoint = panges.translation(in: panges.view)
