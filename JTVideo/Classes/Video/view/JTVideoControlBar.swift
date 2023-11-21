@@ -13,9 +13,95 @@ public protocol JTVideoControlBarDelegate: NSObjectProtocol {
     func fullScreen(isMini: Bool)
 }
 
-public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecognizerDelegate {
+public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     open weak var delegate: JTVideoControlBarDelegate?
+    
+    // MARK: 控制组件相关控制数据
+    //得知缓冲就绪状态
+    var prepared: Bool = false {
+        didSet {
+            if !prepared {
+                
+            } else {
+                backgroundColor = UIColor.clear
+                playBtn.isUserInteractionEnabled = true
+            }
+        }
+    }
+    //总时长 毫秒
+    var totalPostion: Int64 = 0 {
+        didSet {
+            self.endTimeLa.text = dealmimseconds(mimsecond: totalPostion)
+            self.middleTimeLabel.text = "00:\(dealmimseconds(mimsecond: totalPostion))"
+            let totalSeconds = totalPostion/1000
+            let hour = totalSeconds / (60 * 60)
+            let min = (totalSeconds % (60 * 60)) / 60
+            if hour >= 1 {
+                progressStepinDistance = totalPostion/10
+            } else if (min > 30) {
+                progressStepinDistance = totalPostion/5
+            } else if (min > 10) {
+                progressStepinDistance = totalPostion/3
+            } else if (min > 3) {
+                progressStepinDistance = totalPostion/2
+            } else {
+                progressStepinDistance = totalPostion
+            }
+        }
+    }
+    //进度条是图宽度,调整进度时以此宽度为基础
+    private var progressWidth: CGFloat {
+        return self.isMiniScreen ? (self.frame.size.width - 160 - 13) : (self.frame.size.width - 30)
+    }
+    //进度条背景视图宽度
+    private var progressBgvWidth: CGFloat {
+        return isMiniScreen ? self.frame.size.width - 160 : self.frame.size.width - 17
+    }
+    //当前动画对象
+    var currentAnimationTarget: UIView = UIView()
+    //当前动画目标位置
+    var currentAnimationTo: CGFloat = 0
+    //当前屏幕亮度
+    private var brightnessStart: CGFloat {
+        return UIScreen.main.brightness
+    }
+    //记录当次播放进度条动画终点
+    var animationProgressTo: Int64 = 0
+    //记录当次缓冲进度条动画终点
+    var animationBufferTo: Int64 = 0
+    //记录当次滑动x轴的起点
+    var panBeginPositionX: Double = 0
+    //记录当次滑动y轴的起点
+    var panBeginPositionY: Double = 0
+    private final var isMiniScreen: Bool = false
+    //视频总时长
+    private final var totalTime: String = ""
+    //控制栏是否隐藏
+    private var barHide = false
+    //当视频播放时根据此属性判断是否应该使滑块跟随移动,大于0时表示正在进行拖动不可以跟随移动
+    private var panTransitionX: Double = 0.0
+    //记录middelView左侧发生上下滑时的初始位置
+    private var leftPanTransitionY: Double = 0.0
+    //记录middelView右侧发生上下滑时的初始位置
+    private var rightPanTransitionY: Double = 0.0
+    //根据视频总时长得出的屏幕宽度所代表的滑动时可修改的总时长,
+    private var progressStepinDistance: Int64 = 0
+    //中部位置上当发生触摸事件时的初始点位
+    private var middelStartPoint: CGPoint = CGPoint.zero
+    //上下滑动时,中部的x轴是否有调整视频进度的动作
+    private var middelPanXEndPosition: Int64 = 0
+    //左右滑动时,中部的y轴是否有调整亮度或者音量的动作
+    private var middelPanYEndPostion: Float = 0
+    //middelview滑动响应的音量区域
+    var leftRect: CGRect {
+        return CGRect(x: 0, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
+    }
+    //middelview滑动响应的亮度区域
+    var rightRect: CGRect {
+        return CGRect(x: self.middleView.frame.width/2, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
+    }
+    // MARK: 视图懒加载
     lazy var topView: UIImageView = {
         let tv = UIImageView()
         tv.isUserInteractionEnabled = true
@@ -34,37 +120,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         singleTap.require(toFail: doubleTap)
         let progressPan = UIPanGestureRecognizer(target: self, action: #selector(middelPan(pan:)))
         mmv.addGestureRecognizer(progressPan)
-        //        let panl = UIPanGestureRecognizer(target: self, action: #selector(leftAxiasYPan(pan:)))
-        //        mmv.addGestureRecognizer(panl)
-        //        let panr = UIPanGestureRecognizer(target: self, action: #selector(rightAxiasYPan(pan:)))
-        //        mmv.addGestureRecognizer(pan)
         return mmv
-    }()
-    
-    var leftRect: CGRect {
-        return CGRect(x: 0, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
-    }
-    
-    var rightRect: CGRect {
-        return CGRect(x: self.middleView.frame.width/2, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
-    }
-    
-    lazy var leftView: UIView = {
-        let lv = UIView()
-        lv.backgroundColor = UIColor.clear
-        //        let pan = UIPanGestureRecognizer(target: self, action: #selector(leftAxiasYPan(pan:)))
-        //        lv.addGestureRecognizer(pan)
-        lv.isHidden = true
-        return lv
-    }()
-    
-    lazy var rightView: UIView = {
-        let rv = UIView()
-        rv.backgroundColor = UIColor.clear
-        //        let pan = UIPanGestureRecognizer(target: self, action: #selector(rightAxiasYPan(pan:)))
-        //        rv.addGestureRecognizer(pan)
-        rv.isHidden = true
-        return rv
     }()
     
     lazy var middleTimeLabel: UILabel = {
@@ -76,11 +132,32 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         return mtl
     }()
     
+    lazy var numLa: UILabel = {
+        let nl = UILabel()
+        nl.textColor = HEX_FFF
+        nl.font = UIFont.systemFont(ofSize: 16)
+        nl.textAlignment = .center
+        nl.backgroundColor = HEX_FFF.withAlphaComponent(0.3)
+        nl.layer.cornerRadius = 10
+        nl.layer.masksToBounds = true
+        nl.isHidden = true
+        return nl
+    }()
+    
     lazy var bottomView: UIImageView = {
         let tv = UIImageView()
         tv.isUserInteractionEnabled = true
         tv.image = UIImage.init(named: "bottomMask")
         return tv
+    }()
+    
+    lazy var backBtn: UIButton = {
+        let bb = UIButton()
+        bb.setTitle("返回", for: .normal)
+        bb.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        bb.setTitleColor(HEX_FFF, for: .normal)
+        bb.addTarget(self, action: #selector(backBtnClicked), for: .touchUpInside)
+        return bb
     }()
     
     lazy var titleLa: UILabel = {
@@ -157,7 +234,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         let pb = UIButton.init(frame: CGRect(x: 0, y: 0, width: 13, height: 13))
         pb.setImage(JTVideoBundleTool.getBundleImg(with: "playDotIcon"), for: .normal)
         let pan = UIPanGestureRecognizer()
-        pan.delegate = self
         pan.addTarget(self, action: #selector(panGesture(pan:)))
         pb.addGestureRecognizer(pan)
         return pb
@@ -174,68 +250,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         ll.textColor = HEX_FFF
         return ll
     }()
-    // MARK: 得知缓冲就绪状态
-    var prepared: Bool = false {
-        didSet {
-            if !prepared {
-                
-            } else {
-                backgroundColor = UIColor.clear
-                playBtn.isUserInteractionEnabled = true
-            }
-        }
-    }
-    //总时长 毫秒
-    var totalPostion: Int64 = 0 {
-        didSet {
-            self.endTimeLa.text = dealmimseconds(mimsecond: totalPostion)
-            self.middleTimeLabel.text = "00:\(dealmimseconds(mimsecond: totalPostion))"
-            let totalSeconds = totalPostion/1000
-            let hour = totalSeconds / (60 * 60)
-            let min = (totalSeconds % (60 * 60)) / 60
-            if hour >= 1 {
-                progressStepinDistance = totalPostion/10
-            } else if (min > 30) {
-                progressStepinDistance = totalPostion/5
-            } else if (min > 10) {
-                progressStepinDistance = totalPostion/3
-            } else if (min > 3) {
-                progressStepinDistance = totalPostion/2
-            } else {
-                progressStepinDistance = totalPostion
-            }
-        }
-    }
-    private var progressWidth: CGFloat {
-        return self.isMiniScreen ? (self.frame.size.width - 160 - 13) : (self.frame.size.width - 30)
-    }
-    private var progressBgvWidth: CGFloat {
-        return isMiniScreen ? self.frame.size.width - 160 : self.frame.size.width - 17
-    }
-    var currentAnimationTarget: UIView = UIView()
-    var currentAnimationTo: CGFloat = 0
-    var currentBrightness: CGFloat {
-        return UIScreen.main.brightness
-    }
-    var animationProgressTo: Int64 = 0
-    var animationBufferTo: Int64 = 0
-    var panBeginPositionX: Double = 0
-    var panBeginPositionY: Double = 0
-    private final var isMiniScreen: Bool = false
-    private final var totalTime: String = ""
-    private var barHide = false
-    private var panTransitionX: Double = 0.0
-    private var leftPanTransitionY: Double = 0.0
-    private var rightPanTransitionY: Double = 0.0
-    private var panTransitionY: Double = 0.0
-    private var aixasYDistance: CGFloat = 0
-    private var progressStepinDistance: Int64 = 0
-    private var middelStartPoint: CGPoint = CGPoint.zero
-    private var middelPanXEndPosition: Int64 = 0
-    private var middelPanYEndPostion: Float = 0
-    private var brightnessStart: CGFloat {
-        return UIScreen.main.brightness
-    }
+    
+    //获取到的系统的音量控制view
     private var volumeView: UISlider?
     init(frame: CGRect, isMiniScreen: Bool, totalTime: String) {
         super.init(frame: frame)
@@ -349,21 +365,15 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             make.bottom.equalTo(self.bottomView.snp_top)
         }
         
-        middleView.addSubview(leftView)
-        leftView.snp_makeConstraints { make in
-            make.left.top.bottom.equalTo(self.middleView)
-            make.width.equalTo(self.middleView.snp_width).multipliedBy(0.5)
-        }
-        
-        middleView.addSubview(rightView)
-        rightView.snp_makeConstraints { make in
-            make.right.top.bottom.equalTo(self.middleView)
-            make.width.equalTo(self.middleView.snp_width).multipliedBy(0.5)
-        }
-        
         middleView.addSubview(middleTimeLabel)
         middleTimeLabel.snp_makeConstraints { make in
             make.left.right.top.bottom.equalTo(self.middleView)
+        }
+        
+        middleView.addSubview(numLa)
+        numLa.snp_makeConstraints { make in
+            make.center.equalTo(self.middleView)
+            make.size.equalTo(CGSize(width: 120, height: 60))
         }
         
         if !isMiniScreen {
@@ -477,16 +487,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             make.bottom.equalTo(self.bottomView.snp_top)
         }
         
-        leftView.snp_remakeConstraints { make in
-            make.left.top.bottom.equalTo(self.middleView)
-            make.width.equalTo(self.middleView.snp_width).multipliedBy(0.5)
-        }
-        
-        rightView.snp_remakeConstraints { make in
-            make.right.top.bottom.equalTo(self.middleView)
-            make.width.equalTo(self.middleView.snp_width).multipliedBy(0.5)
-        }
-        
         middleTimeLabel.snp_remakeConstraints { make in
             make.left.right.top.bottom.equalTo(self.middleView)
         }
@@ -570,21 +570,12 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             make.bottom.equalTo(self.bottomView.snp_top)
         }
         
-        leftView.snp_remakeConstraints { make in
-            make.left.top.bottom.equalTo(self.middleView)
-            make.width.equalTo(self.middleView.snp_width).multipliedBy(0.5)
-        }
-        
-        rightView.snp_remakeConstraints { make in
-            make.right.top.bottom.equalTo(self.middleView)
-            make.width.equalTo(self.middleView.snp_width).multipliedBy(0.5)
-        }
-        
         middleTimeLabel.snp_remakeConstraints { make in
             make.left.right.top.bottom.equalTo(self.middleView)
         }
     }
     
+    //获取系统音量控制组件
     func dealVolumViewAndAirDrop() {
         let mpVolumeView = MPVolumeView()
         for v in mpVolumeView.subviews {
@@ -601,7 +592,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
         if to > self.totalPostion {
             return
         }
-        self.loadingLabel.isHidden = self.animationBufferTo > self.animationProgressTo
+        self.loadingLabel.isHidden = self.animationBufferTo >= self.animationProgressTo
         
         let toFloat: CGFloat = CGFloat(CGFloat(to)/CGFloat(self.totalPostion))*(progressWidth)
         if targetLayer == self.bufferLayer {
@@ -658,6 +649,11 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
     }
     
     // MARK: -点击事件-
+    
+    @objc func backBtnClicked() {
+
+    }
+    
     //点击播放按钮
     @objc func playerBtnClicked() {
         self.playBtn.isSelected = !self.playBtn.isSelected
@@ -727,6 +723,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             if let v = pan.view, v == self.progressBtn {
                 panBeginPositionX = self.progressBtn.layer.position.x
                 setTimeViewHide(b: false)
+                panTransitionX = positionX
             }
             break
         case .changed:
@@ -743,7 +740,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
                     self.middleTimeLabel.text = "\(dealmimseconds(mimsecond: toTime)):\(dealmimseconds(mimsecond: totalPostion))"
                 }
             }
-            
             break
         case .ended:
             if let v = pan.view, v == self.progressBtn {
@@ -772,13 +768,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             middelStartPoint = point
             if leftRect.contains(point) {
                 leftPanTransitionY = point.y
-                let rect = self.leftView.frame
-                aixasYDistance = rect.height
             }
             if rightRect.contains(point) {
                 rightPanTransitionY = point.y
-                let rect = self.leftView.frame
-                aixasYDistance = rect.height
             }
             
             let location = pan.location(in: pan.view)
@@ -796,11 +788,14 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
                 if  leftPanTransitionY > 0 {
                     if leftRect.contains(transitionPoint) {
                         let stepY = transitionPoint.y-leftPanTransitionY
-                        let stepDistance = -Float(stepY/(aixasYDistance))
+                        let stepDistance = -Float(stepY/(self.middleView.frame.height))
                         if let vv = volumeView {
-                            let totalValue = vv.value + stepDistance
-                            middelPanYEndPostion = totalValue
-                            vv.setValue(totalValue > 1 ? 1 : totalValue, animated: true)
+                            numLa.isHidden = false
+                            let value = (vv.value + stepDistance) > 1 ? 1 : ((vv.value + stepDistance) < 0 ? 0 : (vv.value + stepDistance))
+                            middelPanYEndPostion = (vv.value + stepDistance)
+                            let totalValue = fabs(value) > 1 ? 1 : (value)
+                            vv.setValue(totalValue, animated: true)
+                            numLa.text = String(format: "音量:%d%", Int(totalValue*100))
                         }
                     }
                     break
@@ -808,14 +803,14 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
                 //亮度
                 if rightPanTransitionY > 0 {
                     if rightRect.contains(transitionPoint) {
+                        numLa.isHidden = false
                         let stepY = transitionPoint.y-rightPanTransitionY
-                        let stepDistance = -stepY/aixasYDistance
-                        let totalValue = brightnessStart + stepDistance
+                        let stepDistance = -stepY/self.middleView.frame.height
+                        let totalValue = (brightnessStart + stepDistance) > 1 ? 1 : (brightnessStart + stepDistance)
                         middelPanYEndPostion = Float(totalValue)
-                        print("本次调节亮度值:\(middelPanYEndPostion)")
-                        UIScreen.main.brightness = totalValue > 1 ? 1 : totalValue
+                        UIScreen.main.brightness = totalValue
+                        numLa.text = String(format: "亮度:%d%", Int(totalValue*100))
                     }
-                    
                 }
                 break
             }
@@ -834,7 +829,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
                     }
                 }
             }
-            
             break
         case .ended:
             if middelPanYEndPostion == 0 {
@@ -848,6 +842,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
             leftPanTransitionY = 0
             rightPanTransitionY = 0
             panTransitionX = 0
+            numLa.isHidden = true
             break
         default:
             break
@@ -858,19 +853,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate, UIGestureRecog
     func setTimeViewHide(b: Bool) {
         self.middleTimeLabel.isHidden = b
     }
-    
-    
-    //MARK: -pan代理-
-    public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let panges = gestureRecognizer as? UIPanGestureRecognizer {
-            let transitionPoint = panges.translation(in: panges.view)
-            panTransitionX = transitionPoint.x
-            panTransitionY = transitionPoint.y
-        }
-        return true
-        
-    }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
