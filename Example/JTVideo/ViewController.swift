@@ -8,7 +8,7 @@
 
 import UIKit
 import JTVideo
-class ViewController: JTVideoHomeVC {
+class ViewController: JTPlayerListVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()

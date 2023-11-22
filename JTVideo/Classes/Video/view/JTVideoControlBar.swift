@@ -16,7 +16,13 @@ public protocol JTVideoControlBarDelegate: NSObjectProtocol {
 public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     open weak var delegate: JTVideoControlBarDelegate?
-    
+    var isListMode: Bool = false {
+        didSet {
+            self.topView.isHidden = true
+            self.bottomView.isHidden = true
+            self.bottomSlider.isHidden = false
+        }
+    }
     // MARK: 控制组件相关控制数据
     //得知缓冲就绪状态
     var prepared: Bool = false {
@@ -251,6 +257,16 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         return ll
     }()
     
+    lazy var bottomSlider: JTVideoProgressSliderView = {
+        let bs = JTVideoProgressSliderView(frame: CGRectZero)
+        bs.minimumValue = 0
+        bs.maximumValue = 1
+        bs.isUserInteractionEnabled = false
+        bs.isHidden = true
+        bs.value = 0
+        return bs
+    }()
+    
     //获取到的系统的音量控制view
     private var volumeView: UISlider?
     init(frame: CGRect, isMiniScreen: Bool, totalTime: String) {
@@ -278,107 +294,32 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     }
     
     func initView() {
+        
+        //在视频底部区域添加进度条
+        
+        addSubview(bottomSlider)
+        
+        //视频top区
         addSubview(topView)
-        topView.snp_makeConstraints { make in
-            make.left.top.right.equalTo(self)
-            make.height.equalTo(64)
-        }
-        
         topView.addSubview(titleLa)
-        titleLa.snp_makeConstraints { make in
-            make.left.equalTo(self.topView).offset(15)
-            make.top.bottom.equalTo(self.topView)
-            make.right.equalTo(self.topView).offset(-15)
-        }
         
+        //视频bottom区
         addSubview(bottomView)
-        bottomView.snp_makeConstraints { make in
-            make.left.bottom.right.equalTo(self)
-            make.height.equalTo(50)
-        }
-        
         bottomView.addSubview(playBtn)
-        playBtn.snp_makeConstraints { make in
-            make.left.equalTo(self.bottomView).offset(10)
-            make.centerY.equalTo(self.bottomView)
-            make.size.equalTo(CGSize(width: 25, height: 30))
-        }
-        
         bottomView.addSubview(fullscreenBtn)
-        fullscreenBtn.snp_makeConstraints { make in
-            make.right.equalTo(bottomView).offset(-10)
-            make.centerY.equalTo(self.playBtn)
-            make.size.equalTo(CGSize(width: 25, height: 25))
-        }
-        
         bottomView.addSubview(startTimeLa)
-        startTimeLa.snp_makeConstraints { make in
-            make.left.equalTo(self.playBtn.snp_right)
-            make.centerY.equalTo(self.playBtn)
-            make.width.equalTo(45)
-        }
-        
         bottomView.addSubview(endTimeLa)
-        endTimeLa.snp_makeConstraints { make in
-            make.right.equalTo(self.fullscreenBtn.snp_left)
-            make.centerY.equalTo(self.fullscreenBtn)
-            make.size.equalTo(CGSize(width: 45, height: 12))
-        }
-        
         bottomView.addSubview(progressBgView)
-        progressBgView.snp_makeConstraints { make in
-            make.left.equalTo(self.startTimeLa.snp_right)
-            make.right.equalTo(self.endTimeLa.snp_left)
-            make.centerY.equalTo(self.playBtn)
-            make.height.equalTo(13)
-        }
+        bottomView.addSubview(progressView)
+        bottomView.addSubview(progressLayer)
+        bottomView.addSubview(bufferLayer)
+        bottomView.addSubview(progressBtn)
         
-        progressBgView.addSubview(self.progressView)
-        self.progressView.snp_makeConstraints { make in
-            make.top.equalTo(self.progressBgView).offset(5)
-            make.left.equalTo(self.progressBgView).offset(6.5)
-            make.size.equalTo(CGSize(width: self.progressWidth, height: 3))
-        }
-        
-        progressView.addSubview(self.progressLayer)
-        self.progressLayer.snp_makeConstraints { make in
-            make.left.top.bottom.equalTo(self.progressView)
-            make.width.equalTo(0)
-        }
-        
-        progressView.addSubview(self.bufferLayer)
-        self.bufferLayer.snp_makeConstraints { make in
-            make.left.top.bottom.equalTo(self.progressView)
-            make.width.equalTo(0)
-        }
-        
-        progressBgView.addSubview(self.progressBtn)
-        self.progressBtn.snp_makeConstraints { make in
-            make.left.top.equalTo(self.progressBgView)
-            make.size.equalTo(CGSize(width: 13, height: 13))
-        }
-        
+        //视频middle区
         addSubview(middleView)
-        middleView.snp_makeConstraints { make in
-            make.left.right.equalTo(self)
-            make.top.equalTo(self.topView.snp_bottom)
-            make.bottom.equalTo(self.bottomView.snp_top)
-        }
+        addSubview(middleTimeLabel)
+        addSubview(numLa)
         
-        middleView.addSubview(middleTimeLabel)
-        middleTimeLabel.snp_makeConstraints { make in
-            make.left.right.top.bottom.equalTo(self.middleView)
-        }
-        
-        middleView.addSubview(numLa)
-        numLa.snp_makeConstraints { make in
-            make.center.equalTo(self.middleView)
-            make.size.equalTo(CGSize(width: 120, height: 60))
-        }
-        
-        if !isMiniScreen {
-            updateView()
-        }
     }
     
     
@@ -388,7 +329,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         } else {
             setFullView()
         }
-        updateCurrentProgressAndBuffer()
+        if totalPostion > 0 {
+            updateCurrentProgressAndBuffer()
+        }
     }
     
     func updateCurrentProgressAndBuffer() {
@@ -411,6 +354,12 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     }
     
     func setMinView() {
+        
+        bottomSlider.snp_remakeConstraints { make in
+            make.left.bottom.right.equalTo(self)
+            make.height.equalTo(1)
+        }
+        
         self.startTimeLa.textAlignment = .center
         self.endTimeLa.textAlignment = .center
         topView.snp_remakeConstraints { make in
@@ -460,39 +409,49 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             make.height.equalTo(13)
         }
         
-        self.progressView.snp_remakeConstraints { make in
+        progressView.snp_remakeConstraints { make in
             make.top.equalTo(self.progressBgView).offset(5)
             make.left.equalTo(self.progressBgView).offset(6.5)
-            make.size.equalTo(CGSize(width: self.progressWidth, height: 3))
+            make.height.equalTo(3)
+            make.width.equalTo(0)
         }
         
-        self.progressLayer.snp_remakeConstraints { make in
+        progressLayer.snp_remakeConstraints { make in
             make.left.top.bottom.equalTo(self.progressView)
             make.width.equalTo(0)
         }
         
-        self.bufferLayer.snp_remakeConstraints { make in
+        bufferLayer.snp_remakeConstraints { make in
             make.left.top.bottom.equalTo(self.progressView)
             make.width.equalTo(0)
         }
         
-        self.progressBtn.snp_remakeConstraints { make in
+        progressBtn.snp_remakeConstraints { make in
             make.left.top.equalTo(self.progressBgView)
             make.size.equalTo(CGSize(width: 13, height: 13))
         }
         
         middleView.snp_remakeConstraints { make in
-            make.left.right.equalTo(self)
-            make.top.equalTo(self.topView.snp_bottom)
-            make.bottom.equalTo(self.bottomView.snp_top)
+            make.edges.equalTo(UIEdgeInsets(top: 64, left: 0, bottom: 50, right: 0))
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
             make.left.right.top.bottom.equalTo(self.middleView)
         }
+        
+        loadingLabel.snp_remakeConstraints { make in
+            make.center.equalTo(self)
+            make.size.equalTo(CGSize(width: 80, height: 20))
+        }
     }
     
     func setFullView() {
+        
+        bottomSlider.snp_remakeConstraints { make in
+            make.left.bottom.right.equalTo(self)
+            make.height.equalTo(1)
+        }
+        
         self.startTimeLa.textAlignment = .left
         self.endTimeLa.textAlignment = .right
         topView.snp_remakeConstraints { make in
@@ -529,25 +488,24 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             make.height.equalTo(13)
         }
         
-        self.progressView.snp_remakeConstraints { make in
+        progressView.snp_remakeConstraints { make in
             make.top.equalTo(self.progressBgView).offset(5)
             make.left.equalTo(self.progressBgView).offset(6.5)
-            make.width.equalTo(self.progressWidth)
+            make.width.equalTo(0)
             make.height.equalTo(3)
         }
         
-        self.progressLayer.snp_remakeConstraints { make in
+        progressLayer.snp_remakeConstraints { make in
             make.left.top.bottom.equalTo(self.progressView)
             make.width.equalTo(0)
         }
         
-        self.bufferLayer.snp_remakeConstraints { make in
+        bufferLayer.snp_remakeConstraints { make in
             make.left.top.bottom.equalTo(self.progressView)
             make.width.equalTo(0)
         }
         
-        progressBgView.addSubview(self.progressBtn)
-        self.progressBtn.snp_remakeConstraints { make in
+        progressBtn.snp_remakeConstraints { make in
             make.left.top.equalTo(self.progressBgView)
             make.size.equalTo(CGSize(width: 13, height: 13))
         }
@@ -565,13 +523,16 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleView.snp_remakeConstraints { make in
-            make.left.right.equalTo(self)
-            make.top.equalTo(self.topView.snp_bottom)
-            make.bottom.equalTo(self.bottomView.snp_top)
+            make.edges.equalTo(UIEdgeInsets(top: 64, left: 0, bottom: 123, right: 0))
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
             make.left.right.top.bottom.equalTo(self.middleView)
+        }
+        
+        loadingLabel.snp_remakeConstraints { make in
+            make.center.equalTo(self)
+            make.size.equalTo(CGSize(width: 80, height: 20))
         }
     }
     
@@ -603,9 +564,10 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             
             if panTransitionX == 0 {
                 var position = self.progressBtn.layer.position
-                position.x = 6.5 + toFloat
+                position.x = position.x + toFloat
                 progressXAnimation(to: position, target: self.progressBtn)
             }
+            bottomSlider.value = Float(to)/Float(self.totalPostion)
         }
         progressWidthAnimation(to: toFloat, target: targetLayer)
     }
@@ -675,6 +637,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     //单击事件
     @objc func tapGesture() {
         barHide = !barHide
+        if isListMode {
+            return
+        }
         if isMiniScreen {
             UIView.animate(withDuration: 0.3) {
                 self.topView.snp_updateConstraints { make in
@@ -686,6 +651,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                 }
                 self.topView.isHidden = self.barHide
                 self.bottomView.isHidden = self.barHide
+                self.bottomSlider.isHidden = !self.barHide
             }
         } else {
             if (self.topView.superview == nil) {
@@ -701,6 +667,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                 }
                 self.topView.isHidden = self.barHide
                 self.bottomView.isHidden = self.barHide
+                self.bottomSlider.isHidden = !self.barHide
             }
         }
         updateView()

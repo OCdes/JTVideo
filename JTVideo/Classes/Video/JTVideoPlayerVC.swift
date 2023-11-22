@@ -126,7 +126,7 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
         }
     }
     
-    //播放控件的play按钮被电击了
+    //播放控件的play按钮被点击了
     func playBtnClicked(btn: UIButton) {
         if btn.isSelected {
             self.player.start()
