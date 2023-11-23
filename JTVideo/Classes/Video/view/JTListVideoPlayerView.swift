@@ -15,6 +15,11 @@ class JTListVideoPlayerView: UIView {
         return p!
     }()
     
+    lazy var controlBar: JTVideoListPlayerControlBar = {
+        let cb = JTVideoListPlayerControlBar(frame: CGRectZero)
+        return cb
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         

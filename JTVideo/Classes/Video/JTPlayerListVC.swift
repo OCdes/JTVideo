@@ -63,10 +63,15 @@ extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {
         let model = dataArr[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlayerListCell", for: indexPath) as! PlayerListCell
         cell.titleLa.text = model.Title
-        cell.playerView.urlSource = ""
-        cell.playerView.tag = indexPath.row
-        cell.playerView.delegate = self
+        cell.coverImgv.kf.setImage(with: URL(string: model.CoverURL))
+        cell.jt_playerView = cell.coverImgv
+        cell.jt_playerSource = model.source
+        cell.playBtn.tag = indexPath.row
         return cell
+    }
+    
+    @objc func playBtnClicked(btn: UIButton) {
+        
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -78,27 +83,22 @@ extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.cellForRow(at: indexPath) as! PlayerListCell
         cell.playBtn.isSelected = !cell.playBtn.isSelected
         cell.playBtn.isHidden = cell.playBtn.isSelected
-        cell.playerView.controlBar.playerBtnClicked()
-        if let player = self.currentPlayer, player != cell.playerView {
-            player.controlBar.playerBtnClicked()
-        }
-        currentPlayer = cell.playerView
+        
     }
     
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! PlayerListCell
         cell.playBtn.isSelected = false
         cell.playBtn.isHidden = false
-        cell.playerView.controlBar.playerBtnClicked()
+        
     }
 }
 
 class PlayerListCell: UITableViewCell {
-    lazy var playerView: JTPlayerView = {
-        let pv = JTPlayerView.init(frame: CGRect.zero)
-        pv.isUserInteractionEnabled = false
-        pv.controlBar.isListMode = true
-        return pv
+    lazy var coverImgv: UIImageView = {
+        let cv = UIImageView()
+        cv.contentMode = .scaleAspectFill
+        return cv
     }()
     lazy var playBtn: UIButton = {
         let pb = UIButton.init(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
@@ -113,21 +113,21 @@ class PlayerListCell: UITableViewCell {
     }()
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(playerView)
-        playerView.snp_makeConstraints { make in
+        contentView.addSubview(coverImgv)
+        coverImgv.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0))
         }
         
         
         contentView.addSubview(playBtn)
         playBtn.snp_makeConstraints { make in
-            make.center.equalTo(self.playerView)
+            make.center.equalTo(self.coverImgv)
             make.size.equalTo(CGSize(width: 60, height: 60))
         }
         
         contentView.addSubview(titleLa)
         titleLa.snp_makeConstraints { make in
-            make.top.equalTo(self.playerView.snp_bottom)
+            make.top.equalTo(self.coverImgv.snp_bottom)
             make.left.equalTo(self.contentView).offset(20)
             make.right.equalTo(self.contentView).offset(-20)
             make.bottom.equalTo(self.contentView)

@@ -235,7 +235,7 @@ func timeExchange(time: String)-> String {
 }
 
 //--------------------------------------------------------------
-let kIsFlagShip = JTManager.manager.isFlagShip
+let kIsFlagShip = JTVideoManager.manager.isFlagShip
 let HEX_FFF = HEX_COLOR(hexStr: "#FFFFFF")
 let HEX_333 = kIsFlagShip ? HEX_FFF : HEX_COLOR(hexStr: "#333333")
 let HEX_666 = HEX_COLOR(hexStr: "#666666")

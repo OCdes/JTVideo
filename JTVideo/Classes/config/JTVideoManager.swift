@@ -7,16 +7,42 @@
 
 import Foundation
 
+var kJTVideoUrlKey = "kJTVideoUrlKey"
+var kJTVideoPlayViewKey = "kJTVideoPlayViewKey"
 @objc
-
-public protocol JTVideoDelegate: NSObjectProtocol {
-    func JTNeedRelogin()
+public protocol JTVideoDelegate {
+    @objc optional var jt_playerView: UIView? { get set }
+    @objc optional var jt_playerSource: String? { get set }
+    
+    @objc optional func JTNeedRelogin()
     
 }
 
-open class JTManager: NSObject {
-    public static let manager = JTManager()
-    @objc open weak var delegate: JTVideoDelegate?
+
+extension UITableViewCell: JTVideoDelegate {
+    public var jt_playerView: UIView? {
+        get {
+            return objc_getAssociatedObject(self, &kJTVideoPlayViewKey) as? UIView
+        }
+        set {
+            objc_setAssociatedObject(self, &kJTVideoPlayViewKey, jt_playerView, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+    public var jt_playerSource: String? {
+        get {
+            return objc_getAssociatedObject(self, kJTVideoUrlKey) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &kJTVideoUrlKey, jt_playerSource, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+    
+    
+}
+
+open class JTVideoManager: NSObject {
+    public static let manager = JTVideoManager()
+    open weak var delegate: JTVideoDelegate?
     @objc open var url: String = "" {
         didSet {
             USERDEFAULT.set(url, forKey: "baseURL")
@@ -89,7 +115,7 @@ open class JTManager: NSObject {
     
     @objc open var addFriendSilence: Bool = false
     
-    @objc open class func shareManager()->JTManager {
+    @objc open class func shareManager()->JTVideoManager {
         return manager
     }
 }

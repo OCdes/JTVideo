@@ -281,7 +281,7 @@ extension NetServiceManager {
             successBlock(msg,code,value as AnyObject,data)
         } else if code == 501 || code == 6601 {
             SVPShowError(content: msg)
-            if let de = JTManager.manager.delegate {
+            if let de = JTVideoManager.manager.delegate {
                 de.JTNeedRelogin()
             }
         } else {

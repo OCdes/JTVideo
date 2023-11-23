@@ -8,14 +8,14 @@
 
 import Foundation
 import UIKit
-var kExtraPropertyKey = "kExtraPropertyKey"
+var kJTExtraPropertyKey = "kJTExtraPropertyKey"
 extension UIButton {
     func extraArea(area: UIEdgeInsets) {
-        objc_setAssociatedObject(self, &kExtraPropertyKey, area, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &kJTExtraPropertyKey, area, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        if let edges = objc_getAssociatedObject(self, &kExtraPropertyKey) as? UIEdgeInsets {
+        if let edges = objc_getAssociatedObject(self, &kJTExtraPropertyKey) as? UIEdgeInsets {
             var extraArea = self.bounds
             extraArea = CGRect(x: extraArea.minX-edges.left, y: extraArea.minY-edges.top, width: extraArea.width+edges.left+edges.right, height: extraArea.height+edges.top+edges.bottom)
             return extraArea.contains(point)

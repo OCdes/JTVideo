@@ -112,7 +112,6 @@ class JTVideoListPlayerControlBar: UIView {
                 self.bottomTimeLa.alpha = 0.01
             }
             
-            
             break
         default:
             break
