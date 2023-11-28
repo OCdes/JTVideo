@@ -282,7 +282,7 @@ extension NetServiceManager {
         } else if code == 501 || code == 6601 {
             SVPShowError(content: msg)
             if let de = JTVideoManager.manager.delegate {
-                de.JTNeedRelogin()
+                de.JTNeedRelogin?()
             }
         } else {
             var errorInfo = AFSErrorInfo();

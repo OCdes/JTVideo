@@ -18,11 +18,16 @@ protocol JTPlayerViewDelegate: NSObjectProtocol {
 open class JTPlayerView: UIView {
     weak var delegate: JTPlayerViewDelegate?
     var isFullScreen: Bool = false
+    private var isPipPaused: Bool = false
+    private var currentPlayerStatus: AVPStatus = AVPStatus(0)
+    private weak var pipController: AVPictureInPictureController?
+    private var currentPosition: Int64 = 0
     //播放地址
     var urlSource: String = "" {
         didSet {
             let urlSource = AVPUrlSource()
             urlSource.url(with: "http://player.alicdn.com/video/aliyunmedia.mp4")
+            urlSource.definitions = "AUTO"
             self.player.setUrlSource(urlSource)
             self.player.prepare()
         }
@@ -54,6 +59,7 @@ open class JTPlayerView: UIView {
         }
         player.delegate = self
         player.playerView = self.playerSurface
+        player.setPictureinPictureDelegate(self)
         addSubview(controlBar)
         controlBar.snp_makeConstraints { make in
             make.top.left.bottom.right.equalTo(self)
@@ -73,16 +79,21 @@ open class JTPlayerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
+    func destroyPlayerView() {
         player.pause()
         player.stop()
         player.playerView = nil
         player.destroy()
     }
     
+    deinit {
+        
+    }
+    
 }
 
-extension JTPlayerView: AVPDelegate {
+extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
+    //MARK: 播放器回调
     /**
      @brief 错误代理回调
      @param player 播放器player指针
@@ -103,6 +114,7 @@ extension JTPlayerView: AVPDelegate {
             self.controlBar.totalPostion = self.player.duration
             self.controlBar.prepared = true
             self.player.seek(toTime: 0, seekMode: AVPSeekMode.init(0))
+            self.player.setPictureInPictureEnable(true)
             break
         case AVPEventAutoPlayStart:
             break
@@ -111,6 +123,14 @@ extension JTPlayerView: AVPDelegate {
             break
         case AVPEventCompletion:
             // 播放完成
+            if pipController != nil {
+                isPipPaused = true
+                if #available(iOS 15.0, *) {
+                    pipController!.invalidatePlaybackState()
+                } else {
+                    // Fallback on earlier versions
+                }
+            }
             self.player.seek(toTime: 0, seekMode: AVPSeekMode.init(0))
             self.controlBar.playBtn.isSelected = false
             break
@@ -122,6 +142,13 @@ extension JTPlayerView: AVPDelegate {
             break
         case AVPEventSeekEnd:
             // 跳转完成
+            if pipController != nil {
+                if #available(iOS 15.0, *) {
+                    pipController!.invalidatePlaybackState()
+                } else {
+                    // Fallback on earlier versions
+                }
+            }
             break
         case AVPEventLoopingStart:
             // 循环播放开始
@@ -201,6 +228,72 @@ extension JTPlayerView: AVPDelegate {
     public func onTrackChanged(_ player: AliPlayer!, info: AVPTrackInfo!) {
         // 切换码率结果通知
     }
+    //MARK: 画中画代理
+    
+    
+    public func onPlayerStatusChanged(_ player: AliPlayer!, oldStatus: AVPStatus, newStatus: AVPStatus) {
+        self.currentPlayerStatus = newStatus
+        if pipController != nil {
+            if #available(iOS 15.0, *) {
+                pipController?.invalidatePlaybackState()
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+    
+    /*
+    @brief 画中画将要启动
+    @param pictureInPictureController 画中画控制器
+     */
+    public func pictureInPictureControllerWillStartPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
+        if pipController == nil {
+            pipController = pictureInPictureController
+        }
+        self.isPipPaused = currentPlayerStatus != AVPStatus(3)
+        if #available(iOS 15.0, *) {
+            pictureInPictureController?.invalidatePlaybackState()
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+    /**
+     @brief 画中画准备停止
+     @param pictureInPictureController 画中画控制器
+     */
+    public func pictureInPictureControllerWillStopPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
+        self.isPipPaused = false
+        if #available(iOS 15.0, *) {
+            pictureInPictureController?.invalidatePlaybackState()
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+    /**
+     @brief 在画中画停止前告诉代理恢复用户接口
+     @param pictureInPictureController 画中画控制器
+     @param completionHandler 调用并传值YES以允许系统结束恢复播放器用户接口
+     */
+    public func picture(_ pictureInPictureController: AVPictureInPictureController?, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void?) {
+        if pipController != nil {
+            pipController = nil
+        }
+        
+        completionHandler(true)
+    }
+    
+    /**
+     @brief 画中画打开失败
+     @param pictureInPictureController 画中画控制器
+     */
+    public func picture(_ pictureInPictureController: AVPictureInPictureController?, failedToStartPictureInPictureWithError error: Error?) {
+        
+    }
+    
+    public func picture(inPictureControllerIsPlaybackPaused pictureInPictureController: AVPictureInPictureController) -> Bool {
+        return self.isPipPaused
+    }
+    
     
 }
 

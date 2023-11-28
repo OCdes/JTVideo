@@ -47,5 +47,4 @@ Pod::Spec.new do |s|
   s.dependency "Kingfisher"
   s.dependency "MJRefresh"
   s.dependency "SVProgressHUD"
-#  s.dependency "ZAAlivcBasicVideo"
 end

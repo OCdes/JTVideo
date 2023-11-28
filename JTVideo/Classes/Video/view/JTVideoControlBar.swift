@@ -21,6 +21,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             self.topView.isHidden = true
             self.bottomView.isHidden = true
             self.bottomSlider.isHidden = false
+            self.isUserInteractionEnabled = false
         }
     }
     // MARK: 控制组件相关控制数据
@@ -346,11 +347,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         self.progressLayer.snp_updateConstraints { make in
             make.width.equalTo(toProgressFloat)
         }
-        
-        //更新进度按钮位置
-        var position = self.progressBtn.layer.position
-        position.x = 6.5 + toProgressFloat
-        progressXAnimation(to: position, target: self.progressBtn)
     }
     
     func setMinView() {
@@ -412,8 +408,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         progressView.snp_remakeConstraints { make in
             make.top.equalTo(self.progressBgView).offset(5)
             make.left.equalTo(self.progressBgView).offset(6.5)
+            make.right.equalTo(self.progressBgView).offset(-6.5)
             make.height.equalTo(3)
-            make.width.equalTo(0)
         }
         
         progressLayer.snp_remakeConstraints { make in
@@ -427,7 +423,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         progressBtn.snp_remakeConstraints { make in
-            make.left.top.equalTo(self.progressBgView)
+            make.centerX.equalTo(self.progressLayer.snp_right)
+            make.centerY.equalTo(self.progressLayer)
             make.size.equalTo(CGSize(width: 13, height: 13))
         }
         
@@ -491,7 +488,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         progressView.snp_remakeConstraints { make in
             make.top.equalTo(self.progressBgView).offset(5)
             make.left.equalTo(self.progressBgView).offset(6.5)
-            make.width.equalTo(0)
+            make.right.equalTo(self.progressBgView).offset(-6.5)
             make.height.equalTo(3)
         }
         
@@ -506,7 +503,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         progressBtn.snp_remakeConstraints { make in
-            make.left.top.equalTo(self.progressBgView)
+            make.centerX.equalTo(self.progressLayer.snp_right)
+            make.centerY.equalTo(self.progressLayer)
             make.size.equalTo(CGSize(width: 13, height: 13))
         }
         
@@ -561,26 +559,21 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         } else {
             self.startTimeLa.text = dealmimseconds(mimsecond: to)
             self.animationProgressTo = to
-            
-            if panTransitionX == 0 {
-                var position = self.progressBtn.layer.position
-                position.x = position.x + toFloat
-                progressXAnimation(to: position, target: self.progressBtn)
-            }
             bottomSlider.value = Float(to)/Float(self.totalPostion)
         }
         progressWidthAnimation(to: toFloat, target: targetLayer)
     }
     //x位置改变动画
     func progressXAnimation(to: CGPoint, target: UIView) {
-        target.layer.position = to
-        let animationx = CABasicAnimation.init(keyPath: "position")
-        animationx.fromValue = NSValue(cgPoint: target.layer.position)
-        animationx.toValue = NSValue(cgPoint: to)
-        animationx.duration = 0.3
-        animationx.isRemovedOnCompletion = false
-        animationx.fillMode = kCAFillModeForwards
-        target.layer.add(animationx, forKey: nil)
+//        let startPosition = target.layer.position
+//        target.layer.position = to
+//        let animationx = CABasicAnimation.init(keyPath: "position")
+//        animationx.fromValue = NSValue(cgPoint: to)
+//        animationx.toValue = NSValue(cgPoint: to)
+//        animationx.duration = 0.3
+//        animationx.isRemovedOnCompletion = false
+//        animationx.fillMode = kCAFillModeForwards
+//        target.layer.add(animationx, forKey: nil)
     }
     //宽度改变动画
     func progressWidthAnimation(to: CGFloat, target: UIView) {
@@ -654,9 +647,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                 self.bottomSlider.isHidden = !self.barHide
             }
         } else {
-            if (self.topView.superview == nil) {
-                updateView()
-            }
             UIView.animate(withDuration: 0.3) {
                 self.topView.snp_updateConstraints { make in
                     make.top.equalTo(self).offset(self.barHide ? -64 : 0)
@@ -699,19 +689,24 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                 var position = self.progressBtn.layer.position
                 let offsetx = panBeginPositionX - 6.5 + transtionX
                 
-                if offsetx >= 0 && offsetx <= progressWidth{
+                if offsetx < 0 || offsetx > progressWidth{
+                    
+                } else {
                     position.x = panBeginPositionX + transtionX
                     NSLog("中心点位置:%f", position.x)
                     progressXAnimation(to: position, target: self.progressBtn)
                     let toTime = Int64(Float(offsetx/progressWidth)*Float(totalPostion))
                     self.middleTimeLabel.text = "\(dealmimseconds(mimsecond: toTime)):\(dealmimseconds(mimsecond: totalPostion))"
                 }
+                
             }
             break
         case .ended:
             if let v = pan.view, v == self.progressBtn {
                 let offsetx = panBeginPositionX + transtionX - 6.5
-                if offsetx >= 0 && offsetx <= progressWidth{
+                if offsetx < 0 || offsetx > progressWidth{
+                    
+                } else {
                     let seekTo = CGFloat(self.totalPostion)*CGFloat(offsetx)/self.progressWidth
                     if let de = self.delegate {
                         de.panSeek(to: Int64(seekTo))
@@ -786,11 +781,11 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                 if middleView.point(inside: transitionPoint, with: nil) {
                     let xstepDistance = (transitionPoint.x - panTransitionX)*Double(progressStepinDistance)/kScreenWidth
                     let toMimsecond = Int64(xstepDistance)+animationProgressTo
-                    if toMimsecond <= totalPostion, toMimsecond >= 0 {
+                    if toMimsecond > totalPostion || toMimsecond < 0 {} else {
                         middelPanXEndPosition = toMimsecond
                         let toFloat: CGFloat = CGFloat(CGFloat(toMimsecond)/CGFloat(self.totalPostion))*(progressWidth)
                         var position = self.progressBtn.layer.position
-                        position.x = 6.5 + toFloat
+                        position.x += toFloat
                         progressXAnimation(to: position, target: self.progressBtn)
                         self.middleTimeLabel.text = "\(dealmimseconds(mimsecond: toMimsecond)):\(dealmimseconds(mimsecond: totalPostion))"
                     }

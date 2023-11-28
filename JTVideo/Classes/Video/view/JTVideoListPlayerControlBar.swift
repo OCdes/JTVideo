@@ -7,8 +7,33 @@
 
 import UIKit
 
-class JTVideoListPlayerControlBar: UIView {
-
+public protocol JTVideoListPlayerControlBarDelegate:NSObjectProtocol {
+//    optional func moveToNext()
+//    optional func moveToLast()
+    func seekToPosition(position: Int64)
+}
+//短视频控制层
+public class JTVideoListPlayerControlBar: UIView {
+    open weak var delegate: JTVideoListPlayerControlBarDelegate?
+    var isPanning: Bool = false
+    var progressMaxValue: Float = 0 {
+        didSet {
+            self.bottomSlider.maximumValue = progressMaxValue
+        }
+    }
+    var progressMimValue: Float = 0 {
+        didSet {
+            self.bottomSlider.minimumValue = progressMimValue
+        }
+    }
+    var progressValue: Float = 0 {
+        didSet{
+            if !self.isPanning {
+                self.bottomSlider.value = progressValue
+            }
+        }
+    }
+    
     lazy var bottomView: UIView = {
         let bv = UIView()
         bv.backgroundColor = UIColor.cyan
@@ -41,12 +66,6 @@ class JTVideoListPlayerControlBar: UIView {
         return bs
     }()
     
-    var totalPosition: Int64 = 0 {
-        didSet {
-            self.bottomSlider.maximumValue = Float(totalPosition)
-        }
-    }
-    
     var toPosition: Int64 = 0 {
         didSet {
             self.bottomSlider.value = Float(toPosition)
@@ -58,7 +77,8 @@ class JTVideoListPlayerControlBar: UIView {
         
         addSubview(bottomSlider)
         bottomSlider.snp_makeConstraints { make in
-            make.left.bottom.right.equalTo(self)
+            make.left.right.equalTo(self)
+            make.bottom.equalTo(self).offset(-34)
             make.height.equalTo(1)
         }
         
@@ -71,35 +91,40 @@ class JTVideoListPlayerControlBar: UIView {
         
         addSubview(rightView)
         rightView.snp_makeConstraints { make in
-            make.right.bottom.equalTo(self)
-            make.width.equalTo(100)
+            make.right.equalTo(self)
+            make.bottom.equalTo(self.bottomSlider.snp_top).offset(-20)
+            make.width.equalTo(80)
             make.height.equalTo(kScreenHeight/2)
         }
         
         addSubview(bottomView)
         bottomView.snp_makeConstraints { make in
-            make.left.equalTo(self)
-            make.right.equalTo(self.rightView.snp_left).offset(-30)
-            make.bottom.equalTo(self.bottomSlider.snp_top).offset(-20)
-            make.height.lessThanOrEqualTo(kScreenHeight/2)
+            make.left.equalTo(self).offset(10)
+            make.right.equalTo(self.rightView.snp_left).offset(-10)
+            make.bottom.equalTo(self.bottomSlider.snp_top).offset(-25)
+            make.height.equalTo(100)
         }
-        
-        
     }
     
     @objc func pan(pan:UIPanGestureRecognizer) {
         let state = pan.state
         switch state {
+        case .began:
+            self.isPanning = true
+            break
         case .changed:
             let location = pan.location(in: bottomSlider)
-            self.bottomSlider.value = Float((location.x/self.bottomSlider.frame.width)*CGFloat(totalPosition))
-            UIView.animate(withDuration: 0.3) {
+            self.bottomSlider.value = Float((location.x/self.bottomSlider.frame.width)*CGFloat(progressMaxValue))
+            UIView.animate(withDuration: 1) {
                 self.bottomSlider.snp_updateConstraints { make in
                     make.height.equalTo(10)
                 }
                 self.bottomView.alpha = 0.01
                 self.rightView.alpha = 0.01
                 self.bottomTimeLa.alpha = 1
+            }
+            if let de = delegate {
+                de.seekToPosition(position: Int64(self.bottomSlider.value))
             }
             break
         case .ended:
@@ -111,7 +136,7 @@ class JTVideoListPlayerControlBar: UIView {
                 self.rightView.alpha = 1
                 self.bottomTimeLa.alpha = 0.01
             }
-            
+            self.isPanning = false
             break
         default:
             break

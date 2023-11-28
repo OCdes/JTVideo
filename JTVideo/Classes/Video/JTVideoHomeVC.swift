@@ -34,8 +34,8 @@ open class JTVideoHomeVC: UIViewController {
         self.viewModel.refreshData(scrollView: self.listView)
         _ = self.listView.tapSubject.subscribe(onNext: { [weak self]model in
             if let m = model as? ViewHomeListModel {
-                let vc = JTVideoPlayerVC()
-                vc.model = m
+                let vc = JTVideoDetailVC()
+                vc.url = ""
                 self?.present(vc, animated: true)
                 
             }

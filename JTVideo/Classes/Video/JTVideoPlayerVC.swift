@@ -25,13 +25,6 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
         return p!
     }()
     
-    var playBtn: UIButton = {
-        let pb = UIButton()
-        pb.setTitle("播放", for: .normal)
-        pb.setTitle("暂停", for: .selected)
-        return pb
-    }()
-    
     var model: ViewHomeListModel = ViewHomeListModel() {
         didSet {
             let urlSource = AVPUrlSource().url(with: "http://player.alicdn.com/video/aliyunmedia.mp4")
@@ -57,10 +50,7 @@ class JTVideoPlayerVC: UIViewController, JTVideoControlBarDelegate {
         cb.delegate = self
         return cb
     }()
-    
-    
-    var playerOrignCenter: CGPoint = CGPoint.zero
-    var playerOriginSize: CGSize = CGSize.zero
+
     var isFullScreen: Bool = false
     
     override var shouldAutorotate: Bool {

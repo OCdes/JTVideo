@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+///短视频底部进度条
 class JTVideoProgressSliderView: UIView {
 
     lazy var progressView: UIView = {
