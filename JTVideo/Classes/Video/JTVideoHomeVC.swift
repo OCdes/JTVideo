@@ -33,11 +33,10 @@ open class JTVideoHomeVC: UIViewController {
     func bindViewModel() {
         self.viewModel.refreshData(scrollView: self.listView)
         _ = self.listView.tapSubject.subscribe(onNext: { [weak self]model in
-            if let m = model as? ViewHomeListModel {
+            if model is ViewHomeListModel {
                 let vc = JTVideoDetailVC()
                 vc.url = ""
-                self?.present(vc, animated: true)
-                
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
         })
         

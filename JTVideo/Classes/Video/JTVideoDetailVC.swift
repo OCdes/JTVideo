@@ -9,6 +9,10 @@ import UIKit
 
 @objc
 open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
+    func playerWillEnterPictureInPicture() {
+        
+    }
+    
     func requireFullScreen(fullScreen: Bool) {
         isFullScreen = fullScreen
         setOrientation()
@@ -18,6 +22,12 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         let pv = JTPlayerView(frame: CGRectZero)
         pv.delegate = self
         return pv
+    }()
+    
+    lazy var transBgView: UIView = {
+        let tgv = UIView(frame: self.view.bounds)
+        tgv.isHidden = true
+        return tgv
     }()
     
     var isFullScreen: Bool = false
@@ -32,6 +42,16 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         return isFullScreen
     }
     
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isTranslucent = true
+    }
+    
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.navigationBar.isTranslucent = false
+    }
+    
     open override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = HEX_FFF
@@ -43,6 +63,7 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     }
     
     func setOrientation() {
+        self.navigationController?.navigationBar.isHidden = isFullScreen
         if #available(iOS 16.0, *) {
             setNeedsUpdateOfSupportedInterfaceOrientations()
             if let Scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {

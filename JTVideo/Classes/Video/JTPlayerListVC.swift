@@ -60,6 +60,10 @@ open class JTPlayerListVC: UIViewController {
 }
 
 extension JTPlayerListVC: JTPlayerViewDelegate {
+    func playerWillEnterPictureInPicture() {
+        
+    }
+    
     func requireFullScreen(fullScreen: Bool) {
         
     }

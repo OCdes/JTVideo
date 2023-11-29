@@ -87,7 +87,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     //控制栏是否隐藏
     private var barHide = false
     //当视频播放时根据此属性判断是否应该使滑块跟随移动,大于0时表示正在进行拖动不可以跟随移动
-    private var panTransitionX: Double = 0.0
+    private var panLocationX: Double = 0.0
     //记录middelView左侧发生上下滑时的初始位置
     private var leftPanTransitionY: Double = 0.0
     //记录middelView右侧发生上下滑时的初始位置
@@ -240,6 +240,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     lazy var progressBtn: UIButton = {
         let pb = UIButton.init(frame: CGRect(x: 0, y: 0, width: 13, height: 13))
         pb.setImage(JTVideoBundleTool.getBundleImg(with: "playDotIcon"), for: .normal)
+        pb.extraArea(area: UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15))
         let pan = UIPanGestureRecognizer()
         pan.addTarget(self, action: #selector(panGesture(pan:)))
         pb.addGestureRecognizer(pan)
@@ -565,15 +566,13 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     }
     //x位置改变动画
     func progressXAnimation(to: CGPoint, target: UIView) {
-//        let startPosition = target.layer.position
-//        target.layer.position = to
-//        let animationx = CABasicAnimation.init(keyPath: "position")
-//        animationx.fromValue = NSValue(cgPoint: to)
-//        animationx.toValue = NSValue(cgPoint: to)
-//        animationx.duration = 0.3
-//        animationx.isRemovedOnCompletion = false
-//        animationx.fillMode = kCAFillModeForwards
-//        target.layer.add(animationx, forKey: nil)
+        let animationx = CABasicAnimation.init(keyPath: "position")
+        animationx.fromValue = NSValue(cgPoint: to)
+        animationx.toValue = NSValue(cgPoint: to)
+        animationx.duration = 0.3
+        animationx.isRemovedOnCompletion = true
+        animationx.fillMode = kCAFillModeForwards
+        target.layer.add(animationx, forKey: nil)
     }
     //宽度改变动画
     func progressWidthAnimation(to: CGFloat, target: UIView) {
@@ -670,51 +669,54 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         playerBtnClicked()
     }
-    //x拖动事件
+    //MARK: 进度条滑块拖动事件
     @objc func panGesture(pan: UIPanGestureRecognizer) {
-        let transtionX = pan.translation(in: pan.view).x
-        let positionX = pan.location(in: pan.view).x
         let state = pan.state
         switch state {
         case .began:
+            let positionX = pan.location(in: pan.view?.superview).x
             if let v = pan.view, v == self.progressBtn {
                 panBeginPositionX = self.progressBtn.layer.position.x
                 setTimeViewHide(b: false)
-                panTransitionX = positionX
+                panLocationX = positionX
             }
             break
         case .changed:
+            let transtionX = pan.translation(in: pan.view).x
+            let positionX = pan.location(in: pan.view?.superview).x
             NSLog("向%@滑动了,滑动距离:%f;中心点水:%f", (transtionX < 0) ? "左" : "右", transtionX,positionX)
             if let v = pan.view, v == self.progressBtn {
-                var position = self.progressBtn.layer.position
-                let offsetx = panBeginPositionX - 6.5 + transtionX
-                
-                if offsetx < 0 || offsetx > progressWidth{
+                let offsetx = positionX - panLocationX
+                let totalProgress = self.progressLayer.frame.width + offsetx
+                if totalProgress < 0 || totalProgress > progressWidth{
                     
                 } else {
-                    position.x = panBeginPositionX + transtionX
-                    NSLog("中心点位置:%f", position.x)
+                    var position = self.progressBtn.layer.position
+                    position.x += offsetx
                     progressXAnimation(to: position, target: self.progressBtn)
-                    let toTime = Int64(Float(offsetx/progressWidth)*Float(totalPostion))
+                    let toTime = Int64(Float(totalProgress/progressWidth)*Float(totalPostion))
                     self.middleTimeLabel.text = "\(dealmimseconds(mimsecond: toTime)):\(dealmimseconds(mimsecond: totalPostion))"
                 }
                 
             }
             break
         case .ended:
+            let transtionX = pan.translation(in: pan.view).x
+            let positionX = pan.location(in: pan.view?.superview).x
             if let v = pan.view, v == self.progressBtn {
-                let offsetx = panBeginPositionX + transtionX - 6.5
-                if offsetx < 0 || offsetx > progressWidth{
+                let offsetx = positionX - panLocationX
+                let totalProgress = self.progressLayer.frame.width + offsetx
+                if totalProgress < 0 || totalProgress > progressWidth{
                     
                 } else {
-                    let seekTo = CGFloat(self.totalPostion)*CGFloat(offsetx)/self.progressWidth
+                    let seekTo = CGFloat(self.totalPostion)*CGFloat(totalProgress)/self.progressWidth
                     if let de = self.delegate {
                         de.panSeek(to: Int64(seekTo))
                     }
                 }
             }
             panBeginPositionX = 0
-            panTransitionX = 0
+            panLocationX = 0
             setTimeViewHide(b: true)
             break
         default:
@@ -736,7 +738,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             }
             
             let location = pan.location(in: pan.view)
-            panTransitionX = location.x
+            panLocationX = location.x
             
             break
             
@@ -779,13 +781,13 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             if middelPanYEndPostion == 0 {
                 setTimeViewHide(b: false)
                 if middleView.point(inside: transitionPoint, with: nil) {
-                    let xstepDistance = (transitionPoint.x - panTransitionX)*Double(progressStepinDistance)/kScreenWidth
+                    let xstepDistance = (transitionPoint.x - panLocationX)*Double(progressStepinDistance)/kScreenWidth
+                    let xstepCGfloat = xstepDistance*self.progressWidth/CGFloat(totalPostion)
                     let toMimsecond = Int64(xstepDistance)+animationProgressTo
                     if toMimsecond > totalPostion || toMimsecond < 0 {} else {
                         middelPanXEndPosition = toMimsecond
-                        let toFloat: CGFloat = CGFloat(CGFloat(toMimsecond)/CGFloat(self.totalPostion))*(progressWidth)
                         var position = self.progressBtn.layer.position
-                        position.x += toFloat
+                        position.x += xstepCGfloat
                         progressXAnimation(to: position, target: self.progressBtn)
                         self.middleTimeLabel.text = "\(dealmimseconds(mimsecond: toMimsecond)):\(dealmimseconds(mimsecond: totalPostion))"
                     }
@@ -803,7 +805,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             middelPanYEndPostion = 0
             leftPanTransitionY = 0
             rightPanTransitionY = 0
-            panTransitionX = 0
+            panLocationX = 0
             numLa.isHidden = true
             break
         default:

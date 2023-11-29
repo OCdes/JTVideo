@@ -11,7 +11,7 @@ import AliyunPlayer
 
 protocol JTPlayerViewDelegate: NSObjectProtocol {
     func requireFullScreen(fullScreen: Bool)
-    
+    func playerWillEnterPictureInPicture()
 }
 
 
@@ -22,6 +22,7 @@ open class JTPlayerView: UIView {
     private var currentPlayerStatus: AVPStatus = AVPStatus(0)
     private weak var pipController: AVPictureInPictureController?
     private var currentPosition: Int64 = 0
+    private var originCenter: CGPoint = CGPoint.zero
     //播放地址
     var urlSource: String = "" {
         didSet {
@@ -53,6 +54,7 @@ open class JTPlayerView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = UIColor.cyan
         addSubview(playerSurface)
         playerSurface.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets.zero)
@@ -64,6 +66,12 @@ open class JTPlayerView: UIView {
         controlBar.snp_makeConstraints { make in
             make.top.left.bottom.right.equalTo(self)
         }
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(screenWillTrans), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    }
+    
+    @objc func screenWillTrans() {
+        
     }
     
     //播放控件的play按钮被点击了
@@ -84,6 +92,10 @@ open class JTPlayerView: UIView {
         player.stop()
         player.playerView = nil
         player.destroy()
+    }
+    
+    func pausePlayer() {
+        self.controlBar.playerBtnClicked()
     }
     
     deinit {
@@ -114,7 +126,6 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
             self.controlBar.totalPostion = self.player.duration
             self.controlBar.prepared = true
             self.player.seek(toTime: 0, seekMode: AVPSeekMode.init(0))
-            self.player.setPictureInPictureEnable(true)
             break
         case AVPEventAutoPlayStart:
             break
@@ -233,6 +244,16 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     
     public func onPlayerStatusChanged(_ player: AliPlayer!, oldStatus: AVPStatus, newStatus: AVPStatus) {
         self.currentPlayerStatus = newStatus
+        if newStatus == AVPStatus(rawValue: 3) {
+            if #available(iOS 15, *) {
+                self.player.setPictureInPictureEnable(true)
+            }
+        }
+        if newStatus == AVPStatus(rawValue: 4) || newStatus == AVPStatus(rawValue: 5) || newStatus == AVPStatus(rawValue: 6) {
+            if #available(iOS 15, *) {
+                self.player.setPictureInPictureEnable(false)
+            }
+        } 
         if pipController != nil {
             if #available(iOS 15.0, *) {
                 pipController?.invalidatePlaybackState()
@@ -263,7 +284,8 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
      */
     public func pictureInPictureControllerWillStopPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
         self.isPipPaused = false
-        if #available(iOS 15.0, *) {
+        pausePlayer()
+         if #available(iOS 15.0, *) {
             pictureInPictureController?.invalidatePlaybackState()
         } else {
             // Fallback on earlier versions
@@ -278,7 +300,6 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
         if pipController != nil {
             pipController = nil
         }
-        
         completionHandler(true)
     }
     
