@@ -11,6 +11,9 @@ public protocol JTVideoControlBarDelegate: NSObjectProtocol {
     func playerBtnisClicked(btn: UIButton)
     func panSeek(to: Int64)
     func fullScreen(isMini: Bool)
+    func requirePopVc()
+    func requireStartPictureInPicture()
+    func requireAirdropToTV()
 }
 
 public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
@@ -101,18 +104,42 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     //左右滑动时,中部的y轴是否有调整亮度或者音量的动作
     private var middelPanYEndPostion: Float = 0
     //middelview滑动响应的音量区域
-    var leftRect: CGRect {
+    private var leftRect: CGRect {
         return CGRect(x: 0, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
     }
     //middelview滑动响应的亮度区域
-    var rightRect: CGRect {
+    private var rightRect: CGRect {
         return CGRect(x: self.middleView.frame.width/2, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
     }
     // MARK: 视图懒加载
+    //顶部操作区
     lazy var topView: UIImageView = {
         let tv = UIImageView()
         tv.isUserInteractionEnabled = true
-        tv.image = UIImage.init(named: "topMask ")
+        tv.image = JTVideoBundleTool.getBundleImg(with: "topMask")
+        tv.addSubview(backBtn)
+        backBtn.snp_makeConstraints { make in
+            make.left.equalTo(tv).offset(15)
+            make.bottom.equalTo(tv)
+            make.size.equalTo(CGSize(width: 44, height: 44))
+        }
+        tv.addSubview(pipBtn)
+        pipBtn.snp_makeConstraints { make in
+            make.right.equalTo(tv).offset(-15)
+            make.centerY.size.equalTo(self.backBtn)
+        }
+        tv.addSubview(airdropBtn)
+        airdropBtn.snp_makeConstraints { make in
+            make.right.equalTo(self.pipBtn.snp_left)
+            make.size.centerY.equalTo(self.pipBtn)
+        }
+        
+        tv.addSubview(titleLa)
+        titleLa.snp_remakeConstraints { make in
+            make.left.equalTo(self.backBtn.snp_right).offset(15)
+            make.right.equalTo(self.airdropBtn.snp_left)
+            make.centerY.equalTo(self.airdropBtn)
+        }
         return tv
     }()
     
@@ -154,7 +181,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     lazy var bottomView: UIImageView = {
         let tv = UIImageView()
         tv.isUserInteractionEnabled = true
-        tv.image = UIImage.init(named: "bottomMask")
+        tv.image = JTVideoBundleTool.getBundleImg(with: "bottomMask")
         return tv
     }()
     
@@ -165,6 +192,20 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         bb.setTitleColor(HEX_FFF, for: .normal)
         bb.addTarget(self, action: #selector(backBtnClicked), for: .touchUpInside)
         return bb
+    }()
+    
+    lazy var pipBtn: UIButton = {
+        let pb = UIButton()
+        pb.setImage(JTVideoBundleTool.getBundleImg(with: "pipIcon"), for: .normal)
+        pb.addTarget(self, action: #selector(pipBtnClicked), for: .touchUpInside)
+        return pb
+    }()
+    
+    lazy var airdropBtn: UIButton = {
+        let ab = UIButton()
+        ab.setImage(JTVideoBundleTool.getBundleImg(with: "airdropIcon"), for: .normal)
+        ab.addTarget(self, action: #selector(airdropBtnClicked), for: .touchUpInside)
+        return ab
     }()
     
     lazy var titleLa: UILabel = {
@@ -295,7 +336,16 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         updateView()
     }
     
-    func initView() {
+    public func updateViewWithOrientation() {
+        let orientation = UIDevice.current.orientation
+        if ((orientation == .landscapeLeft || orientation == .landscapeRight) && isMiniScreen) || ((orientation == .portrait || orientation == .portraitUpsideDown) && !isMiniScreen) {
+            isMiniScreen = (orientation == .landscapeLeft || orientation == .landscapeRight)
+            fullScreenBtnClicked()
+        }
+        
+    }
+    
+    private func initView() {
         
         //在视频底部区域添加进度条
         
@@ -303,7 +353,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         
         //视频top区
         addSubview(topView)
-        topView.addSubview(titleLa)
         
         //视频bottom区
         addSubview(bottomView)
@@ -321,11 +370,11 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         addSubview(middleView)
         addSubview(middleTimeLabel)
         addSubview(numLa)
-        
     }
     
     
-    func updateView() {
+    
+    private func updateView() {
         if isMiniScreen {
             setMinView()
         } else {
@@ -336,7 +385,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
     }
     
-    func updateCurrentProgressAndBuffer() {
+    private func updateCurrentProgressAndBuffer() {
         //横竖转换后
         //更新buffer条宽度
         let toBufferFloat: CGFloat = CGFloat(CGFloat(self.animationBufferTo)/CGFloat(self.totalPostion))*(progressWidth)
@@ -350,7 +399,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
     }
     
-    func setMinView() {
+    private func setMinView() {
         
         bottomSlider.snp_remakeConstraints { make in
             make.left.bottom.right.equalTo(self)
@@ -361,14 +410,10 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         self.endTimeLa.textAlignment = .center
         topView.snp_remakeConstraints { make in
             make.left.top.right.equalTo(self)
-            make.height.equalTo(64)
+            make.height.equalTo(kNavibarHeight)
         }
         
-        titleLa.snp_remakeConstraints { make in
-            make.left.equalTo(self.topView).offset(15)
-            make.top.bottom.equalTo(self.topView)
-            make.right.equalTo(self.topView).offset(-15)
-        }
+        
         
         bottomView.snp_remakeConstraints { make in
             make.left.bottom.right.equalTo(self)
@@ -430,7 +475,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleView.snp_remakeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 64, left: 0, bottom: 50, right: 0))
+            make.edges.equalTo(UIEdgeInsets(top: kNavibarHeight, left: 0, bottom: 50, right: 0))
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
@@ -443,7 +488,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
     }
     
-    func setFullView() {
+    private func setFullView() {
         
         bottomSlider.snp_remakeConstraints { make in
             make.left.bottom.right.equalTo(self)
@@ -454,13 +499,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         self.endTimeLa.textAlignment = .right
         topView.snp_remakeConstraints { make in
             make.left.top.right.equalTo(self)
-            make.height.equalTo(64)
-        }
-        
-        titleLa.snp_remakeConstraints { make in
-            make.left.equalTo(self.topView).offset(45)
-            make.top.bottom.equalTo(self.topView)
-            make.right.equalTo(self.topView).offset(-15)
+            make.height.equalTo(kNavibarHeight)
         }
         
         bottomView.snp_remakeConstraints { make in
@@ -522,7 +561,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleView.snp_remakeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 64, left: 0, bottom: 123, right: 0))
+            make.edges.equalTo(UIEdgeInsets(top: kNavibarHeight, left: 0, bottom: 123, right: 0))
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
@@ -536,7 +575,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     }
     
     //获取系统音量控制组件
-    func dealVolumViewAndAirDrop() {
+    private func dealVolumViewAndAirDrop() {
         let mpVolumeView = MPVolumeView()
         for v in mpVolumeView.subviews {
             if v.isKind(of: UISlider.self) {
@@ -548,7 +587,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     }
     
     // MARK: -控制条控制-
-    open func progressAnimate(targetLayer: UIView, to: Int64) {
+    func progressAnimate(targetLayer: UIView, to: Int64) {
         if to > self.totalPostion {
             return
         }
@@ -564,8 +603,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         progressWidthAnimation(to: toFloat, target: targetLayer)
     }
-    //x位置改变动画
-    func progressXAnimation(to: CGPoint, target: UIView) {
+     //x位置改变动画
+    private func progressXAnimation(to: CGPoint, target: UIView) {
         let animationx = CABasicAnimation.init(keyPath: "position")
         animationx.fromValue = NSValue(cgPoint: to)
         animationx.toValue = NSValue(cgPoint: to)
@@ -575,7 +614,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         target.layer.add(animationx, forKey: nil)
     }
     //宽度改变动画
-    func progressWidthAnimation(to: CGFloat, target: UIView) {
+    private func progressWidthAnimation(to: CGFloat, target: UIView) {
         UIView.animate(withDuration: 0.3) {
             target.snp_updateConstraints { make in
                 make.width.equalTo(to)
@@ -583,7 +622,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
     }
     
-    func dealmimseconds (mimsecond: Int64) -> String {
+    private func dealmimseconds (mimsecond: Int64) -> String {
         let totalSeconds = mimsecond/1000
         let hour = totalSeconds / (60 * 60)
         let min = (totalSeconds % (60 * 60)) / 60
@@ -605,8 +644,23 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     // MARK: -点击事件-
     
     @objc func backBtnClicked() {
-
+        if let de = delegate {
+            de.requirePopVc()
+        }
     }
+    
+    @objc func pipBtnClicked() {
+        if let de = delegate {
+            de.requireStartPictureInPicture()
+        }
+    }
+    
+    @objc func airdropBtnClicked() {
+        if let de = delegate {
+            de.requireAirdropToTV()
+        }
+    }
+    
     
     //点击播放按钮
     @objc func playerBtnClicked() {
@@ -635,7 +689,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         if isMiniScreen {
             UIView.animate(withDuration: 0.3) {
                 self.topView.snp_updateConstraints { make in
-                    make.top.equalTo(self).offset(self.barHide ? -64 : 0)
+                    make.top.equalTo(self).offset(self.barHide ? -kNavibarHeight : 0)
                 }
                 
                 self.bottomView.snp_updateConstraints { make in
@@ -648,7 +702,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         } else {
             UIView.animate(withDuration: 0.3) {
                 self.topView.snp_updateConstraints { make in
-                    make.top.equalTo(self).offset(self.barHide ? -64 : 0)
+                    make.top.equalTo(self).offset(self.barHide ? -kNavibarHeight : 0)
                 }
                 
                 self.bottomView.snp_updateConstraints { make in
@@ -701,7 +755,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             }
             break
         case .ended:
-            let transtionX = pan.translation(in: pan.view).x
             let positionX = pan.location(in: pan.view?.superview).x
             if let v = pan.view, v == self.progressBtn {
                 let offsetx = positionX - panLocationX
@@ -814,7 +867,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     }
     
     //MARK: 设置事件拖动时middelview的事件显示
-    func setTimeViewHide(b: Bool) {
+    private func setTimeViewHide(b: Bool) {
         self.middleTimeLabel.isHidden = b
     }
     

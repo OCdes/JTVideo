@@ -9,6 +9,10 @@ import UIKit
 
 @objc
 open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
+    func requirePopVC() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     func playerWillEnterPictureInPicture() {
         
     }
@@ -22,12 +26,6 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         let pv = JTPlayerView(frame: CGRectZero)
         pv.delegate = self
         return pv
-    }()
-    
-    lazy var transBgView: UIView = {
-        let tgv = UIView(frame: self.view.bounds)
-        tgv.isHidden = true
-        return tgv
     }()
     
     var isFullScreen: Bool = false
@@ -45,11 +43,13 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.isHidden = true
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     open override func viewDidLoad() {
@@ -63,7 +63,6 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     }
     
     func setOrientation() {
-        self.navigationController?.navigationBar.isHidden = isFullScreen
         if #available(iOS 16.0, *) {
             setNeedsUpdateOfSupportedInterfaceOrientations()
             if let Scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {

@@ -250,7 +250,7 @@ let HEX_GOLDBLACK = HEX_COLOR(hexStr: "#151722")
 let HEX_GOLDYELLOW = HEX_COLOR(hexStr: "#D0A72F")
 
 
-let APPWINDOW: UIWindow = (UIApplication.shared.delegate?.window!)!
+let APPWINDOW: UIWindow = UIApplication.shared.windows.first { $0.isKeyWindow }!
 //云端地址
 let URL_CLOUD = "https://cloud.hzjtyh.com"
 public var BASE_URL = {()->String in

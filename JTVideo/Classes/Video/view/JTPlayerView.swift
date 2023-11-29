@@ -12,6 +12,7 @@ import AliyunPlayer
 protocol JTPlayerViewDelegate: NSObjectProtocol {
     func requireFullScreen(fullScreen: Bool)
     func playerWillEnterPictureInPicture()
+    func requirePopVC()
 }
 
 
@@ -23,6 +24,7 @@ open class JTPlayerView: UIView {
     private weak var pipController: AVPictureInPictureController?
     private var currentPosition: Int64 = 0
     private var originCenter: CGPoint = CGPoint.zero
+    
     //播放地址
     var urlSource: String = "" {
         didSet {
@@ -66,13 +68,15 @@ open class JTPlayerView: UIView {
         controlBar.snp_makeConstraints { make in
             make.top.left.bottom.right.equalTo(self)
         }
+        
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-        NotificationCenter.default.addObserver(self, selector: #selector(screenWillTrans), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateControlBar), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
-    @objc func screenWillTrans() {
-        
+    @objc func updateControlBar() {
+        self.controlBar.updateViewWithOrientation()
     }
+    
     
     //播放控件的play按钮被点击了
     func playBtnClicked(btn: UIButton) {
@@ -88,6 +92,8 @@ open class JTPlayerView: UIView {
     }
     
     func destroyPlayerView() {
+        NotificationCenter.default.removeObserver(self)
+        UIDevice.current.endGeneratingDeviceOrientationNotifications()
         player.pause()
         player.stop()
         player.playerView = nil
@@ -319,6 +325,27 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
 }
 
 extension JTPlayerView:JTVideoControlBarDelegate {
+    public func requirePopVc() {
+        if let de = delegate {
+            de.requirePopVC()
+        }
+    }
+    
+    public func requireStartPictureInPicture() {
+        if self.controlBar.prepared {
+            if #available(iOS 15, *) {
+                
+                if let de = delegate {
+                    de.requirePopVC()
+                }
+            }
+        }
+    }
+    
+    public func requireAirdropToTV() {
+        
+    }
+    
     public func playerBtnisClicked(btn: UIButton) {
         playBtnClicked(btn: btn)
     }

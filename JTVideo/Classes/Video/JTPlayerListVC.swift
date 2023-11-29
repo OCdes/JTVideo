@@ -60,6 +60,10 @@ open class JTPlayerListVC: UIViewController {
 }
 
 extension JTPlayerListVC: JTPlayerViewDelegate {
+    func requirePopVC() {
+        
+    }
+    
     func playerWillEnterPictureInPicture() {
         
     }
@@ -106,6 +110,7 @@ extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {
         if btn.isSelected {
             if model.source != self.currentPlayer.urlSource {
 //                self.currentPlayer.showLayer = cell.coverImgv
+                self.currentPlayer.player.playerView = cell.coverImgv
                 self.currentPlayer.isUserInteractionEnabled = false
                 self.currentPlayer.urlSource = model.source
                 self.currentPlayer.controlBar.isListMode = true
