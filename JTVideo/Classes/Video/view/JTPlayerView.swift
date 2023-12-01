@@ -12,6 +12,7 @@ import AliyunPlayer
 protocol JTPlayerViewDelegate: NSObjectProtocol {
     func requireFullScreen(fullScreen: Bool)
     func playerWillEnterPictureInPicture()
+    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?)
     func requirePopVC()
 }
 
@@ -22,6 +23,7 @@ open class JTPlayerView: UIView {
     private var isPipPaused: Bool = false
     private var currentPlayerStatus: AVPStatus = AVPStatus(0)
     private weak var pipController: AVPictureInPictureController?
+    private var currentPosition: Int64 = 0
     private lazy var hwscaleSize: CGSize = {
         let hwscale = CGFloat(player.height)/CGFloat(player.width)
         if hwscale >= 1 {
@@ -33,6 +35,7 @@ open class JTPlayerView: UIView {
         }
     }()
     private weak var insidePipVC: AVPictureInPictureController?
+    private var isForeground: Bool = true
     //播放地址
     var urlSource: String = "" {
         didSet {
@@ -60,7 +63,7 @@ open class JTPlayerView: UIView {
         cb.delegate = self
         cb.backBtn.isHidden = true
         cb.airdropBtn.isHidden = true
-        cb.pipBtn.isHidden = true
+//        cb.pipBtn.isHidden = true
         return cb
     }()
     
@@ -80,20 +83,27 @@ open class JTPlayerView: UIView {
         }
         
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-        NotificationCenter.default.addObserver(self, selector: #selector(appenterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appenterBackground), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appenterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     @objc func appenterBackground() {
-        playerSurface.snp_remakeConstraints { make in
-            make.center.equalTo(self)
-            make.size.equalTo(self.hwscaleSize)
+        isForeground = false
+        if !isFullScreen {
+            playerSurface.snp_remakeConstraints { make in
+                make.center.equalTo(self)
+                make.size.equalTo(self.hwscaleSize)
+            }
         }
     }
     @objc func appenterForeground() {
-        playerSurface.snp_remakeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets.zero)
+        isForeground = true
+        if !isFullScreen {
+            playerSurface.snp_remakeConstraints { make in
+                make.edges.equalTo(UIEdgeInsets.zero)
+            }
         }
+        
     }
     
     @objc func updateControlBar() {
@@ -105,8 +115,17 @@ open class JTPlayerView: UIView {
     func playBtnClicked(btn: UIButton) {
         if btn.isSelected {
             self.player.start()
+            if #available(iOS 15, *) {
+                self.player.setPictureInPictureEnable(true)
+            }
         } else {
             self.player.pause()
+            if self.pipController != nil {
+                if #available(iOS 15, *) {
+                    self.player.setPictureInPictureEnable(false)
+                }
+            }
+            
         }
     }
     
@@ -127,9 +146,7 @@ open class JTPlayerView: UIView {
         self.controlBar.playerBtnClicked()
     }
     
-    deinit {
-        
-    }
+    
     
 }
 
@@ -165,14 +182,14 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
             // 播放完成
             if pipController != nil {
                 isPipPaused = true
-                if #available(iOS 15.0, *) {
-                    pipController!.invalidatePlaybackState()
-                } else {
-                    // Fallback on earlier versions
-                }
             }
             self.player.seek(toTime: 0, seekMode: AVPSeekMode.init(0))
-            self.controlBar.playBtn.isSelected = false
+            self.controlBar.playerBtnClicked()
+            if #available(iOS 15.0, *) {
+                self.pipController?.invalidatePlaybackState()
+           } else {
+               // Fallback on earlier versions
+           }
             break
         case AVPEventLoadingStart:
             // 缓冲开始
@@ -182,13 +199,11 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
             break
         case AVPEventSeekEnd:
             // 跳转完成
-            if pipController != nil {
-                if #available(iOS 15.0, *) {
-                    pipController!.invalidatePlaybackState()
-                } else {
-                    // Fallback on earlier versions
-                }
-            }
+            if #available(iOS 15.0, *) {
+                self.pipController?.invalidatePlaybackState()
+           } else {
+               // Fallback on earlier versions
+           }
             break
         case AVPEventLoopingStart:
             // 循环播放开始
@@ -203,6 +218,7 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
      @param position 视频当前播放位置
      */
     public func onCurrentPositionUpdate(_ player: AliPlayer!, position: Int64) {
+        currentPosition = position
         // 更新进度条
         if position != self.controlBar.animationProgressTo {
             self.controlBar.progressAnimate(targetLayer: self.controlBar.progressLayer, to: position)
@@ -280,17 +296,6 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
                 // Fallback on earlier versions
             }
         }
-        if newStatus == AVPStatus(rawValue: 3) {
-            if #available(iOS 15, *) {
-                self.player.setPictureInPictureEnable(true)
-            }
-        }
-        if newStatus == AVPStatus(rawValue: 4) || newStatus == AVPStatus(rawValue: 5) || newStatus == AVPStatus(rawValue: 6) {
-            if #available(iOS 15, *) {
-                self.player.setPictureInPictureEnable(false)
-            }
-        } 
-        
     }
     
     /*
@@ -307,6 +312,9 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
         } else {
             // Fallback on earlier versions
         }
+        if let de = delegate, isForeground == true {
+            de.playerWillEnterPictureInPicture()
+        }
     }
     /**
      @brief 画中画准备停止
@@ -314,13 +322,36 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
      */
     public func pictureInPictureControllerWillStopPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
         self.isPipPaused = false
-        
          if #available(iOS 15.0, *) {
             pictureInPictureController?.invalidatePlaybackState()
         } else {
             // Fallback on earlier versions
         }
     }
+    //画中画已经关闭
+    public func pictureInPictureControllerDidStopPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
+        if let de = delegate, isForeground == true {
+            if !isFullScreen {
+                playerSurface.snp_remakeConstraints { make in
+                    make.edges.equalTo(UIEdgeInsets.zero)
+                }
+            }
+            de.playerWillStopPictureInPicture(completionHandler: nil)
+        }
+    }
+    
+    //
+    public func picture(_ pictureInPictureController: AVPictureInPictureController?, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: ((Bool) -> Void)? = nil) {
+        if let de = delegate, isForeground == true {
+            if !isFullScreen {
+                playerSurface.snp_remakeConstraints { make in
+                    make.edges.equalTo(UIEdgeInsets.zero)
+                }
+            }
+            de.playerWillStopPictureInPicture(completionHandler: completionHandler)
+        }
+    }
+    
     /**
      @brief 在画中画停止前告诉代理恢复用户接口
      @param pictureInPictureController 画中画控制器
@@ -334,16 +365,24 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     }
     
     public func pictureInPictureControllerTimeRange(forPlayback pictureInPictureController: AVPictureInPictureController, layerTime: CMTime) -> CMTimeRange {
+        let current64 = CMTimeGetSeconds(layerTime)
+        var start: Float64 = 0
+        var end: Float64 = 0
         
-        return CMTimeRange(start: CMTime(value: 0, timescale: layerTime.timescale), end: CMTime(value: self.controlBar.totalPostion/1000, timescale: layerTime.timescale))
-    }
-    
-    /**
-     @brief 画中画打开失败
-     @param pictureInPictureController 画中画控制器
-     */
-    public func picture(_ pictureInPictureController: AVPictureInPictureController?, failedToStartPictureInPictureWithError error: Error?) {
-        
+        if currentPosition <= self.player.duration {
+            let curPostion = currentPosition/1000
+            let durantion = self.player.duration/1000
+            let interval = durantion - curPostion
+            start = current64 - Float64(curPostion)
+            end = current64 + Float64(interval)
+            
+            let startTm = CMTimeMakeWithSeconds(start, layerTime.timescale)
+            let endTm = CMTimeMakeWithSeconds(end, layerTime.timescale)
+            
+            return CMTimeRange(start: startTm, end: endTm)
+        } else {
+            return CMTimeRange(start: kCMTimeNegativeInfinity, end: kCMTimePositiveInfinity)
+        }
     }
     
     public func picture(inPictureControllerIsPlaybackPaused pictureInPictureController: AVPictureInPictureController) -> Bool {
@@ -352,12 +391,38 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     }
     
     public func picture(_ pictureInPictureController: AVPictureInPictureController, skipByInterval skipInterval: CMTime, completionHandler: @escaping () -> Void) {
-        
+        let skipTime: Int64 = skipInterval.value/Int64(skipInterval.timescale)
+        var skipPosition = currentPosition + skipTime
+        if skipPosition < 0 {
+            skipPosition = 0
+        }
+        if skipPosition > self.player.duration {
+            skipPosition = self.player.duration
+        }
+        self.player.seek(toTime: skipPosition, seekMode: AVPSeekMode(rawValue: 0))
+        if #available(iOS 15.0, *) {
+            pictureInPictureController.invalidatePlaybackState()
+       } else {
+           // Fallback on earlier versions
+       }
     }
     
     
     public func picture(_ pictureInPictureController: AVPictureInPictureController, setPlaying playing: Bool) {
-        
+        self.controlBar.playerBtnClicked()
+        if !playing {
+            self.isPipPaused = true
+        } else {
+            if currentPlayerStatus == AVPStatus(6) {
+                self.player.seek(toTime: 0, seekMode: AVPSeekMode(0))
+            }
+            self.isPipPaused = false
+        }
+        if #available(iOS 15.0, *) {
+            pictureInPictureController.invalidatePlaybackState()
+       } else {
+           // Fallback on earlier versions
+       }
     }
     
 }
@@ -372,10 +437,16 @@ extension JTPlayerView:JTVideoControlBarDelegate {
     public func requireStartPictureInPicture() {
         if self.controlBar.prepared {
             if #available(iOS 15, *) {
-                
-                if let de = delegate {
-                    de.requirePopVC()
+                if let pip = self.insidePipVC {
+                    if !isFullScreen {
+                        playerSurface.snp_remakeConstraints { make in
+                            make.center.equalTo(self)
+                            make.size.equalTo(self.hwscaleSize)
+                        }
+                    }
+                    pip.startPictureInPicture()
                 }
+                
             }
         }
     }

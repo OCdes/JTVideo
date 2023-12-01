@@ -187,7 +187,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     lazy var backBtn: UIButton = {
         let bb = UIButton()
-        bb.setTitle("返回", for: .normal)
+        bb.setTitle("back", for: .normal)
         bb.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         bb.setTitleColor(HEX_FFF, for: .normal)
         bb.addTarget(self, action: #selector(backBtnClicked), for: .touchUpInside)

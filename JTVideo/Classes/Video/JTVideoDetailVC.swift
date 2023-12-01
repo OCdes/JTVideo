@@ -6,15 +6,33 @@
 //
 
 import UIKit
+import AVKit
 
+var playerVC: JTVideoDetailVC?
 @objc
 open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
-    func requirePopVC() {
+    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
+        playerVC = nil
+        if let navc = nav, navc.viewControllers.contains(self) != true {
+            playerVC = nil
+            navc.pushViewController(self, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.15, execute: DispatchWorkItem(block: {
+                completionHandler?(true)
+            }))
+        }
+        completionHandler?(true)
+    }
+    
+    
+    
+    
+    func playerWillEnterPictureInPicture() {
+        playerVC = self
         self.navigationController?.popViewController(animated: true)
     }
     
-    func playerWillEnterPictureInPicture() {
-        
+    func requirePopVC() {
+        self.navigationController?.popViewController(animated: true)
     }
     
     func requireFullScreen(fullScreen: Bool) {
@@ -35,7 +53,7 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     }()
     
     weak var fullvc: UIViewController?
-    
+    weak var nav: UINavigationController?
     var isFullScreen: Bool = false
     
     var url: String = "" {
@@ -50,12 +68,11 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isTranslucent = true
+        nav = self.navigationController
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.navigationBar.isTranslucent = false
     }
     
     
@@ -82,6 +99,10 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         playerView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets.zero)
         }
+    }
+    
+    deinit {
+        //销毁了
     }
     
     func setOrientation() {

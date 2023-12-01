@@ -60,6 +60,12 @@ open class JTPlayerListVC: UIViewController {
 }
 
 extension JTPlayerListVC: JTPlayerViewDelegate {
+    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
+        
+    }
+    
+
+    
     func requirePopVC() {
         
     }
