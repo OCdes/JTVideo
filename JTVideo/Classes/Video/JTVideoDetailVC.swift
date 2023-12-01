@@ -20,13 +20,21 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     func requireFullScreen(fullScreen: Bool) {
         isFullScreen = fullScreen
         setOrientation()
+//        animatePlayerContainer()
     }
     
+    lazy var playerContainerView: UIView = {
+        let pcv = UIView(frame: CGRect(x: 0, y: 0, width: kScreenWidth, height: 300))
+        return pcv
+    }()
+    
     lazy var playerView: JTPlayerView = {
-        let pv = JTPlayerView(frame: CGRectZero)
+        let pv = JTPlayerView(frame: CGRect(x: 0, y: 0, width: kScreenWidth, height: 300))
         pv.delegate = self
         return pv
     }()
+    
+    weak var fullvc: UIViewController?
     
     var isFullScreen: Bool = false
     
@@ -43,26 +51,41 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.navigationBar.isHidden = true
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isTranslucent = false
-        self.navigationController?.navigationBar.isHidden = false
+    }
+    
+    
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.playerContainerView.snp_remakeConstraints { make in
+            if self.isFullScreen {
+                make.edges.equalTo(UIEdgeInsets.zero)
+            } else {
+                make.left.top.right.equalTo(self.view)
+                make.height.equalTo(300)
+            }
+        }
     }
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = HEX_FFF
-        view.addSubview(playerView)
-        playerView.snp_makeConstraints { make in
+        view.backgroundColor = UIColor.green
+        view.addSubview(playerContainerView)
+        playerContainerView.snp_makeConstraints { make in
             make.top.left.right.equalTo(self.view)
-            make.height.equalTo(kScreenWidth)
+            make.height.equalTo(300)
+        }
+        playerContainerView.addSubview(playerView)
+        playerView.snp_makeConstraints { make in
+            make.edges.equalTo(UIEdgeInsets.zero)
         }
     }
     
     func setOrientation() {
+        self.navigationController?.navigationBar.isHidden = isFullScreen
         if #available(iOS 16.0, *) {
             setNeedsUpdateOfSupportedInterfaceOrientations()
             if let Scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
@@ -77,6 +100,53 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
             let orientation: UIInterfaceOrientation = isFullScreen ? .landscapeLeft : .portrait
             UIDevice.current.setValue(orientation.rawValue , forKey: "orientation")
         }
+    }
+    
+    func animatePlayerContainer() {
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .layoutSubviews) {
+            let bounds = CGRect(x: 0, y: 0, width: self.isFullScreen ? kScreenHeight : kScreenWidth, height: self.isFullScreen ?  kScreenWidth : 300)
+            self.playerContainerView.bounds = bounds
+            self.playerContainerView.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
+            self.playerContainerView.transform = CGAffineTransform(rotationAngle: self.isFullScreen ? -Double.pi/2 : 0)
+            
+        } completion: { b in
+            let bounds = CGRect(x: 0, y: 0, width: self.isFullScreen ? kScreenHeight : kScreenWidth, height: self.isFullScreen ?  kScreenWidth : 300)
+            self.playerContainerView.bounds = bounds
+            self.playerContainerView.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
+            self.playerContainerView.transform = CGAffineTransform(rotationAngle: self.isFullScreen ? -Double.pi/2 : 0)
+            self.playerView.bounds = self.playerContainerView.bounds
+            if !self.isFullScreen {
+                self.playerContainerView.addSubview(self.playerView)
+                self.playerView.snp_remakeConstraints { make in
+                    make.edges.equalTo(self.playerContainerView)
+                }
+                self.fullvc?.dismiss(animated: false, completion: {
+                    self.playerView.removeFromSuperview()
+                    self.playerContainerView.addSubview(self.playerView)
+                    self.playerView.snp_remakeConstraints { make in
+                        make.edges.equalTo(self.playerContainerView)
+                    }
+
+                })
+            } else {
+                self.playerView.center = self.playerContainerView.center
+                let vc = JTPlayerFullVC()
+                vc.modalPresentationStyle = .fullScreen
+                self.fullvc = vc
+                self.present(vc, animated: false) {
+                    self.playerView.removeFromSuperview()
+                    vc.view.addSubview(self.playerView)
+                    self.playerView.snp_makeConstraints { make in
+                        make.edges.equalTo(UIEdgeInsets.zero)
+                    }
+                    vc.view.superview?.insertSubview(self.view, belowSubview: vc.view)
+                }
+            }
+        }
+        
+        
+        
     }
     /*
     // MARK: - Navigation
