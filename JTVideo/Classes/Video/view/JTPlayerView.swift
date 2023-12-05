@@ -71,7 +71,7 @@ open class JTPlayerView: UIView {
         cb.delegate = self
         cb.backBtn.isHidden = true
         cb.airdropBtn.isHidden = true
-//        cb.pipBtn.isHidden = true
+        //        cb.pipBtn.isHidden = true
         return cb
     }()
     
@@ -206,9 +206,9 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
             self.controlBar.playerBtnClicked()
             if #available(iOS 15.0, *) {
                 self.pipController?.invalidatePlaybackState()
-           } else {
-               // Fallback on earlier versions
-           }
+            } else {
+                // Fallback on earlier versions
+            }
             break
         case AVPEventLoadingStart:
             // 缓冲开始
@@ -220,9 +220,9 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
             // 跳转完成
             if #available(iOS 15.0, *) {
                 self.pipController?.invalidatePlaybackState()
-           } else {
-               // Fallback on earlier versions
-           }
+            } else {
+                // Fallback on earlier versions
+            }
             break
         case AVPEventLoopingStart:
             // 循环播放开始
@@ -318,8 +318,8 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     }
     
     /*
-    @brief 画中画将要启动
-    @param pictureInPictureController 画中画控制器
+     @brief 画中画将要启动
+     @param pictureInPictureController 画中画控制器
      */
     public func pictureInPictureControllerWillStartPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
         if pipController == nil {
@@ -341,7 +341,7 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
      */
     public func pictureInPictureControllerWillStopPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
         self.isPipPaused = false
-         if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, *) {
             pictureInPictureController?.invalidatePlaybackState()
         } else {
             // Fallback on earlier versions
@@ -356,10 +356,10 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
                 }
             }
             if #available(iOS 15.0, *) {
-               pictureInPictureController?.invalidatePlaybackState()
-           } else {
-               // Fallback on earlier versions
-           }
+                pictureInPictureController?.invalidatePlaybackState()
+            } else {
+                // Fallback on earlier versions
+            }
             
         }
         
@@ -429,9 +429,9 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
         self.player.seek(toTime: skipPosition, seekMode: AVPSeekMode(rawValue: 0))
         if #available(iOS 15.0, *) {
             pictureInPictureController.invalidatePlaybackState()
-       } else {
-           // Fallback on earlier versions
-       }
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     
@@ -450,9 +450,9 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
         }
         if #available(iOS 15.0, *) {
             pictureInPictureController.invalidatePlaybackState()
-       } else {
-           // Fallback on earlier versions
-       }
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
 }
