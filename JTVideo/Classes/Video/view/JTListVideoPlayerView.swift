@@ -140,7 +140,7 @@ extension JTListVideoPlayerView: AVPDelegate {
      @param player 播放器player指针
      @param errorModel 播放器错误描述，参考AliVcPlayerErrorModel
      */
-    private func onError(_ player: AliPlayer!, errorModel: AVPErrorModel!) {
+    public func onError(_ player: AliPlayer!, errorModel: AVPErrorModel!) {
         // 提示错误，及stop播放
     }
     
@@ -323,7 +323,7 @@ class JTListVideoTableCell: UITableViewCell {
         return pi
     }()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = UIColor.black
         contentView.addSubview(coverImgv)

@@ -17,7 +17,8 @@ class JTPlayerFullVC: UIViewController {
         return .landscapeLeft
     }
     
-    open override func prefersHomeIndicatorAutoHidden() -> Bool {
+    
+    open func prefersHomeIndicatorAutoHidden() -> Bool {
         return true
     }
     

@@ -58,7 +58,7 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         }
     }
     
-    open override func prefersHomeIndicatorAutoHidden() -> Bool {
+    open func prefersHomeIndicatorAutoHidden() -> Bool {
         return isFullScreen
     }
     

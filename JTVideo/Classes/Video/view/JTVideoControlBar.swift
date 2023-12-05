@@ -610,7 +610,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         animationx.toValue = NSValue(cgPoint: to)
         animationx.duration = 0.3
         animationx.isRemovedOnCompletion = true
-        animationx.fillMode = kCAFillModeForwards
+        animationx.fillMode = CAMediaTimingFillMode.forwards
         target.layer.add(animationx, forKey: nil)
     }
     //宽度改变动画
@@ -672,6 +672,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     //点击全屏/小屏
     @objc func fullScreenBtnClicked() {
         isMiniScreen = !isMiniScreen
+        self.pipBtn.isHidden = !isMiniScreen
         self.topView.isHidden = true
         self.bottomView.isHidden = true
         self.barHide = true
@@ -799,7 +800,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             let transitionPoint = pan.location(in: pan.view)
             let width = transitionPoint.x - middelStartPoint.x
             let height = transitionPoint.y - middelStartPoint.y
-            let isUpdownPan = fabs(height/width) > 1
+            let isUpdownPan = abs(height/width) > 1
             if isUpdownPan && middelPanXEndPosition == 0 {
                 //音量
                 if  leftPanTransitionY > 0 {
@@ -810,7 +811,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                             numLa.isHidden = false
                             let value = (vv.value + stepDistance) > 1 ? 1 : ((vv.value + stepDistance) < 0 ? 0 : (vv.value + stepDistance))
                             middelPanYEndPostion = (vv.value + stepDistance)
-                            let totalValue = fabs(value) > 1 ? 1 : (value)
+                            let totalValue = abs(value) > 1 ? 1 : (value)
                             vv.setValue(totalValue, animated: true)
                             numLa.text = String(format: "音量:%d%", Int(totalValue*100))
                         }

@@ -91,8 +91,8 @@ open class JTPlayerView: UIView {
         }
         
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-        NotificationCenter.default.addObserver(self, selector: #selector(appenterBackground), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appenterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appenterBackground), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appenterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     
     @objc func appenterBackground() {
@@ -102,6 +102,8 @@ open class JTPlayerView: UIView {
                 make.center.equalTo(self)
                 make.size.equalTo(self.hwscaleSize)
             }
+        } else {
+            controlBar.fullScreenBtnClicked()
         }
     }
     @objc func appenterForeground() {
@@ -111,7 +113,6 @@ open class JTPlayerView: UIView {
                 make.edges.equalTo(UIEdgeInsets.zero)
             }
         }
-        
     }
     
     @objc func updateControlBar() {
@@ -171,7 +172,7 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
      @param player 播放器player指针
      @param errorModel 播放器错误描述，参考AliVcPlayerErrorModel
      */
-    private func onError(_ player: AliPlayer!, errorModel: AVPErrorModel!) {
+    public func onError(_ player: AliPlayer!, errorModel: AVPErrorModel!) {
         // 提示错误，及stop播放
     }
     
@@ -401,12 +402,12 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
             start = current64 - Float64(curPostion)
             end = current64 + Float64(interval)
             
-            let startTm = CMTimeMakeWithSeconds(start, layerTime.timescale)
-            let endTm = CMTimeMakeWithSeconds(end, layerTime.timescale)
+            let startTm = CMTimeMakeWithSeconds(start, preferredTimescale: layerTime.timescale)
+            let endTm = CMTimeMakeWithSeconds(end, preferredTimescale: layerTime.timescale)
             
             return CMTimeRange(start: startTm, end: endTm)
         } else {
-            return CMTimeRange(start: kCMTimeNegativeInfinity, end: kCMTimePositiveInfinity)
+            return CMTimeRange(start: CMTime.negativeInfinity, end: CMTime.positiveInfinity)
         }
     }
     

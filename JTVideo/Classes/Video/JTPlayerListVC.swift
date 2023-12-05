@@ -160,7 +160,7 @@ class PlayerListCell: UITableViewCell {
         tl.numberOfLines = 2
         return tl
     }()
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(coverImgv)
         coverImgv.snp_makeConstraints { make in
