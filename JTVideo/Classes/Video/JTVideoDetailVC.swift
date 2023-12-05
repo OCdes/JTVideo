@@ -12,7 +12,6 @@ var playerVC: JTVideoDetailVC?
 @objc
 open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
-        playerVC = nil
         if let navc = nav, navc.viewControllers.contains(self) != true {
             playerVC = nil
             navc.pushViewController(self, animated: true)
@@ -22,9 +21,6 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         }
         completionHandler?(true)
     }
-    
-    
-    
     
     func playerWillEnterPictureInPicture() {
         playerVC = self
@@ -68,6 +64,10 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if let pv = playerVC, pv == self {
+            pv.playerView.stopPip()
+            playerVC = nil
+        }
         nav = self.navigationController
     }
     

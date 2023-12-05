@@ -115,8 +115,8 @@ extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {
         let model = dataArr[btn.tag]
         if btn.isSelected {
             if model.source != self.currentPlayer.urlSource {
-//                self.currentPlayer.showLayer = cell.coverImgv
-                self.currentPlayer.player.playerView = cell.coverImgv
+                self.currentPlayer.showLayer = cell.coverImgv
+//                cell.coverImgv.layer.addSublayer(self.currentPlayer.layer)
                 self.currentPlayer.isUserInteractionEnabled = false
                 self.currentPlayer.urlSource = model.source
                 self.currentPlayer.controlBar.isListMode = true

@@ -33,10 +33,14 @@ open class JTVideoHomeVC: UIViewController {
     func bindViewModel() {
         self.viewModel.refreshData(scrollView: self.listView)
         _ = self.listView.tapSubject.subscribe(onNext: { [weak self]model in
-            if model is ViewHomeListModel {
-                let vc = JTVideoDetailVC()
-                vc.url = ""
-                self?.navigationController?.pushViewController(vc, animated: true)
+            if let pv = playerVC, pv.url == "http://player.alicdn.com/video/aliyunmedia.mp4" {
+                self?.navigationController?.pushViewController(pv, animated: true)
+            } else {
+                if model is ViewHomeListModel {
+                    let vc = JTVideoDetailVC()
+                    vc.url = "http://player.alicdn.com/video/aliyunmedia.mp4"
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
             }
         })
         
