@@ -19,8 +19,6 @@
     "ios": "10.0"
   },
   "swift_versions": [
-    "4.0",
-    "4.2",
     "5.0"
   ],
   "source_files": "JTVideo/Classes/**/*",
@@ -29,7 +27,6 @@
       "JTVideo/Assets/*"
     ]
   },
-  "public_header_files": "Pod/Classes/Video/*",
   "dependencies": {
     "AliPlayerSDK_iOS": [
 
