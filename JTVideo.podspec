@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
     s.dependency "IQKeyboardManagerSwift"
     s.dependency "RxSwift"
     s.dependency "RxCocoa"
-    s.dependency "SnapKit", "~>4.0.0"
+    s.dependency "SnapKit"
     s.dependency "Kingfisher"
     s.dependency "MJRefresh"
     s.dependency "SVProgressHUD"
