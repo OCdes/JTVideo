@@ -15,6 +15,7 @@
 			dependencies = (
 			);
 			name = AliPlayerSDK_iOS;
+			productName = AliPlayerSDK_iOS;
 		};
 /* End PBXAggregateTarget section */
 
@@ -90,7 +91,7 @@
 		1BC8DC0FE2C71B22C69D28CC1BA8B117 /* Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8BB91AF8EA6D637396EC74A73800130 /* Rx.swift */; };
 		1BEA2772A9F9E0CFF9D4578FC97D1532 /* CombineLatest+arity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A4D990764FCB4215A2BE8ACD6625C9 /* CombineLatest+arity.swift */; };
 		1BFCAA048BC1515C444870BA86E08C67 /* NotificationCenter+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE91D8D40BB9002C80179048BF31061 /* NotificationCenter+Rx.swift */; };
-		1C064F80431D88BBB846D6C7EE145636 /* JTVideo-JTVideo in Resources */ = {isa = PBXBuildFile; fileRef = F717D743E2C40BC7EA32403F84C0C10D /* JTVideo-JTVideo */; };
+		1C064F80431D88BBB846D6C7EE145636 /* JTVideo.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F717D743E2C40BC7EA32403F84C0C10D /* JTVideo.bundle */; };
 		1C7AABBFA211C09F3A67218374050310 /* SnapKit-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 75F8CB39EA3B2CDFC14101B2CDC386BC /* SnapKit-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1D5A794D89D4B347FD960CF568E40731 /* SVIndefiniteAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = AF83EB62025FFC381435E205FD58F519 /* SVIndefiniteAnimatedView.m */; };
 		1D713FC02C8CF0105F0FF6D426BC557A /* ConstraintMakerExtendable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B83DE6645DD832FE39F32BE3A1C501 /* ConstraintMakerExtendable.swift */; };
@@ -917,12 +918,12 @@
 		1A24485615B12E0749048A1FB2C6627A /* RedirectHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RedirectHandler.swift; path = Sources/Networking/RedirectHandler.swift; sourceTree = "<group>"; };
 		1A8BC180CDD8808E70FEFA0AB77805C1 /* JTVideo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = JTVideo.release.xcconfig; sourceTree = "<group>"; };
 		1A9F9E4F3ABD32E970087CE67A5D23F0 /* RxDelegateProxyCrashFix.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RxDelegateProxyCrashFix.swift; path = RxCocoa/iOS/Proxies/RxDelegateProxyCrashFix.swift; sourceTree = "<group>"; };
-		1AE355D51C80EA7EAB20ACB20EF8AC41 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		1AE355D51C80EA7EAB20ACB20EF8AC41 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1BF58821E99AA13D2900E6BEAC89CF13 /* RxSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RxSwift-dummy.m"; sourceTree = "<group>"; };
 		1C07C493122D93CE2357DAB819DF5D2E /* TransformType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransformType.swift; path = Source/TransformType.swift; sourceTree = "<group>"; };
 		1C24CF9664F3B75E800ED60C0ABA26BE /* IQKeyboardManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQKeyboardManager.swift; path = IQKeyboardManagerSwift/IQKeyboardManager.swift; sourceTree = "<group>"; };
 		1C64B5852B3FDF7C81976FE9B42FA312 /* ConstraintMultiplierTarget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintMultiplierTarget.swift; path = Source/ConstraintMultiplierTarget.swift; sourceTree = "<group>"; };
-		1D54BDD67CA15728243A5A00DC3A75B1 /* JTVideo.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = JTVideo.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		1D54BDD67CA15728243A5A00DC3A75B1 /* JTVideo.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = JTVideo.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		1D6340633807E5C70CBA8CC15AE1488C /* RxCocoa-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-umbrella.h"; sourceTree = "<group>"; };
 		1E00F6B842A1328D4E902856DBE38E38 /* RetryStrategy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RetryStrategy.swift; path = Sources/Networking/RetryStrategy.swift; sourceTree = "<group>"; };
 		1E9D847CAFCB6152CE4B4CC3AA3D0487 /* JTVideoListPlayerControlBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = JTVideoListPlayerControlBar.swift; sourceTree = "<group>"; };
@@ -1274,7 +1275,7 @@
 		9C982EC15673200ED540B038D36CB9D7 /* RxPickerViewDelegateProxy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RxPickerViewDelegateProxy.swift; path = RxCocoa/iOS/Proxies/RxPickerViewDelegateProxy.swift; sourceTree = "<group>"; };
 		9CA2D6103BC1F85C1346C7A2AF5E5604 /* OtherExtension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OtherExtension.swift; path = Source/OtherExtension.swift; sourceTree = "<group>"; };
 		9CF7B14786C7455578756E91421E8115 /* Never.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Never.swift; path = RxSwift/Observables/Never.swift; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9D9BB9F81E61A4644D1CF0D0799D084D /* Errors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Errors.swift; path = RxSwift/Errors.swift; sourceTree = "<group>"; };
 		9EF4A23BF9C845F683C6578A4F1AF475 /* RxCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RxCocoa-prefix.pch"; sourceTree = "<group>"; };
 		9F5B8BBA9507A13C25268D36114AA183 /* Infallible+Concurrency.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Infallible+Concurrency.swift"; path = "RxSwift/Traits/Infallible/Infallible+Concurrency.swift"; sourceTree = "<group>"; };
@@ -1361,7 +1362,7 @@
 		C0BF46E302684E1673CCFC6B587977B2 /* RxSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RxSwift.debug.xcconfig; sourceTree = "<group>"; };
 		C11600FD6255216D0F07DB426C542847 /* AsSingle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsSingle.swift; path = RxSwift/Observables/AsSingle.swift; sourceTree = "<group>"; };
 		C184DA425B35845BAD0BDE1576793209 /* ItemEvents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ItemEvents.swift; path = RxCocoa/iOS/Events/ItemEvents.swift; sourceTree = "<group>"; };
-		C1CB8E892A5DD26C82A47AA2787CE2D5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		C1CB8E892A5DD26C82A47AA2787CE2D5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		C1D44201AA35E6C4873CCE0C91AAAC3D /* RecursiveLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RecursiveLock.swift; path = Platform/RecursiveLock.swift; sourceTree = "<group>"; };
 		C24E1EC17B791EFF28A8138FBEF1EF64 /* MultipartFormData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MultipartFormData.swift; path = Sources/Moya/MultipartFormData.swift; sourceTree = "<group>"; };
 		C2C8B34E810E8733D008CE24ACAD6AD4 /* Moya+Alamofire.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Moya+Alamofire.swift"; path = "Sources/Moya/Moya+Alamofire.swift"; sourceTree = "<group>"; };
@@ -1499,7 +1500,7 @@
 		F62AAC6F7AF47FC81FAD1DBE4B8275E3 /* SnapKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SnapKit.release.xcconfig; sourceTree = "<group>"; };
 		F68EADC4B0E15DD62FE84A53B84DEB93 /* TakeLast.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TakeLast.swift; path = RxSwift/Observables/TakeLast.swift; sourceTree = "<group>"; };
 		F6C2F89F9DFF1CD10B51F96028C46998 /* SynchronizedDisposeType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SynchronizedDisposeType.swift; path = RxSwift/Concurrency/SynchronizedDisposeType.swift; sourceTree = "<group>"; };
-		F717D743E2C40BC7EA32403F84C0C10D /* JTVideo-JTVideo */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "JTVideo-JTVideo"; path = JTVideo.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		F717D743E2C40BC7EA32403F84C0C10D /* JTVideo.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JTVideo.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75727D5AA64F39BB356A36018034A20 /* _RXDelegateProxy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = _RXDelegateProxy.m; path = RxCocoa/Runtime/_RXDelegateProxy.m; sourceTree = "<group>"; };
 		F7645117BA303CBC5600B3DA1C7C1D98 /* WithUnretained.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WithUnretained.swift; path = RxSwift/Observables/WithUnretained.swift; sourceTree = "<group>"; };
 		F779078AB4A33C1CAAEB7F65FCC6BBAD /* ParameterEncoding.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ParameterEncoding.swift; path = Source/ParameterEncoding.swift; sourceTree = "<group>"; };
@@ -1697,7 +1698,6 @@
 				B94960BDB5889C5A894411C4368B4333 /* Core */,
 				C7B44E0967AA251ACB271CAAF85C77B3 /* Support Files */,
 			);
-			name = Moya;
 			path = Moya;
 			sourceTree = "<group>";
 		};
@@ -1767,7 +1767,6 @@
 				A0F1A594F88CB3A932B7584B6B916848 /* URLTransform.swift */,
 				3CB908213F812733B06CB6E7A0C3F249 /* Support Files */,
 			);
-			name = HandyJSON;
 			path = HandyJSON;
 			sourceTree = "<group>";
 		};
@@ -1785,7 +1784,6 @@
 				1C78429D4911FB92D57170C73C4237DA /* AliPlayerSDK */,
 				48D46ECE389C6A6BE85A23E776931644 /* Support Files */,
 			);
-			name = AliPlayerSDK_iOS;
 			path = AliPlayerSDK_iOS;
 			sourceTree = "<group>";
 		};
@@ -1796,7 +1794,7 @@
 				CD54121DDA84872534168702B5F92950 /* HandyJSON */,
 				A8E950A16D00F649C54FFB30F81D7842 /* IQKeyboardManagerSwift */,
 				43A786E9F95FA3D0F00D5500062E1E7B /* JTVideo */,
-				F717D743E2C40BC7EA32403F84C0C10D /* JTVideo-JTVideo */,
+				F717D743E2C40BC7EA32403F84C0C10D /* JTVideo.bundle */,
 				C3F44C782D64D7EB20B61CE3844EBFAD /* Kingfisher */,
 				E49D6D248DD1CEE584E6776B9164A1B2 /* MJRefresh */,
 				3756A9BBE41ABEE8DCBF5BCA6972C4DA /* Moya */,
@@ -2032,7 +2030,6 @@
 				B38DD332F67B57CE14BBE04E9F791067 /* Zip+Collection.swift */,
 				DBEE66611D457229FB59A7308BC70300 /* Support Files */,
 			);
-			name = RxSwift;
 			path = RxSwift;
 			sourceTree = "<group>";
 		};
@@ -2064,7 +2061,6 @@
 				2D85F1ACFAF238A9DA65898D397068FC /* IQUIViewController+Additions.swift */,
 				372209F1598F15979AA73D125168D81B /* Support Files */,
 			);
-			name = IQKeyboardManagerSwift;
 			path = IQKeyboardManagerSwift;
 			sourceTree = "<group>";
 		};
@@ -2139,7 +2135,6 @@
 				0F584916FC1090C8D90263C10662C858 /* WKInterfaceImage+Kingfisher.swift */,
 				5986F1891661A41A3E5BE48E54F61FEF /* Support Files */,
 			);
-			name = Kingfisher;
 			path = Kingfisher;
 			sourceTree = "<group>";
 		};
@@ -2152,7 +2147,6 @@
 				E9977157F466DDF298572CC58AB4487F /* ResultProtocol.swift */,
 				AE2D9A050354FD99A37F0BC26217BDAF /* Support Files */,
 			);
-			name = Result;
 			path = Result;
 			sourceTree = "<group>";
 		};
@@ -2263,7 +2257,6 @@
 			children = (
 				8169C4C344AE19EEA1DE68A8EE872D62 /* VideoHomeViewModel.swift */,
 			);
-			name = viewmodel;
 			path = viewmodel;
 			sourceTree = "<group>";
 		};
@@ -2340,7 +2333,6 @@
 				93611F56D3C76B901505DD416D3E846A /* Utils.swift */,
 				CA25E05B0994B67A7237D59D98B8D9F8 /* Support Files */,
 			);
-			name = RxRelay;
 			path = RxRelay;
 			sourceTree = "<group>";
 		};
@@ -2442,7 +2434,6 @@
 				1E9D847CAFCB6152CE4B4CC3AA3D0487 /* JTVideoListPlayerControlBar.swift */,
 				521AC3B6A267AB96F3853908B4A5AE1B /* JTVideoProgressSliderView.swift */,
 			);
-			name = view;
 			path = view;
 			sourceTree = "<group>";
 		};
@@ -2536,7 +2527,6 @@
 				D467BF281129036BF6F98A54A8B21F32 /* UILayoutSupport+Extensions.swift */,
 				AE2A6390F9C01F7AAF403CB8DBBAA80C /* Support Files */,
 			);
-			name = SnapKit;
 			path = SnapKit;
 			sourceTree = "<group>";
 		};
@@ -2667,7 +2657,6 @@
 				3B955EDC20A2CD70ED3742B40DCE2C4A /* WKWebView+Rx.swift */,
 				24746D28F3166F48480E77576F84FCEB /* Support Files */,
 			);
-			name = RxCocoa;
 			path = RxCocoa;
 			sourceTree = "<group>";
 		};
@@ -2685,7 +2674,6 @@
 				3D806BC804F089925CC2AAA997874E0D /* Resources */,
 				6D6531A20A35EC1213BF0F3573E83AA2 /* Support Files */,
 			);
-			name = SVProgressHUD;
 			path = SVProgressHUD;
 			sourceTree = "<group>";
 		};
@@ -2711,7 +2699,6 @@
 				2144B165B52EBBE899414EBF7D27025F /* Validation.swift */,
 				0E678F3D908774A5D4AADD995053BF0E /* Support Files */,
 			);
-			name = Alamofire;
 			path = Alamofire;
 			sourceTree = "<group>";
 		};
@@ -2770,7 +2757,6 @@
 				DD9DCD9A2E2FA5B639F1C40E45E1FD78 /* Resources */,
 				C8B7A15F8BB5115BA0554B9411579F83 /* Support Files */,
 			);
-			name = MJRefresh;
 			path = MJRefresh;
 			sourceTree = "<group>";
 		};
@@ -3142,7 +3128,7 @@
 			);
 			name = "JTVideo-JTVideo";
 			productName = JTVideo;
-			productReference = F717D743E2C40BC7EA32403F84C0C10D /* JTVideo-JTVideo */;
+			productReference = F717D743E2C40BC7EA32403F84C0C10D /* JTVideo.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 		B490E7485944099E16C9CBD79119D1D4 /* IQKeyboardManagerSwift */ = {
@@ -3352,7 +3338,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C064F80431D88BBB846D6C7EE145636 /* JTVideo-JTVideo in Resources */,
+				1C064F80431D88BBB846D6C7EE145636 /* JTVideo.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4410,6 +4396,7 @@
 			baseConfigurationReference = 4601339F30DF2A3D5633ED74E41B94A8 /* JTVideo.debug.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/JTVideo";
+				DEVELOPMENT_TEAM = BKCQTZYQF2;
 				IBSC_MODULE = JTVideo;
 				INFOPLIST_FILE = "Target Support Files/JTVideo/ResourceBundle-JTVideo-JTVideo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -5097,6 +5084,7 @@
 			baseConfigurationReference = 1A8BC180CDD8808E70FEFA0AB77805C1 /* JTVideo.release.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/JTVideo";
+				DEVELOPMENT_TEAM = BKCQTZYQF2;
 				IBSC_MODULE = JTVideo;
 				INFOPLIST_FILE = "Target Support Files/JTVideo/ResourceBundle-JTVideo-JTVideo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

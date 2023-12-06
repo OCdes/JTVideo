@@ -17,6 +17,7 @@ Pod::Spec.new do |s|
     s.license          = { :type => 'MIT', :file => 'LICENSE' }
     s.author           = { 'OCdes' => '76515226@qq.com' }
     s.source           = { :git => 'https://github.com/OCdes/JTVideo.git', :tag => s.version.to_s }
+    s.xcconfig = { 'VALID_ARCHS' => 'arm64 x86_64 armv7 armv7s', }
     s.ios.deployment_target = '10.0'
     s.swift_versions = ['5.0']
     s.source_files = 'JTVideo/Classes/**/*'
