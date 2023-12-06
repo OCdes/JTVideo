@@ -603,7 +603,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         progressWidthAnimation(to: toFloat, target: targetLayer)
     }
-     //x位置改变动画
+    //x位置改变动画
     private func progressXAnimation(to: CGPoint, target: UIView) {
         let animationx = CABasicAnimation.init(keyPath: "position")
         animationx.fromValue = NSValue(cgPoint: to)

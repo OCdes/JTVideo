@@ -267,7 +267,7 @@ extension JTListVideoPlayerView:  UITableViewDataSource, UITableViewDelegate, JT
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.01
     }
-
+    
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return nil
     }

@@ -8,8 +8,8 @@
 import UIKit
 
 public protocol JTVideoListPlayerControlBarDelegate:NSObjectProtocol {
-//    optional func moveToNext()
-//    optional func moveToLast()
+    //    optional func moveToNext()
+    //    optional func moveToLast()
     func seekToPosition(position: Int64)
 }
 //短视频控制层

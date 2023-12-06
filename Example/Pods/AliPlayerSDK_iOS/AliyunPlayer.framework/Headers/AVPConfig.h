@@ -187,6 +187,14 @@ OBJC_EXPORT
 @property(nonatomic, assign) int enableHttpDns;
 
 /**
+ @brief 播放器实例是否可以使用增强型http dns进行解析，-1 表示跟随全局设置，0 disable
+ */
+/****
+ @brief whether enable enhanced http dns, -1 : as globel setting
+ */
+@property(nonatomic, assign) int enableEnhancedHttpDns;
+
+/**
  @brief 使用http3进行请求，支持标准：RFC 9114（HTTP3）和RFC 9000（QUIC v1），默认值关。如果http3请求失败，自动降级至普通http，默认关闭
  */
 /****

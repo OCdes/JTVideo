@@ -271,6 +271,30 @@ typedef enum AVPSceneType : NSInteger {
     AVP_LONG_VIDEO = 3,
 } AVPSceneType;
 
+
+/**
+ * 画中画显示模式
+ */
+/****
+ * picture in picture show mode
+ */
+typedef enum AVPPIPShowMode : NSUInteger {
+    /**
+     * 默认模式：正常显示所有画中画按钮
+     */
+    /****
+     * default mode: show all picture in picture button
+     */
+    AVP_SHOW_MODE_DEFAULT = 0,
+    /**
+     * 隐藏快进快退模式
+     */
+    /****
+     * hide fast forward and fast rewind mode
+     */
+    AVP_SHOW_MODE_HIDE_FAST_FORWARD_REWIND = 1,
+} AVPPIPShowMode;
+
 /**
  @brief AVPErrorModel为播放错误信息描述
  */

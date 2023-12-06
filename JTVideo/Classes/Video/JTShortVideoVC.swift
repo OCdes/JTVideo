@@ -9,7 +9,6 @@ import UIKit
 
 open class JTShortVideoVC: UIViewController, JTListVideoPlayerViewDelegate {
     
-    
     lazy var playerView: JTListVideoPlayerView = {
         let pv = JTListVideoPlayerView(frame: CGRectZero)
         pv.delegate = self
@@ -25,7 +24,7 @@ open class JTShortVideoVC: UIViewController, JTListVideoPlayerViewDelegate {
         playerView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets.zero)
         }
-
+        
         playerView.addResource(urls: dataArr)
     }
     
@@ -44,15 +43,15 @@ open class JTShortVideoVC: UIViewController, JTListVideoPlayerViewDelegate {
         print("没有更新视频了")
         listView.jt_endRefresh()
     }
-
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

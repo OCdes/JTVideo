@@ -1,8 +1,8 @@
 PODS:
   - Alamofire (4.9.1)
-  - AliPlayerSDK_iOS (6.5.0):
-    - AliPlayerSDK_iOS/AliPlayerSDK (= 6.5.0)
-  - AliPlayerSDK_iOS/AliPlayerSDK (6.5.0)
+  - AliPlayerSDK_iOS (6.7.0):
+    - AliPlayerSDK_iOS/AliPlayerSDK (= 6.7.0)
+  - AliPlayerSDK_iOS/AliPlayerSDK (6.7.0)
   - HandyJSON (5.0.2)
   - IQKeyboardManagerSwift (6.5.11)
   - JTVideo (0.0.1):
@@ -17,7 +17,7 @@ PODS:
     - SnapKit (~> 4.0.0)
     - SVProgressHUD
   - Kingfisher (6.3.1)
-  - MJRefresh (3.7.5)
+  - MJRefresh (3.7.6)
   - Moya (13.0.1):
     - Moya/Core (= 13.0.1)
   - Moya/Core (13.0.1):
@@ -58,12 +58,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
-  AliPlayerSDK_iOS: 58838e01ba82c298e58be2594ad860e36b67cf42
+  AliPlayerSDK_iOS: 59afa47048b69d9d90a5670a3544f03e9ed8e85c
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
   JTVideo: b62fc1332bb192bf0eca73bd4550c2cdbea6634c
   Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
-  MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
+  MJRefresh: 2fe7fb43a5167ceda20bb7e63f130c04fd1814a5
   Moya: f4a4b80ff2f8a4ffc208dfb31cd91636622fee6e
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc

@@ -43,7 +43,6 @@ open class JTVideoHomeVC: UIViewController {
                 }
             }
         })
-        
     }
-
+    
 }

@@ -44,7 +44,7 @@ open class JTPlayerListVC: UIViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         
         view.addSubview(listView)
@@ -64,7 +64,7 @@ extension JTPlayerListVC: JTPlayerViewDelegate {
         
     }
     
-
+    
     
     func requirePopVC() {
         
@@ -116,7 +116,7 @@ extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {
         if btn.isSelected {
             if model.source != self.currentPlayer.urlSource {
                 self.currentPlayer.showLayer = cell.coverImgv
-//                cell.coverImgv.layer.addSublayer(self.currentPlayer.layer)
+                //                cell.coverImgv.layer.addSublayer(self.currentPlayer.layer)
                 self.currentPlayer.isUserInteractionEnabled = false
                 self.currentPlayer.urlSource = model.source
                 self.currentPlayer.controlBar.isListMode = true
@@ -138,7 +138,7 @@ extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        
     }
 }
 

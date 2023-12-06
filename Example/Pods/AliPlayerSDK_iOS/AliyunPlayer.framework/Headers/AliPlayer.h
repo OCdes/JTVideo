@@ -222,6 +222,24 @@ OBJC_EXPORT
 -(void) snapShot;
 
 /**
+ @brief 根据url进行多清晰度切换，选择成功与否的结果通过AVPDelegate onStreamSwitchedSuccess/onStreamSwitchedFail回调。
+ * 注意：
+ * 1. 必须是阿里云的直播地址。
+ * 2. 必须是直播流的不同清晰度。
+ * 3. 切换到无关流地址可能会失败。
+ @param url 新流的url地址
+ */
+/****
+ @brief Multi definition stream switch by url. You can get result from AVPDelegate onStreamSwitchedSuccess/onStreamSwitchedFail.
+ @param url new url address
+ * Note:
+ * 1. Must be aliyun's live stream address.
+ * 2. Must be different definition of the same stream.
+ * 3. If switch to an unrelated address, switch may failed.
+ */
+-(void)switchStream:(NSString *)URL;
+
+/**
  @brief 根据trackIndex，切换清晰度
  @param trackIndex 选择清晰度的index，SELECT_AVPTRACK_TYPE_VIDEO_AUTO代表自适应码率
  */
@@ -555,6 +573,19 @@ OBJC_EXPORT
  * @param delegate pictureInPicture delegate
  */
 -(void) setPictureinPictureDelegate:(id<AliPlayerPictureInPictureDelegate>)delegate;
+
+
+/**
+ * @brief 为画中画功能设置显示模式
+ *
+ * @param delegate 画中画显示模式
+ */
+/****
+ * @brief set show mode for picture in picture
+ *
+ * @param delegate pictureInPicture show mode
+ */
+- (void)setPictureInPictureShowMode:(AVPPIPShowMode)pipShowMode;
 
 /**
  * @brief 获取播放器的参数

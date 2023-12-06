@@ -159,14 +159,43 @@ typedef BOOL (*NetworkDataProcessCallback)(NSString *requestUrl,
 + (void)setNetworkDataProcessCallback:(NetworkDataProcessCallback)callback;
 
 /**
- @brief 是否开启httpDNS。默认不开启。
- @param enable
+ * 是否开启httpDNS。默认不开启。
+ * 开启后需要注意以下事项
+ * 1.该功能与增强型Httpdns互斥，若同时打开，后开启的功能会实际生效；
+ * 2.打开后，会使用标准httpdns进行请求，若失败会降级至local dns。
+ * @param enable
  */
 /****
- @brief enable httpDNS. Default is disabled.
- @param enable
+ * enable httpDNS. Default is disabled.
+ * Need to pay attention to the following matters after open this function
+ * 1.This function is mutually exclusive with enhanced Httpdns.
+ * 2.After opening, standard httpdns will be used for requests. If it fails, it will be downgraded to local dns.
+ * @param enable
  */
 + (void)enableHttpDns:(BOOL)enable;
+
+/**
+* 是否开启增强型httpDNS。默认不开启
+* 开启后需要注意以下事项
+* 1.该功能与Httpdns互斥，若同时打开，后开启的功能会实际生效；
+* 2.需要申请license的高级httpdns功能，否则该功能不工作
+* 3.需要通过接口添加cdn域名，否则会降级至local dns。
+* @see [AliDomainProcessor addEnhancedHttpDnsDomain:NSString]
+* 4.请确保该域名在alicdn平台添加并配置对应功能，确保可提供线上服务。配置方法请参考：https://www.alibabacloud.com/product/content-delivery-network
+* @param enable
+*/
+/****
+ * enable enhanced httpDNS. Default is disbled.
+ * Need to pay attention to the following matters after open this function
+ * 1.This function is mutually exclusive with Httpdns. If turned on at the same time, the later turned on function will actually take effect;
+ * 2.this method need apply license enhanced dns function, otherwise this function will not work
+ * 3.need to add the cdn domain name through the interface, otherwise it will be downgraded to local dns
+ * @see [AliDomainProcessor addEnhancedHttpDnsDomain:NSString]
+ * 4.Please ensure that the domain name is added and configured with corresponding functions on the alicdn platform to ensure that online services can be provided.
+ * For configuration methods, please refer to: https://www.alibabacloud.com/product/content-delivery-network
+ * @param enable
+ */
++ (void)enableEnhancedHttpDns:(BOOL)enable;
 
 /**
  @brief 是否开启内建预加载网络平衡策略，播放过程中，自动控制预加载的运行时机。默认开启。

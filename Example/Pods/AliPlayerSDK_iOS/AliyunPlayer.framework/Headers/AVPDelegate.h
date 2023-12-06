@@ -190,6 +190,30 @@
 - (void)onTrackChanged:(AliPlayer*)player info:(AVPTrackInfo*)info;
 
 /**
+ @brief 根据url切换清晰度流成功通知
+ @param player 播放器player指针
+ @param url 切换后的url
+ */
+/****
+ @brief Stream switch by url success callback.
+ @param player Player pointer.
+ @param url Switched url.
+ */
+- (void)onStreamSwitchedSuccess:(AliPlayer*)player URL:(NSString*)URL;
+
+/**
+ @brief 根据url切换清晰度流失败通知
+ @param player 播放器player指针
+ @param errorModel 播放器错误描述，参考AVPErrorModel
+ */
+/****
+ @brief Stream switch by url fail callback.
+ @param player Player pointer.
+ @param url Switched url.
+ */
+- (void)onStreamSwitchedFail:(AliPlayer*)player URL:(NSString*)URL errorModel:(AVPErrorModel *)errorModel;
+
+/**
  @brief 外挂字幕被添加
  @param player 播放器player指针
  @param index 字幕显示的索引号

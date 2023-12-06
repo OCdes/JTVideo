@@ -174,7 +174,6 @@ class JTVideoHomeListItem: UICollectionViewCell {
             make.right.equalTo(self.contentView)
             make.height.equalTo(1)
         }
-        
     }
     
     required init?(coder: NSCoder) {
