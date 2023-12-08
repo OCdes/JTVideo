@@ -479,7 +479,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
-            make.left.right.top.bottom.equalTo(self.middleView)
+            make.left.right.top.bottom.equalTo(self)
         }
         
         loadingLabel.snp_remakeConstraints { make in
@@ -565,7 +565,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
-            make.left.right.top.bottom.equalTo(self.middleView)
+            make.left.right.top.bottom.equalTo(self)
         }
         
         loadingLabel.snp_remakeConstraints { make in

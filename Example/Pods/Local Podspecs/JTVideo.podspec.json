@@ -1,8 +1,8 @@
 {
   "name": "JTVideo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "summary": "精特视频组件",
-  "description": "精特视频组件",
+  "description": "优化视频全屏方案",
   "homepage": "https://github.com/OCdes/JTVideo",
   "license": {
     "type": "MIT",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/OCdes/JTVideo.git",
-    "tag": "0.0.1"
+    "tag": "0.0.2"
   },
   "xcconfig": {
     "VALID_ARCHS": "arm64 x86_64 armv7 armv7s"

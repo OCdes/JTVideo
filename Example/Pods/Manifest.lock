@@ -5,7 +5,7 @@ PODS:
   - AliPlayerSDK_iOS/AliPlayerSDK (6.7.0)
   - HandyJSON (5.0.2)
   - IQKeyboardManagerSwift (6.5.11)
-  - JTVideo (0.0.1):
+  - JTVideo (0.0.2):
     - AliPlayerSDK_iOS
     - HandyJSON
     - IQKeyboardManagerSwift
@@ -61,7 +61,7 @@ SPEC CHECKSUMS:
   AliPlayerSDK_iOS: 59afa47048b69d9d90a5670a3544f03e9ed8e85c
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
-  JTVideo: 186bc4fb1b6ed5ddd468e365a4c590c664747400
+  JTVideo: c6295439458a2981e72a43ec081863e9a29f9ebf
   Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
   MJRefresh: 2fe7fb43a5167ceda20bb7e63f130c04fd1814a5
   Moya: f4a4b80ff2f8a4ffc208dfb31cd91636622fee6e

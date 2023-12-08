@@ -91,14 +91,20 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         super.viewDidLoad()
         view.backgroundColor = UIColor.green
         view.addSubview(playerContainerView)
-        playerContainerView.snp_makeConstraints { make in
-            make.top.left.right.equalTo(self.view)
-            make.height.equalTo(300)
-        }
+//        playerContainerView.snp_makeConstraints { make in
+//            make.top.left.right.equalTo(self.view)
+//            make.height.equalTo(300)
+//        }
         playerContainerView.addSubview(playerView)
-        playerView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets.zero)
-        }
+//        playerView.snp_makeConstraints { make in
+//            make.edges.equalTo(UIEdgeInsets.zero)
+//        }
+        
+        
+        let contentLa = UILabel(frame: CGRectMake(20, CGRectGetMaxY(playerContainerView.frame), UIScreen.main.bounds.width-40, 200))
+        contentLa.text = "12月6日，货车司机李师傅反映，他在山西吕梁离石西收费站接受检查时，执法人员撕毁了他的超限通行证，还说是假证。7日，山西省道路运输管理局治超办工作人员告诉极目新闻记者，已经接到车主的投诉，需要5个工作日才能出结果。收费站工作人员表示，涉事执法人员已经停岗，公司正在调查。"
+        contentLa.numberOfLines = 0
+        view.addSubview(contentLa)
     }
     
     deinit {

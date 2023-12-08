@@ -23,6 +23,7 @@ open class JTPlayerView: UIView {
     private var isPipPaused: Bool = false
     private var currentPlayerStatus: AVPStatus = AVPStatus(0)
     private weak var pipController: AVPictureInPictureController?
+    private var fullVC: UIViewController?
     private var currentPosition: Int64 = 0
     private lazy var hwscaleSize: CGSize = {
         let hwscale = CGFloat(player.height)/CGFloat(player.width)
@@ -102,9 +103,7 @@ open class JTPlayerView: UIView {
                 make.center.equalTo(self)
                 make.size.equalTo(self.hwscaleSize)
             }
-        } else {
-            controlBar.fullScreenBtnClicked()
-        }
+        } 
     }
     @objc func appenterForeground() {
         isForeground = true
@@ -496,11 +495,39 @@ extension JTPlayerView:JTVideoControlBarDelegate {
     
     public func fullScreen(isMini: Bool) {
         isFullScreen = !isMini
-        if let de = self.delegate {
-            de.requireFullScreen(fullScreen: isFullScreen)
+        if fullVC != nil {
+            fullVC?.dismiss(animated: true)
+            fullVC = nil
+        } else {
+            if let vc = APPWINDOW.rootViewController {
+                if let nav = vc as? UINavigationController {
+                    if let nowVC = nav.viewControllers.last {
+                        let enterFullVC = JTPlayerFullVC()
+                        enterFullVC.playerSurface = self
+                        enterFullVC.modalPresentationStyle = .fullScreen
+                        enterFullVC.transitioningDelegate = self
+                        fullVC = enterFullVC
+                        nowVC.present(enterFullVC, animated: true)
+                    }
+                } else {
+                    let enterFullVC = JTPlayerFullVC()
+                    enterFullVC.playerSurface = self
+                    enterFullVC.modalPresentationStyle = .fullScreen
+                    enterFullVC.transitioningDelegate = self
+                    fullVC = enterFullVC
+                    vc.present(enterFullVC, animated: true)
+                }
+            }
         }
-        
+    }
+}
+
+extension JTPlayerView: UIViewControllerTransitioningDelegate {
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTEnterPlayerFullTransition(playerView: self)
     }
     
-    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTExitPlayerFullTransition(playerView: self)
+    }
 }

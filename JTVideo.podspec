@@ -8,10 +8,10 @@
 
 Pod::Spec.new do |s|
     s.name             = 'JTVideo'
-    s.version          = '0.0.1'
+    s.version          = '0.0.2'
     s.summary          = '精特视频组件'
     s.description      = <<-DESC
-    精特视频组件
+    优化视频全屏方案
     DESC
     s.homepage         = 'https://github.com/OCdes/JTVideo'
     s.license          = { :type => 'MIT', :file => 'LICENSE' }

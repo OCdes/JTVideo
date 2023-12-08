@@ -8,10 +8,7 @@
 import UIKit
 
 class JTPlayerFullVC: UIViewController {
-    lazy var surfaceView: UIView = {
-        let sv = UIView(frame: self.view.bounds)
-        return sv
-    }()
+    var playerSurface: UIView?
     
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
         return .landscapeLeft
@@ -28,14 +25,15 @@ class JTPlayerFullVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         
-        // Do any additional setup after loading the view.
-        view.addSubview(surfaceView)
-        surfaceView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets.zero)
-        }
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.playerSurface?.frame = self.view.bounds
+        print("%@", self.playerSurface?.bounds)
+    }
     
     /*
      // MARK: - Navigation
