@@ -13,12 +13,12 @@ protocol JTListVideoPlayerViewDelegate: NSObjectProtocol {
     func needLoadMoreVideoList(listView: UIScrollView)
     func needRefreshVideoList(listView: UIScrollView)
 }
-//短视频播放组件
+//短视频播放组件,包含上下滑动的listView
 open class JTListVideoPlayerView: UIView {
     weak var delegate: JTListVideoPlayerViewDelegate?
     private var dataArr: [String] = []
     private var currentIndex: Int = 0
-    
+    private var currentStatus: AVPStatus = AVPStatus(0)
     lazy var player: AliListPlayer = {
         let p = AliListPlayer()
         p?.scalingMode = AVPScalingMode(2)
@@ -193,6 +193,10 @@ extension JTListVideoPlayerView: AVPDelegate {
         }
         
     }
+    //播放器播放状态改变
+    public func onPlayerStatusChanged(_ player: AliPlayer!, oldStatus: AVPStatus, newStatus: AVPStatus) {
+        currentStatus = newStatus
+    }
     
     /**
      @brief 视频缓存位置回调
@@ -253,7 +257,24 @@ extension JTListVideoPlayerView: AVPDelegate {
 }
 
 extension JTListVideoPlayerView:  UITableViewDataSource, UITableViewDelegate, JTVideoListPlayerControlBarDelegate {
+    public func doubleTapOnSurface() {
+        if let cc = currentPlayCell(), cc.controlBar.progressMaxValue > 0 {
+            if currentStatus == AVPStatus(3) {
+                player.pause()
+            }
+            if currentStatus == AVPStatus(4) {
+                player.start()
+            }
+        }
+    }
     
+    public func singleTapOnSurface() {
+        
+    }
+    
+    public func seekToPosition(position: Int64) {
+        self.player.seek(toTime: position, seekMode: AVPSeekMode(1))
+    }
     // MARK: delegate
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -294,10 +315,6 @@ extension JTListVideoPlayerView:  UITableViewDataSource, UITableViewDelegate, JT
         } else if indexInt - currentIndex == -1 {
             moveToLast()
         }
-    }
-    
-    public func seekToPosition(position: Int64) {
-        self.player.seek(toTime: position, seekMode: AVPSeekMode(1))
     }
     
 }

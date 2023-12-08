@@ -16,7 +16,7 @@ protocol JTPlayerViewDelegate: NSObjectProtocol {
     func requirePopVC()
 }
 
-
+@objc
 open class JTPlayerView: UIView {
     weak var delegate: JTPlayerViewDelegate?
     var isFullScreen: Bool = false
@@ -76,7 +76,7 @@ open class JTPlayerView: UIView {
         return cb
     }()
     
-    override init(frame: CGRect) {
+    @objc override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.black
         addSubview(playerSurface)
@@ -104,6 +104,9 @@ open class JTPlayerView: UIView {
                 make.size.equalTo(self.hwscaleSize)
             }
         } 
+        if pipController == nil && currentPlayerStatus == AVPStatus(3) {
+            player.pause()
+        }
     }
     @objc func appenterForeground() {
         isForeground = true
@@ -111,6 +114,10 @@ open class JTPlayerView: UIView {
             playerSurface.snp_remakeConstraints { make in
                 make.edges.equalTo(UIEdgeInsets.zero)
             }
+        }
+        
+        if pipController == nil && currentPlayerStatus == AVPStatus(4) {
+            player.start()
         }
     }
     

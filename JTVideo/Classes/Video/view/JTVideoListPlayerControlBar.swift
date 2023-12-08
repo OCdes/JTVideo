@@ -11,6 +11,7 @@ public protocol JTVideoListPlayerControlBarDelegate:NSObjectProtocol {
     //    optional func moveToNext()
     //    optional func moveToLast()
     func seekToPosition(position: Int64)
+    func doubleTapOnSurface()
 }
 //短视频控制层
 public class JTVideoListPlayerControlBar: UIView {
@@ -72,6 +73,22 @@ public class JTVideoListPlayerControlBar: UIView {
         }
     }
     
+    private var isHideInfo: Bool = false {
+        didSet {
+            if isHideInfo {
+                UIView.animate(withDuration: 0.3) {
+                    self.rightView.alpha = 0.01
+                    self.bottomView.alpha = 0.01
+                }
+            } else {
+                UIView.animate(withDuration: 0.3) {
+                    self.rightView.alpha = 1
+                    self.bottomView.alpha = 1
+                }
+            }
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -104,6 +121,27 @@ public class JTVideoListPlayerControlBar: UIView {
             make.bottom.equalTo(self.bottomSlider.snp_top).offset(-25)
             make.height.equalTo(100)
         }
+        
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(pauseTap))
+        doubleTap.numberOfTapsRequired = 2
+        addGestureRecognizer(doubleTap)
+        
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(hideInfoTap))
+        singleTap.require(toFail: doubleTap)
+        addGestureRecognizer(singleTap)
+    }
+    
+    @objc func pauseTap() {
+        if let de = delegate {
+            de.doubleTapOnSurface()
+        }
+    }
+    
+    @objc func hideInfoTap() {
+//        if let de = delegate {
+//            de.singleTapOnSurface()
+//        }
+        isHideInfo = !isHideInfo
     }
     
     @objc func pan(pan:UIPanGestureRecognizer) {
@@ -115,7 +153,7 @@ public class JTVideoListPlayerControlBar: UIView {
         case .changed:
             let location = pan.location(in: bottomSlider)
             self.bottomSlider.value = Float((location.x/self.bottomSlider.frame.width)*CGFloat(progressMaxValue))
-            UIView.animate(withDuration: 1) {
+            UIView.animate(withDuration: 0.3) {
                 self.bottomSlider.snp_updateConstraints { make in
                     make.height.equalTo(10)
                 }
