@@ -77,13 +77,28 @@ public class JTVideoListPlayerControlBar: UIView {
         didSet {
             if isHideInfo {
                 UIView.animate(withDuration: 0.3) {
+                    self.bottomView.snp_updateConstraints { make in
+                        make.bottom.equalTo(self.bottomSlider.snp_top).offset(160)
+                    }
+                    self.rightView.snp_updateConstraints { make in
+                        make.right.equalTo(self).offset(80)
+                    }
                     self.rightView.alpha = 0.01
                     self.bottomView.alpha = 0.01
+                    self.layoutIfNeeded()
                 }
             } else {
                 UIView.animate(withDuration: 0.3) {
+                    self.bottomView.snp_updateConstraints { make in
+                        make.bottom.equalTo(self.bottomSlider.snp_top).offset(-25)
+                    }
+                    self.rightView.snp_updateConstraints { make in
+                        make.right.equalTo(self)
+                    }
                     self.rightView.alpha = 1
                     self.bottomView.alpha = 1
+                    self.layoutIfNeeded()
+                    
                 }
             }
         }

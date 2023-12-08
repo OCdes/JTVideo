@@ -16,8 +16,8 @@ protocol JTPlayerViewDelegate: NSObjectProtocol {
     func requirePopVC()
 }
 
-@objc
-open class JTPlayerView: UIView {
+
+@objc open class JTPlayerView: UIView {
     weak var delegate: JTPlayerViewDelegate?
     var isFullScreen: Bool = false
     private var isPipPaused: Bool = false
@@ -76,7 +76,7 @@ open class JTPlayerView: UIView {
         return cb
     }()
     
-    @objc override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.black
         addSubview(playerSurface)

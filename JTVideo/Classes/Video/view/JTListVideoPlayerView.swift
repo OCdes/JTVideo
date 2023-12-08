@@ -46,7 +46,7 @@ open class JTListVideoPlayerView: UIView {
         return pv
     }()
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(listView)
         listView.snp_makeConstraints { make in
@@ -54,6 +54,17 @@ open class JTListVideoPlayerView: UIView {
         }
         
         listView.reloadData()
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(appenterBackground), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appenterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+    
+    @objc func appenterBackground() {
+        player.pause()
+    }
+    
+    @objc func appenterForeground() {
+        player.start()
     }
     
     public func addResource(urls:[String]) {
