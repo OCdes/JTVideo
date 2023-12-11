@@ -9,9 +9,10 @@ import UIKit
 
 class JTEnterPlayerFullTransition: NSObject {
     var playerView: UIView
-    
-    init(playerView: UIView) {
+    var fromVC: UIViewController
+    init(playerView: UIView, fromVC: UIViewController) {
         self.playerView = playerView
+        self.fromVC = fromVC
         super.init()
     }
 }

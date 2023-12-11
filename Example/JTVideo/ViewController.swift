@@ -14,8 +14,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isTranslucent = false
         // Do any additional setup after loading the view, typically from a nib.
-        let titles = ["视频列表","短视频","视频详情页"]
-        for i in 0..<3 {
+        let titles = ["视频列表","短视频","视频详情页","精特云课堂"]
+        for i in 0..<4 {
             let btn = UIButton(frame: CGRect(x: 50, y: 100 + i * 70, width: Int(UIScreen.main.bounds.width)-100, height: 50))
             btn.tag = i
             btn.setTitle(titles[i], for: .normal)
@@ -39,6 +39,11 @@ class ViewController: UIViewController {
         case "视频详情页":
             let vc = JTVideoHomeVC()
             self.navigationController?.pushViewController(vc, animated: true)
+            break
+        case "精特云课堂":
+            let vc = JTVideoEntranceVC()
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true)
             break
         default:
             break

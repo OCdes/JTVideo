@@ -187,7 +187,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     lazy var backBtn: UIButton = {
         let bb = UIButton()
-        bb.setTitle("back", for: .normal)
+        bb.setImage(JTVideoBundleTool.getBundleImg(with: "jtvideoback-white"), for: .normal)
         bb.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         bb.setTitleColor(HEX_FFF, for: .normal)
         bb.addTarget(self, action: #selector(backBtnClicked), for: .touchUpInside)
@@ -644,9 +644,14 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     // MARK: -点击事件-
     
     @objc func backBtnClicked() {
-        if let de = delegate {
-            de.requirePopVc()
+        if isMiniScreen {
+            if let de = delegate {
+                de.requirePopVc()
+            }
+        } else {
+            fullScreenBtnClicked()
         }
+        
     }
     
     @objc func pipBtnClicked() {

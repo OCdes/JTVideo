@@ -7,7 +7,7 @@
 
 import UIKit
 import AliyunPlayer
-open class JTVideoHomeVC: UIViewController {
+open class JTVideoHomeVC: JTVideoBaseVC {
     var viewModel = VideoHomeViewModel()
     lazy var listView: JTVideoHomeListView = {
         let flowLayout = UICollectionViewFlowLayout()

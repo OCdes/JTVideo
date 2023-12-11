@@ -60,23 +60,20 @@ open class JTPlayerListVC: UIViewController {
 }
 
 extension JTPlayerListVC: JTPlayerViewDelegate {
-    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
+    public func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
         
     }
     
     
     
-    func requirePopVC() {
+    public func requirePopVC() {
         
     }
     
-    func playerWillEnterPictureInPicture() {
+    public func playerWillEnterPictureInPicture() {
         
     }
     
-    func requireFullScreen(fullScreen: Bool) {
-        
-    }
 }
 
 extension JTPlayerListVC: UITableViewDelegate, UITableViewDataSource {

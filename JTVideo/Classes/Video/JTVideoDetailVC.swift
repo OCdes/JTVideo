@@ -10,8 +10,8 @@ import AVKit
 
 var playerVC: JTVideoDetailVC?
 @objc
-open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
-    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
+open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate, UIViewControllerTransitioningDelegate {
+    public func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
         if let navc = nav, navc.viewControllers.contains(self) != true {
             playerVC = nil
             navc.pushViewController(self, animated: true)
@@ -22,19 +22,36 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         completionHandler?(true)
     }
     
-    func playerWillEnterPictureInPicture() {
+    public func playerWillEnterPictureInPicture() {
         playerVC = self
         self.navigationController?.popViewController(animated: true)
     }
     
-    func requirePopVC() {
+    public func requirePopVC() {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func requireFullScreen(fullScreen: Bool) {
+    public func requireFullScreen(fullScreen: Bool) {
         isFullScreen = fullScreen
-        setOrientation()
-        //        animatePlayerContainer()
+        if isFullScreen {
+            let enterFullVC = JTPlayerFullVC()
+            enterFullVC.playerSurface = self.playerView
+            enterFullVC.modalPresentationStyle = .fullScreen
+            enterFullVC.transitioningDelegate = self
+            fullVC = enterFullVC
+            self.present(enterFullVC, animated: true)
+        } else {
+            self.fullVC?.dismiss(animated: true)
+        }
+        
+    }
+    
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTEnterPlayerFullTransition(playerView: self.playerView, fromVC: self)
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTExitPlayerFullTransition(playerView: self.playerView, fromVc: self)
     }
     
     lazy var playerContainerView: UIView = {
@@ -45,10 +62,11 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
     lazy var playerView: JTPlayerView = {
         let pv = JTPlayerView(frame: CGRect(x: 0, y: 0, width: kScreenWidth, height: 300))
         pv.delegate = self
+        pv.controlBar.backBtn.isHidden = false
         return pv
     }()
     
-    weak var fullvc: UIViewController?
+    weak var fullVC: UIViewController?
     weak var nav: UINavigationController?
     var isFullScreen: Bool = false
     
@@ -62,6 +80,15 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
         return isFullScreen
     }
     
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return .portrait
+    }
+    
+    
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let pv = playerVC, pv == self {
@@ -69,22 +96,12 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
             playerVC = nil
         }
         nav = self.navigationController
+        self.navigationController?.navigationBar.isHidden = true
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-    }
-    
-    
-    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        self.playerContainerView.snp_remakeConstraints { make in
-            if self.isFullScreen {
-                make.edges.equalTo(UIEdgeInsets.zero)
-            } else {
-                make.left.top.right.equalTo(self.view)
-                make.height.equalTo(300)
-            }
-        }
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     open override func viewDidLoad() {
@@ -148,7 +165,7 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
                 self.playerView.snp_remakeConstraints { make in
                     make.edges.equalTo(self.playerContainerView)
                 }
-                self.fullvc?.dismiss(animated: false, completion: {
+                self.fullVC?.dismiss(animated: false, completion: {
                     self.playerView.removeFromSuperview()
                     self.playerContainerView.addSubview(self.playerView)
                     self.playerView.snp_remakeConstraints { make in
@@ -160,7 +177,7 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate {
                 self.playerView.center = self.playerContainerView.center
                 let vc = JTPlayerFullVC()
                 vc.modalPresentationStyle = .fullScreen
-                self.fullvc = vc
+                self.fullVC = vc
                 self.present(vc, animated: false) {
                     self.playerView.removeFromSuperview()
                     vc.view.addSubview(self.playerView)

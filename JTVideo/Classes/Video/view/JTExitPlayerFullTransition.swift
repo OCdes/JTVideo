@@ -9,8 +9,10 @@ import UIKit
 
 class JTExitPlayerFullTransition: NSObject {
     var playerView: UIView
-    init(playerView: UIView) {
+    var fromVC: UIViewController
+    init(playerView: UIView, fromVc: UIViewController) {
         self.playerView = playerView
+        self.fromVC = fromVc
         super.init()
     }
 }
@@ -35,11 +37,7 @@ extension JTExitPlayerFullTransition: UIViewControllerAnimatedTransitioning {
             fromView.center = finalCenter
             fromView.bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300)
             self.playerView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 300)
-            if let vc = toVC as? UINavigationController, let nowVC = vc.viewControllers.last {
-                nowVC.view.addSubview(self.playerView)
-            } else {
-                toView.addSubview(self.playerView)
-            }
+            self.fromVC.view.addSubview(self.playerView)
             fromView.removeFromSuperview()
             transitionContext.completeTransition(true)
         }

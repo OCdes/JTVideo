@@ -9,8 +9,8 @@ import UIKit
 import AliyunPlayer
 
 
-protocol JTPlayerViewDelegate: NSObjectProtocol {
-    func requireFullScreen(fullScreen: Bool)
+@objc public protocol JTPlayerViewDelegate: NSObjectProtocol {
+    @objc optional func requireFullScreen(fullScreen: Bool)
     func playerWillEnterPictureInPicture()
     func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?)
     func requirePopVC()
@@ -92,8 +92,13 @@ protocol JTPlayerViewDelegate: NSObjectProtocol {
         }
         
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(deviceRoated), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appenterBackground), name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appenterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+    
+    @objc func deviceRoated() {
+//        controlBar.fullScreenBtnClicked()
     }
     
     @objc func appenterBackground() {
@@ -502,39 +507,62 @@ extension JTPlayerView:JTVideoControlBarDelegate {
     
     public func fullScreen(isMini: Bool) {
         isFullScreen = !isMini
-        if fullVC != nil {
-            fullVC?.dismiss(animated: true)
-            fullVC = nil
+        if let de = delegate, de.responds(to: #selector(de.requireFullScreen(fullScreen:))) {
+            de.requireFullScreen?(fullScreen: isFullScreen)
         } else {
-            if let vc = APPWINDOW.rootViewController {
-                if let nav = vc as? UINavigationController {
-                    if let nowVC = nav.viewControllers.last {
+            if fullVC != nil {
+                fullVC?.dismiss(animated: true)
+                fullVC = nil
+            } else {
+                if let vc = APPWINDOW.rootViewController {
+                    if let nav = vc as? UINavigationController {
+                        if let nowVC = nav.viewControllers.last {
+                            let enterFullVC = JTPlayerFullVC()
+                            enterFullVC.playerSurface = self
+                            enterFullVC.modalPresentationStyle = .fullScreen
+                            enterFullVC.transitioningDelegate = self
+                            fullVC = enterFullVC
+                            nowVC.present(enterFullVC, animated: true)
+                        }
+                    } else {
                         let enterFullVC = JTPlayerFullVC()
                         enterFullVC.playerSurface = self
                         enterFullVC.modalPresentationStyle = .fullScreen
                         enterFullVC.transitioningDelegate = self
                         fullVC = enterFullVC
-                        nowVC.present(enterFullVC, animated: true)
+                        vc.present(enterFullVC, animated: true)
                     }
-                } else {
-                    let enterFullVC = JTPlayerFullVC()
-                    enterFullVC.playerSurface = self
-                    enterFullVC.modalPresentationStyle = .fullScreen
-                    enterFullVC.transitioningDelegate = self
-                    fullVC = enterFullVC
-                    vc.present(enterFullVC, animated: true)
                 }
             }
+
         }
     }
 }
 
 extension JTPlayerView: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return JTEnterPlayerFullTransition(playerView: self)
+        if let vc = APPWINDOW.rootViewController {
+            if let nav = vc as? UINavigationController {
+                if let nowVC = nav.viewControllers.last {
+                    return JTEnterPlayerFullTransition(playerView: self, fromVC: nowVC)
+                }
+            } else {
+                return JTEnterPlayerFullTransition(playerView: self, fromVC: vc)
+            }
+        }
+        return nil
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return JTExitPlayerFullTransition(playerView: self)
+        if let vc = APPWINDOW.rootViewController {
+            if let nav = vc as? UINavigationController {
+                if let nowVC = nav.viewControllers.last {
+                    return JTExitPlayerFullTransition(playerView: self, fromVc: nowVC)
+                }
+            } else {
+                return JTExitPlayerFullTransition(playerView: self, fromVc: vc)
+            }
+        }
+        return nil
     }
 }
