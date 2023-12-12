@@ -89,6 +89,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     private final var totalTime: String = ""
     //控制栏是否隐藏
     private var barHide = false
+    //controlBar是否已创建
+    private var isBarUpdate: Bool = false
     //当视频播放时根据此属性判断是否应该使滑块跟随移动,大于0时表示正在进行拖动不可以跟随移动
     private var panLocationX: Double = 0.0
     //记录middelView左侧发生上下滑时的初始位置
@@ -135,10 +137,10 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         tv.addSubview(titleLa)
-        titleLa.snp_remakeConstraints { make in
+        titleLa.snp_makeConstraints { make in
             make.left.equalTo(self.backBtn.snp_right).offset(15)
             make.right.equalTo(self.airdropBtn.snp_left)
-            make.centerY.equalTo(self.airdropBtn)
+            make.top.height.equalTo(self.backBtn)
         }
         return tv
     }()
@@ -211,7 +213,8 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     lazy var titleLa: UILabel = {
         let tl = UILabel()
         tl.textColor = HEX_FFF
-        tl.font = UIFont.systemFont(ofSize: 14)
+        tl.font = UIFont.systemFont(ofSize: 16)
+        tl.text = "adhjjflkdajklfdaslk"
         return tl
     }()
     
@@ -375,14 +378,18 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     
     private func updateView() {
-        if isMiniScreen {
-            setMinView()
-        } else {
-            setFullView()
+        if !isBarUpdate {
+            if isMiniScreen {
+                setMinView()
+            } else {
+                setFullView()
+            }
+            if totalPostion > 0 {
+                updateCurrentProgressAndBuffer()
+            }
+            isBarUpdate = true
         }
-        if totalPostion > 0 {
-            updateCurrentProgressAndBuffer()
-        }
+        
     }
     
     private func updateCurrentProgressAndBuffer() {
@@ -475,7 +482,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleView.snp_remakeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: kNavibarHeight, left: 0, bottom: 50, right: 0))
+            make.left.right.equalTo(self)
+            make.top.equalTo(self.topView.snp_bottom)
+            make.bottom.equalTo(self.bottomView.snp_top)
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
@@ -499,7 +508,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         self.endTimeLa.textAlignment = .right
         topView.snp_remakeConstraints { make in
             make.left.top.right.equalTo(self)
-            make.height.equalTo(kNavibarHeight)
+            make.height.equalTo(54)
         }
         
         bottomView.snp_remakeConstraints { make in
@@ -561,7 +570,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         }
         
         middleView.snp_remakeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: kNavibarHeight, left: 0, bottom: 123, right: 0))
+            make.left.right.equalTo(self)
+            make.top.equalTo(self.topView.snp_bottom)
+            make.bottom.equalTo(self.bottomView.snp_top)
         }
         
         middleTimeLabel.snp_remakeConstraints { make in
@@ -641,6 +652,45 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         return "00:00"
     }
     
+    //MARK: 上下控制条的显示与隐藏
+    func updateBarDisplay() {
+        //更新bar样式
+        updateView()
+        if isMiniScreen {
+            //控制bar的显示与隐藏
+            UIView.animate(withDuration: 0.3) {
+                self.topView.snp_updateConstraints { make in
+                    make.top.equalTo(self).offset(self.barHide ? -kNavibarHeight : 0)
+                }
+                
+                self.bottomView.snp_updateConstraints { make in
+                    make.bottom.equalTo(self).offset(self.barHide ? 50 : 0)
+                }
+                self.topView.isHidden = self.barHide
+                self.bottomView.isHidden = self.barHide
+                self.bottomSlider.isHidden = !self.barHide
+            }
+            layoutIfNeeded()
+        } else {
+            UIView.animate(withDuration: 0.3) {
+                self.topView.snp_updateConstraints { make in
+                    make.top.equalTo(self).offset(self.barHide ? -54 : 0)
+                }
+                
+                self.bottomView.snp_updateConstraints { make in
+                    make.bottom.equalTo(self).offset(self.barHide ? 123 : 0)
+                }
+                self.topView.isHidden = self.barHide
+                self.bottomView.isHidden = self.barHide
+                self.bottomSlider.isHidden = !self.barHide
+            }
+            layoutIfNeeded()
+        }
+        if totalPostion > 0 {
+            updateCurrentProgressAndBuffer()
+        }
+    }
+    
     // MARK: -点击事件-
     
     @objc func backBtnClicked() {
@@ -680,7 +730,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         self.pipBtn.isHidden = !isMiniScreen
         self.topView.isHidden = true
         self.bottomView.isHidden = true
-        self.barHide = true
+        self.barHide = true//bar隐藏,但为更新bar样式
+        isBarUpdate = false//每次旋转后,bar未更新样式
+        updateBarDisplay()
         if let de = delegate {
             de.fullScreen(isMini: isMiniScreen)
         }
@@ -692,34 +744,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         if isListMode {
             return
         }
-        if isMiniScreen {
-            UIView.animate(withDuration: 0.3) {
-                self.topView.snp_updateConstraints { make in
-                    make.top.equalTo(self).offset(self.barHide ? -kNavibarHeight : 0)
-                }
-                
-                self.bottomView.snp_updateConstraints { make in
-                    make.bottom.equalTo(self).offset(self.barHide ? 50 : 0)
-                }
-                self.topView.isHidden = self.barHide
-                self.bottomView.isHidden = self.barHide
-                self.bottomSlider.isHidden = !self.barHide
-            }
-        } else {
-            UIView.animate(withDuration: 0.3) {
-                self.topView.snp_updateConstraints { make in
-                    make.top.equalTo(self).offset(self.barHide ? -kNavibarHeight : 0)
-                }
-                
-                self.bottomView.snp_updateConstraints { make in
-                    make.bottom.equalTo(self).offset(self.barHide ? 123 : 0)
-                }
-                self.topView.isHidden = self.barHide
-                self.bottomView.isHidden = self.barHide
-                self.bottomSlider.isHidden = !self.barHide
-            }
-        }
-        updateView()
+        updateBarDisplay()
     }
     //双击事件
     @objc func doubleTapGesture() {

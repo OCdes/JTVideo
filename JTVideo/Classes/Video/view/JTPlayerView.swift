@@ -47,6 +47,12 @@ import AliyunPlayer
         }
     }
     
+    var title: String = "" {
+        didSet {
+            self.controlBar.titleLa.text = title
+        }
+    }
+    
     lazy var player: AliPlayer = {
         let p = AliPlayer.init()
         return p!
@@ -70,9 +76,7 @@ import AliyunPlayer
     lazy var controlBar: JTVideoControlBar = {
         let cb = JTVideoControlBar.init(frame: CGRectZero, isMiniScreen: true, totalTime: "00:00")
         cb.delegate = self
-        cb.backBtn.isHidden = true
         cb.airdropBtn.isHidden = true
-        //        cb.pipBtn.isHidden = true
         return cb
     }()
     
@@ -98,7 +102,13 @@ import AliyunPlayer
     }
     
     @objc func deviceRoated() {
-//        controlBar.fullScreenBtnClicked()
+        if controlBar.prepared {
+            let orientation = UIDevice.current.orientation
+            if orientation == .landscapeRight || orientation == .portrait{
+                controlBar.fullScreenBtnClicked()
+            }
+        }
+        
     }
     
     @objc func appenterBackground() {
@@ -136,6 +146,12 @@ import AliyunPlayer
         }
     }
     
+    func destoryPip() {
+        playerVC?.playerView.stopPip()
+        playerVC?.playerView.pipController = nil
+        playerVC = nil
+    }
+    
     
     //播放控件的play按钮被点击了
     func playBtnClicked(btn: UIButton) {
@@ -166,6 +182,9 @@ import AliyunPlayer
         player.stop()
         player.playerView = nil
         player.destroy()
+        if pipController != nil {
+            destoryPip()
+        }
     }
     
     func pausePlayer() {
@@ -541,16 +560,7 @@ extension JTPlayerView:JTVideoControlBarDelegate {
 
 extension JTPlayerView: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let vc = APPWINDOW.rootViewController {
-            if let nav = vc as? UINavigationController {
-                if let nowVC = nav.viewControllers.last {
-                    return JTEnterPlayerFullTransition(playerView: self, fromVC: nowVC)
-                }
-            } else {
-                return JTEnterPlayerFullTransition(playerView: self, fromVC: vc)
-            }
-        }
-        return nil
+        return JTEnterPlayerFullTransition(playerView: self)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {

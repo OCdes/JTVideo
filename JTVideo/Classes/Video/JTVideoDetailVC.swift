@@ -45,9 +45,9 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate, UIViewContro
         }
         
     }
-    
+    //MARK: 进场出场模态动画
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return JTEnterPlayerFullTransition(playerView: self.playerView, fromVC: self)
+        return JTEnterPlayerFullTransition(playerView: self.playerView)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -73,21 +73,19 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate, UIViewContro
     var url: String = "" {
         didSet {
             self.playerView.urlSource = url
+            self.playerView.title = url
         }
     }
     
-    open func prefersHomeIndicatorAutoHidden() -> Bool {
-        return isFullScreen
+    public static func videoDetailEntrance(withUrl: String, fromVC: UIViewController) {
+        if let pv = playerVC, pv.url == withUrl {
+            fromVC.navigationController?.pushViewController(pv, animated: true)
+        } else {
+            let vc = JTVideoDetailVC()
+            vc.url = withUrl
+            fromVC.navigationController?.pushViewController(vc, animated: true)
+        }
     }
-    
-    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
-    
-    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        return .portrait
-    }
-    
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -108,14 +106,8 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate, UIViewContro
         super.viewDidLoad()
         view.backgroundColor = UIColor.green
         view.addSubview(playerContainerView)
-//        playerContainerView.snp_makeConstraints { make in
-//            make.top.left.right.equalTo(self.view)
-//            make.height.equalTo(300)
-//        }
         playerContainerView.addSubview(playerView)
-//        playerView.snp_makeConstraints { make in
-//            make.edges.equalTo(UIEdgeInsets.zero)
-//        }
+
         
         
         let contentLa = UILabel(frame: CGRectMake(20, CGRectGetMaxY(playerContainerView.frame), UIScreen.main.bounds.width-40, 200))

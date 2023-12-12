@@ -41,9 +41,7 @@ class ViewController: UIViewController {
             self.navigationController?.pushViewController(vc, animated: true)
             break
         case "精特云课堂":
-            let vc = JTVideoEntranceVC()
-            vc.modalPresentationStyle = .overFullScreen
-            self.present(vc, animated: true)
+            JTVideoEntranceVC.videoModuleEntrance(fromVC: self)
             break
         default:
             break

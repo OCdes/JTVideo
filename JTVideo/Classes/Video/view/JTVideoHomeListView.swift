@@ -20,7 +20,7 @@ class JTVideoHomeListView: UICollectionView {
         dataSource = self
         delegate = self
         register(JTVideoHomeListItem.self, forCellWithReuseIdentifier: "JTVideoHomeListItem")
-        _ = viewModel.rx.observe([Any].self, "dataArr").subscribe(onNext: { [weak self] arr in
+        _ = viewModel.rx.observeWeakly([Any].self, "dataArr").subscribe(onNext: { [weak self] arr in
             if let a = arr as? [ViewHomeListModel] {
                 self?.dataArr = a
                 self?.reloadData()

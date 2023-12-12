@@ -6,11 +6,41 @@
 //
 
 import UIKit
+var miniprograms: [UIViewController] = []
 @objc
 open class JTVideoEntranceVC: UITabBarController {
     var barItemColor: UIColor = HEX_COLOR(hexStr: "#bfbfbf")
     var barItemSelectedColor: UIColor = HEX_COLOR(hexStr: "#2c2c2c")
     var barItemFont: CGFloat = 12
+    
+    
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return .portrait
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
+    open override var interfaceOrientation: UIInterfaceOrientation {
+        return .portrait
+    }
+    
+    open override var shouldAutorotate: Bool {
+        return false
+    }
+    
+    public static func videoModuleEntrance(fromVC: UIViewController) {
+        if miniprograms.count != 0 {
+            fromVC.present(miniprograms[0], animated: true)
+        } else {
+            let vc = JTVideoEntranceVC()
+            vc.modalPresentationStyle = .overFullScreen
+            miniprograms.append(vc)
+            fromVC.present(vc, animated: true)
+        }
+    }
+    
     open override func viewDidLoad() {
         super.viewDidLoad()
         initTabbar()
@@ -43,7 +73,10 @@ open class JTVideoEntranceVC: UITabBarController {
         
     }
     
-
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        playerVC?.playerView.destroyPlayerView()
+    }
     
 
 }
