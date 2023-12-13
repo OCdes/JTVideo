@@ -16,6 +16,8 @@ PODS:
     - RxSwift
     - SnapKit
     - SVProgressHUD
+    - SwiftyJSON
+    - ZCycleView (= 1.0.2)
   - Kingfisher (6.3.1)
   - MJRefresh (3.7.6)
   - Moya (13.0.1):
@@ -32,6 +34,8 @@ PODS:
   - RxSwift (6.6.0)
   - SnapKit (4.0.1)
   - SVProgressHUD (2.2.5)
+  - SwiftyJSON (5.0.1)
+  - ZCycleView (1.0.2)
 
 DEPENDENCIES:
   - JTVideo (from `../`)
@@ -51,6 +55,8 @@ SPEC REPOS:
     - RxSwift
     - SnapKit
     - SVProgressHUD
+    - SwiftyJSON
+    - ZCycleView
 
 EXTERNAL SOURCES:
   JTVideo:
@@ -61,7 +67,7 @@ SPEC CHECKSUMS:
   AliPlayerSDK_iOS: 59afa47048b69d9d90a5670a3544f03e9ed8e85c
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
-  JTVideo: c6295439458a2981e72a43ec081863e9a29f9ebf
+  JTVideo: 8869faf12c9cc604f1f6ba99032ee2fa1e36970d
   Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
   MJRefresh: 2fe7fb43a5167ceda20bb7e63f130c04fd1814a5
   Moya: f4a4b80ff2f8a4ffc208dfb31cd91636622fee6e
@@ -71,6 +77,8 @@ SPEC CHECKSUMS:
   RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
+  ZCycleView: 5a1dd3455356a6de81adffe51d80a10692c3084a
 
 PODFILE CHECKSUM: e7d141c6506b1f6e3dd384c20a9f3c1fd6706578
 

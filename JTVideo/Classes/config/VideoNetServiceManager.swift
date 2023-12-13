@@ -74,9 +74,9 @@ func urlByNetworkEnv(env: NetworkEnvironment)->String{
 }
 
 
-class NetServiceManager: NSObject {
+class VideoNetServiceManager: NSObject {
     private var sessionManager: SessionManager?
-    static let manager = NetServiceManager()
+    static let manager = VideoNetServiceManager()
     let dataCachePath = NSHomeDirectory()+"/Documents/NetworkDataCache/"
     let networkStatus: NetworkStautsCode = .NetworkStatusCodeWifi
     private var header:[String: Any] = {
@@ -165,9 +165,6 @@ class NetServiceManager: NSObject {
     public func requestByType(requestType: RequestType, api: String, params: [String: Any], success: @escaping RequestSuccess, fail: @escaping RequestFail)->PublishSubject<Any> {
         self.header = SessionManager.defaultHTTPHeaders
         let sub: PublishSubject = PublishSubject<Any>()
-        if let a = USERDEFAULT.object(forKey: "jwt") {
-            self.header["jwt"] = a
-        }
         var mparam: Dictionary<String, Any> = params
         if let a = USERDEFAULT.object(forKey: "ctoken") {
             mparam["AccessToken"] = a
@@ -214,7 +211,7 @@ class NetServiceManager: NSObject {
     }
 }
 
-extension NetServiceManager {
+extension VideoNetServiceManager {
     
     fileprivate func GET(requestType: RequestType, url: String, params: [String: Any], success:@escaping RequestSuccess, fail:@escaping RequestFail){
         self.sessionManager?.request(url, method: .get, parameters: params, encoding: URLEncoding.default, headers: self.header as? HTTPHeaders).validate().responseJSON(completionHandler: { [weak self](response) in

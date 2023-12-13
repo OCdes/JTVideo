@@ -14,14 +14,15 @@ class JTPlayerFullVC: UIViewController {
         return .landscapeLeft
     }
     
-    
-    open func prefersHomeIndicatorAutoHidden() -> Bool {
+    override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .landscapeLeft
     }
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()

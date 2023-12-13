@@ -15,3 +15,5 @@ ${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework
 ${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework
 ${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
+${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework
+${BUILT_PRODUCTS_DIR}/ZCycleView/ZCycleView.framework

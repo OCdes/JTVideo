@@ -72,10 +72,6 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     var currentAnimationTarget: UIView = UIView()
     //当前动画目标位置
     var currentAnimationTo: CGFloat = 0
-    //当前屏幕亮度
-    private var brightnessStart: CGFloat {
-        return UIScreen.main.brightness
-    }
     //记录当次播放进度条动画终点
     var animationProgressTo: Int64 = 0
     //记录当次缓冲进度条动画终点
@@ -113,6 +109,9 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     private var rightRect: CGRect {
         return CGRect(x: self.middleView.frame.width/2, y: 0, width: self.middleView.frame.width/2, height: self.middleView.frame.height)
     }
+    //每次调整音量时的初始音量
+    private var startVolumn: Float = 0
+    private var startBrightness: CGFloat = 0
     // MARK: 视图懒加载
     //顶部操作区
     lazy var topView: UIImageView = {
@@ -121,7 +120,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         tv.image = JTVideoBundleTool.getBundleImg(with: "topMask")
         tv.addSubview(backBtn)
         backBtn.snp_makeConstraints { make in
-            make.left.equalTo(tv).offset(15)
+            make.left.equalTo(tv).offset(5)
             make.bottom.equalTo(tv)
             make.size.equalTo(CGSize(width: 44, height: 44))
         }
@@ -138,7 +137,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
         
         tv.addSubview(titleLa)
         titleLa.snp_makeConstraints { make in
-            make.left.equalTo(self.backBtn.snp_right).offset(15)
+            make.left.equalTo(self.backBtn.snp_right).offset(5)
             make.right.equalTo(self.airdropBtn.snp_left)
             make.top.height.equalTo(self.backBtn)
         }
@@ -315,6 +314,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     //获取到的系统的音量控制view
     private var volumeView: UISlider?
+    private var mpVolumeView: MPVolumeView?
     init(frame: CGRect, isMiniScreen: Bool, totalTime: String) {
         super.init(frame: frame)
         isUserInteractionEnabled = true
@@ -491,6 +491,11 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             make.left.right.top.bottom.equalTo(self)
         }
         
+        numLa.snp_remakeConstraints { make in
+            make.center.equalTo(self.middleView)
+            make.size.equalTo(CGSize(width: 120, height: 50))
+        }
+        
         loadingLabel.snp_remakeConstraints { make in
             make.center.equalTo(self)
             make.size.equalTo(CGSize(width: 80, height: 20))
@@ -579,6 +584,11 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             make.left.right.top.bottom.equalTo(self)
         }
         
+        numLa.snp_remakeConstraints { make in
+            make.center.equalTo(self.middleView)
+            make.size.equalTo(CGSize(width: 120, height: 50))
+        }
+        
         loadingLabel.snp_remakeConstraints { make in
             make.center.equalTo(self)
             make.size.equalTo(CGSize(width: 80, height: 20))
@@ -587,14 +597,18 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
     
     //获取系统音量控制组件
     private func dealVolumViewAndAirDrop() {
-        let mpVolumeView = MPVolumeView()
-        for v in mpVolumeView.subviews {
-            if v.isKind(of: UISlider.self) {
-                if let vv = v as? UISlider {
-                    volumeView = vv
+        mpVolumeView = MPVolumeView()
+        mpVolumeView?.removeFromSuperview()
+        if mpVolumeView != nil {
+            for v in mpVolumeView!.subviews {
+                if v.isKind(of: UISlider.self) {
+                    if let vv = v as? UISlider {
+                        volumeView = vv
+                    }
                 }
             }
         }
+        
     }
     
     // MARK: -控制条控制-
@@ -816,14 +830,19 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             middelStartPoint = point
             if leftRect.contains(point) {
                 leftPanTransitionY = point.y
+                if let vv = volumeView {
+                    startVolumn = vv.value
+                    mpVolumeView?.isHidden = true
+                }
             }
             if rightRect.contains(point) {
                 rightPanTransitionY = point.y
+                startBrightness = UIScreen.main.brightness
             }
             
             let location = pan.location(in: pan.view)
             panLocationX = location.x
-            
+            numLa.isHidden = false
             break
             
         case .changed:
@@ -839,10 +858,11 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                         let stepDistance = -Float(stepY/(self.middleView.frame.height))
                         if let vv = volumeView {
                             numLa.isHidden = false
-                            let value = (vv.value + stepDistance) > 1 ? 1 : ((vv.value + stepDistance) < 0 ? 0 : (vv.value + stepDistance))
-                            middelPanYEndPostion = (vv.value + stepDistance)
+                            let value = (startVolumn + stepDistance) > 1 ? 1 : ((startVolumn + stepDistance) < 0 ? 0 : (startVolumn + stepDistance))
+                            middelPanYEndPostion = (startVolumn + stepDistance)
                             let totalValue = abs(value) > 1 ? 1 : (value)
                             vv.setValue(totalValue, animated: true)
+                            vv.alpha = 0.01
                             numLa.text = String(format: "音量:%d%", Int(totalValue*100))
                         }
                     }
@@ -854,7 +874,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
                         numLa.isHidden = false
                         let stepY = transitionPoint.y-rightPanTransitionY
                         let stepDistance = -stepY/self.middleView.frame.height
-                        let totalValue = (brightnessStart + stepDistance) > 1 ? 1 : (brightnessStart + stepDistance)
+                        let totalValue = (startBrightness + stepDistance) > 1 ? 1 : (startBrightness + stepDistance)
                         middelPanYEndPostion = Float(totalValue)
                         UIScreen.main.brightness = totalValue
                         numLa.text = String(format: "亮度:%d%", Int(totalValue*100))
@@ -891,6 +911,7 @@ public class JTVideoControlBar: UIImageView, CAAnimationDelegate {
             rightPanTransitionY = 0
             panLocationX = 0
             numLa.isHidden = true
+            mpVolumeView?.isHidden = false
             break
         default:
             break

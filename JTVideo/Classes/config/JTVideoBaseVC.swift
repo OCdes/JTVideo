@@ -20,7 +20,7 @@ open class JTVideoBaseVC: UIViewController {
     }
     
     func setupNavBtns() {
-        
+        self.navigationController?.navigationBar.isTranslucent = false
         let hb = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         hb.setImage(JTVideoBundleTool.getBundleImg(with: "mimiprogramhome"), for: .normal)
         hb.addTarget(self, action: #selector(homeBtnClicked), for: .touchUpInside)

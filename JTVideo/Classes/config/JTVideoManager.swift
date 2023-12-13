@@ -11,53 +11,26 @@ var kJTVideoUrlKey = "kJTVideoUrlKey"
 var kJTVideoPlayViewKey = "kJTVideoPlayViewKey"
 @objc
 public protocol JTVideoDelegate {
-    @objc optional var jt_playerView: UIView? { get set }
-    @objc optional var jt_playerSource: String? { get set }
     
     @objc optional func JTNeedRelogin()
     
 }
 
 
-extension UITableViewCell: JTVideoDelegate {
-    public var jt_playerView: UIView? {
-        get {
-            return objc_getAssociatedObject(self, &kJTVideoPlayViewKey) as? UIView
-        }
-        set {
-            objc_setAssociatedObject(self, &kJTVideoPlayViewKey, jt_playerView, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-    public var jt_playerSource: String? {
-        get {
-            return objc_getAssociatedObject(self, kJTVideoUrlKey) as? String
-        }
-        set {
-            objc_setAssociatedObject(self, &kJTVideoUrlKey, jt_playerSource, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-    
-    
-}
-
 open class JTVideoManager: NSObject {
     public static let manager = JTVideoManager()
     open weak var delegate: JTVideoDelegate?
-    @objc open var url: String = "" {
+    @objc open var url: String = "http://192.168.2.130:8028" {
         didSet {
             USERDEFAULT.set(url, forKey: "baseURL")
         }
     }
-    @objc open var jwt: String = "" {
+    @objc open var AccessToken: String = "a636ceb82e13490c8ed05360da3b1035" {
         didSet {
-            USERDEFAULT.set(jwt, forKey: "jwt")
+            USERDEFAULT.set("a636ceb82e13490c8ed05360da3b1035", forKey: "AccessToken")
         }
     }
-    @objc open var ctoken: String = "" {
-        didSet {
-            USERDEFAULT.set(ctoken, forKey: "ctoken")
-        }
-    }
+
     @objc open var phone: String = "" {
         didSet {
             USERDEFAULT.set(phone, forKey: "phone")

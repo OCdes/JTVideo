@@ -104,7 +104,7 @@ import AliyunPlayer
     @objc func deviceRoated() {
         if controlBar.prepared {
             let orientation = UIDevice.current.orientation
-            if orientation == .landscapeRight || orientation == .portrait{
+            if (orientation == .landscapeRight && !self.isFullScreen) || (orientation == .portrait && self.isFullScreen){
                 controlBar.fullScreenBtnClicked()
             }
         }

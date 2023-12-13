@@ -48,7 +48,7 @@ open class JTVideoEntranceVC: UITabBarController {
     }
     
     func initTabbar() {
-        let homeVc = JTVideoHomeVC()
+        let homeVc = JTClassHomeVC()
         homeVc.tabBarItem.title = "首页"
         homeVc.tabBarItem.image = JTVideoBundleTool.getBundleImg(with: "jtvideohome")
         homeVc.tabBarItem.selectedImage = JTVideoBundleTool.getBundleImg(with: "jtvideohome-selected")

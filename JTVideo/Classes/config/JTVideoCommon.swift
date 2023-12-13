@@ -240,25 +240,16 @@ let HEX_FFF = HEX_COLOR(hexStr: "#FFFFFF")
 let HEX_333 = kIsFlagShip ? HEX_FFF : HEX_COLOR(hexStr: "#333333")
 let HEX_666 = HEX_COLOR(hexStr: "#666666")
 let HEX_999 = HEX_COLOR(hexStr: "#999999")
-let HEX_LightBlue = HEX_COLOR(hexStr: "#408CE2")
-let HEX_ThemeBlack = HEX_COLOR(hexStr: "#1A1C29")
-let HEX_F5F5F5 = HEX_COLOR(hexStr: "#f5f5f5")
-let HEX_VIEWBACKCOLOR = HEX_COLOR(hexStr: "#2C3039")
-let HEX_GOLDTEXTCOLOR = HEX_COLOR(hexStr: "#E1D1AC")
-let HEX_GOLDGRATYCOLOR = HEX_COLOR(hexStr: "#a29d95")
-let HEX_GOLDBLACK = HEX_COLOR(hexStr: "#151722")
-let HEX_GOLDYELLOW = HEX_COLOR(hexStr: "#D0A72F")
+let HEX_ThemeColor = HEX_COLOR(hexStr: "#2899F9")
+let HEX_NavColor = HEX_COLOR(hexStr: "#ECECEC")
+let HEX_VIEWBACKCOLOR = HEX_COLOR(hexStr: "#F6F6F6")
 
 
 let APPWINDOW: UIWindow = UIApplication.shared.windows.first { $0.isKeyWindow }!
 //云端地址
-let URL_CLOUD = "https://cloud.hzjtyh.com"
+let URL_CLOUD = "http://192.168.2.130:8028"
 public var BASE_URL = {()->String in
-    return (USERDEFAULT.object(forKey: "baseURL") as? String) ?? ""
-}()
-
-public var tocken = {()->String in
-    return USERDEFAULT.object(forKey: "jwt") as! String
+    return "http://192.168.2.130:8028"
 }()
 
 //请求状态码
@@ -272,3 +263,5 @@ let REQUEST_UNVALIDTOKEN: Int = 1005
 let REQUEST_TODIVCELOGIN: Int = 6603
 let REQUEST_NOPAYUSER: Int = 2001
 
+
+let POST_JTVHOME = "/api/video/homeData"

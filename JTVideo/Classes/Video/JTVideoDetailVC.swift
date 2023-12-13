@@ -137,50 +137,6 @@ open class JTVideoDetailVC: UIViewController, JTPlayerViewDelegate, UIViewContro
             UIDevice.current.setValue(orientation.rawValue , forKey: "orientation")
         }
     }
-    
-    func animatePlayerContainer() {
-        
-        UIView.animate(withDuration: 0.3, delay: 0, options: .layoutSubviews) {
-            let bounds = CGRect(x: 0, y: 0, width: self.isFullScreen ? kScreenHeight : kScreenWidth, height: self.isFullScreen ?  kScreenWidth : 300)
-            self.playerContainerView.bounds = bounds
-            self.playerContainerView.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
-            self.playerContainerView.transform = CGAffineTransform(rotationAngle: self.isFullScreen ? -Double.pi/2 : 0)
-            
-        } completion: { b in
-            let bounds = CGRect(x: 0, y: 0, width: self.isFullScreen ? kScreenHeight : kScreenWidth, height: self.isFullScreen ?  kScreenWidth : 300)
-            self.playerContainerView.bounds = bounds
-            self.playerContainerView.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
-            self.playerContainerView.transform = CGAffineTransform(rotationAngle: self.isFullScreen ? -Double.pi/2 : 0)
-            self.playerView.bounds = self.playerContainerView.bounds
-            if !self.isFullScreen {
-                self.playerContainerView.addSubview(self.playerView)
-                self.playerView.snp_remakeConstraints { make in
-                    make.edges.equalTo(self.playerContainerView)
-                }
-                self.fullVC?.dismiss(animated: false, completion: {
-                    self.playerView.removeFromSuperview()
-                    self.playerContainerView.addSubview(self.playerView)
-                    self.playerView.snp_remakeConstraints { make in
-                        make.edges.equalTo(self.playerContainerView)
-                    }
-                    
-                })
-            } else {
-                self.playerView.center = self.playerContainerView.center
-                let vc = JTPlayerFullVC()
-                vc.modalPresentationStyle = .fullScreen
-                self.fullVC = vc
-                self.present(vc, animated: false) {
-                    self.playerView.removeFromSuperview()
-                    vc.view.addSubview(self.playerView)
-                    self.playerView.snp_makeConstraints { make in
-                        make.edges.equalTo(UIEdgeInsets.zero)
-                    }
-                    vc.view.superview?.insertSubview(self.view, belowSubview: vc.view)
-                }
-            }
-        }
-    }
     /*
      // MARK: - Navigation
      
