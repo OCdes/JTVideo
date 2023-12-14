@@ -117,13 +117,10 @@ class VideoNetServiceManager: NSObject {
     public func requestByType(requestType: RequestType, url: String, params: [String: Any], success: @escaping RequestSuccess, fail: @escaping RequestFail)->PublishSubject<Any> {
         let sub: PublishSubject = PublishSubject<Any>()
         self.header = SessionManager.defaultHTTPHeaders
-        if let a = USERDEFAULT.object(forKey: "jwt") {
-            self.header["jwt"] = a
+        if let a = USERDEFAULT.object(forKey: "AccessToken") {
+            self.header["AccessToken"] = a
         }
         var mparam: Dictionary<String, Any> = params
-        if let a = USERDEFAULT.object(forKey: "ctoken") {
-            mparam["AccessToken"] = a
-        }
         print(mparam)
         switch requestType {
         case .RequestTypeGet:
@@ -166,8 +163,8 @@ class VideoNetServiceManager: NSObject {
         self.header = SessionManager.defaultHTTPHeaders
         let sub: PublishSubject = PublishSubject<Any>()
         var mparam: Dictionary<String, Any> = params
-        if let a = USERDEFAULT.object(forKey: "ctoken") {
-            mparam["AccessToken"] = a
+        if let a = USERDEFAULT.object(forKey: "AccessToken") {
+            self.header["AccessToken"] = a
         }
         let uStr = urlByNetworkEnv(env: currentNetworkEv) + api
         print("\(uStr)\(mparam)")

@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
     s.dependency "Moya", "~> 13.0.0"
     s.dependency "HandyJSON"
     s.dependency "SwiftyJSON"
-    s.dependency "ZCycleView","1.0.2"
+    s.dependency "SDCycleScrollView"
     s.dependency "IQKeyboardManagerSwift"
     s.dependency "RxSwift"
     s.dependency "RxCocoa"

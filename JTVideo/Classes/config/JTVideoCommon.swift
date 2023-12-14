@@ -213,6 +213,11 @@ func SVPNoUserinteractShow(content str: String) {
     
 }
 
+func SVPDismiss(delay:TimeInterval = 0) {
+    SVProgressHUD.dismiss(withDelay: delay)
+}
+
+
 func hideCardId(str: String) -> String {
     if str.count > 0  {
         let s = (str as NSString).substring(with: NSRange(location: str.count-4, length: 4))
@@ -249,7 +254,7 @@ let APPWINDOW: UIWindow = UIApplication.shared.windows.first { $0.isKeyWindow }!
 //云端地址
 let URL_CLOUD = "http://192.168.2.130:8028"
 public var BASE_URL = {()->String in
-    return "http://192.168.2.130:8028"
+    return USERDEFAULT.string(forKey: "baseURL") ?? ""
 }()
 
 //请求状态码
@@ -263,5 +268,7 @@ let REQUEST_UNVALIDTOKEN: Int = 1005
 let REQUEST_TODIVCELOGIN: Int = 6603
 let REQUEST_NOPAYUSER: Int = 2001
 
-
+//视频首页
 let POST_JTVHOME = "/api/video/homeData"
+//视频列表
+let POST_JTVVIDEOS = "/api/video/allVideoCollections"

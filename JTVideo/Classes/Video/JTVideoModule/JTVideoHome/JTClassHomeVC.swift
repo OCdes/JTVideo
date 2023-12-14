@@ -10,30 +10,25 @@ import UIKit
 class JTClassHomeVC: JTVideoBaseVC {
     var viewModel = JTVHomeViewModel()
     lazy var collectionView: JTVHomeCollectionView = {
-        let cv = JTVHomeCollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout(), viewModel: viewModel)
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+        let cv = JTVHomeCollectionView(frame: CGRect.zero, collectionViewLayout: layout, viewModel: viewModel)
         return cv
-    }()
-    lazy var searchBar: UIButton = {
-        let sb = UIButton(frame: CGRect(x: 17, y: 15, width: UIScreen.main.bounds.width-36, height: 47))
-        sb.setTitle("搜索", for: .normal)
-        sb.titleLabel?.font = UIFont.systemFont(ofSize: 25)
-        sb.setTitleColor(HEX_COLOR(hexStr: "#919191"), for: .normal)
-        sb.setImage(JTVideoBundleTool.getBundleImg(with: "homeSearch"), for: .normal)
-        sb.layer.cornerRadius = 23.5
-        sb.layer.masksToBounds = true
-        sb.backgroundColor = HEX_COLOR(hexStr: "#ECECEC")
-        return sb
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(searchBar)
+        self.title = "精特云课堂"
+        view.backgroundColor = HEX_VIEWBACKCOLOR
         view.addSubview(collectionView)
         collectionView.snp_makeConstraints { make in
-            make.left.bottom.right.equalTo(self.view)
-            make.top.equalTo(self.searchBar.snp_bottom)
+            make.top.left.bottom.right.equalTo(self.view)
         }
         // Do any additional setup after loading the view.
+        _ = collectionView.jt_addRefreshHeader {
+            self.viewModel.refreshHomePage(scrollView: self.collectionView)
+        }
+        collectionView.jt_startRefresh()
     }
     
 

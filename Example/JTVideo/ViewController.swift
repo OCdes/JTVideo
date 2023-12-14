@@ -41,6 +41,8 @@ class ViewController: UIViewController {
             self.navigationController?.pushViewController(vc, animated: true)
             break
         case "精特云课堂":
+            JTVideoManager().AccessToken = "a636ceb82e13490c8ed05360da3b1035"
+            JTVideoManager().url = "http://192.168.2.132:8028"
             JTVideoEntranceVC.videoModuleEntrance(fromVC: self)
             break
         default:

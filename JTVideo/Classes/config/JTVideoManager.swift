@@ -20,14 +20,14 @@ public protocol JTVideoDelegate {
 open class JTVideoManager: NSObject {
     public static let manager = JTVideoManager()
     open weak var delegate: JTVideoDelegate?
-    @objc open var url: String = "http://192.168.2.130:8028" {
+    @objc open var url: String = "" {
         didSet {
             USERDEFAULT.set(url, forKey: "baseURL")
         }
     }
-    @objc open var AccessToken: String = "a636ceb82e13490c8ed05360da3b1035" {
+    @objc open var AccessToken: String = "" {
         didSet {
-            USERDEFAULT.set("a636ceb82e13490c8ed05360da3b1035", forKey: "AccessToken")
+            USERDEFAULT.set(AccessToken, forKey: "AccessToken")
         }
     }
 
