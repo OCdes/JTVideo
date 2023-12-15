@@ -8,22 +8,26 @@
 import UIKit
 
 class JTVClassDetailVC: JTVideoBaseVC {
-    
+    var viewModel: JTVClassDetailViewModel = JTVClassDetailViewModel()
+    lazy var detailView: JTVClassDetailView = {
+        let dv = JTVClassDetailView.init(frame: self.view.bounds, style: .grouped, viewModel: self.viewModel)
+        return dv
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "课程详情"
+        view.backgroundColor = HEX_VIEWBACKCOLOR
+        view.addSubview(self.detailView)
+        self.detailView.snp_makeConstraints { make in
+            make.edges.equalTo(UIEdgeInsets.zero)
+        }
         
-        // Do any additional setup after loading the view.
+        let _ = self.detailView.jt_addRefreshHeader {
+            self.viewModel.refreshData(scrollView: self.detailView)
+        }
+        
+        self.detailView.jt_startRefresh()
+        
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

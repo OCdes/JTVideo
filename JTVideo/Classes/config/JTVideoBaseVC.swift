@@ -21,11 +21,33 @@ open class JTVideoBaseVC: UIViewController {
     
     func setupNavBtns() {
         self.navigationController?.navigationBar.isTranslucent = false
-        let hb = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        hb.setImage(JTVideoBundleTool.getBundleImg(with: "mimiprogramhome"), for: .normal)
-        hb.addTarget(self, action: #selector(homeBtnClicked), for: .touchUpInside)
+        if let nav = self.navigationController {
+            if nav.viewControllers.count > 3 {
+                
+                let bb = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+                bb.setImage(JTVideoBundleTool.getBundleImg(with: "jtvNavBackIcon"), for: .normal)
+                bb.addTarget(self, action: #selector(backBtnClicked), for: .touchUpInside)
+                
+                let bbItem = UIBarButtonItem(customView: bb)
+                
+                let hb = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+                hb.setImage(JTVideoBundleTool.getBundleImg(with: "mimiprogramhome"), for: .normal)
+                hb.addTarget(self, action: #selector(homeBtnClicked), for: .touchUpInside)
+                
+                let homeItem = UIBarButtonItem(customView: hb)
+                
+                self.navigationItem.leftBarButtonItems = [bbItem,homeItem]
+            } else if nav.viewControllers.count != 1 {
+                let bb = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+                bb.setImage(JTVideoBundleTool.getBundleImg(with: "jtvNavBackIcon"), for: .normal)
+                bb.addTarget(self, action: #selector(backBtnClicked), for: .touchUpInside)
+                
+                let bbItem = UIBarButtonItem(customView: bb)
+                
+                self.navigationItem.leftBarButtonItems = [bbItem]
+            }
+        }
         
-        let homeItem = UIBarButtonItem(customView: hb)
         
         
         let cb = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
@@ -34,13 +56,17 @@ open class JTVideoBaseVC: UIViewController {
         
         let closetItem = UIBarButtonItem(customView: cb)
         
-        self.navigationItem.leftBarButtonItems = [homeItem]
+        
         self.navigationItem.rightBarButtonItems = [closetItem]
     }
     
     
     @objc func homeBtnClicked() {
         self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+    @objc func backBtnClicked() {
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func closeBtnClicked() {

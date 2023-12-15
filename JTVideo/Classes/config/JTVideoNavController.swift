@@ -19,13 +19,14 @@ class JTVideoNavController: UINavigationController {
         if #available(iOS 13.0, *) {
             let appearence = UINavigationBarAppearance()
             appearence.backgroundColor = UIColor.systemBlue
-            appearence.titleTextAttributes = [.font : UIFont.systemFont(ofSize: 14)]
+            appearence.titleTextAttributes = [.font : UIFont.systemFont(ofSize: 16), .foregroundColor : UIColor.white]
             self.navigationBar.standardAppearance = appearence
             self.navigationBar.scrollEdgeAppearance = self.navigationBar.standardAppearance
         } else {
             // Fallback on earlier versions
             self.navigationBar.barTintColor = UIColor.systemBlue
             self.navigationBar.backgroundColor = UIColor.systemBlue
+            self.navigationBar.titleTextAttributes = [.font : UIFont.systemFont(ofSize: 15), .foregroundColor : UIColor.white]
         }
     }
     

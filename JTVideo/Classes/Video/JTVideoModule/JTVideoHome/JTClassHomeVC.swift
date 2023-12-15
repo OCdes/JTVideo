@@ -18,7 +18,9 @@ class JTClassHomeVC: JTVideoBaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.viewModel.navigationVC = self.navigationController
         self.title = "精特云课堂"
+        self.tabBarItem.title = "首页"
         view.backgroundColor = HEX_VIEWBACKCOLOR
         view.addSubview(collectionView)
         collectionView.snp_makeConstraints { make in

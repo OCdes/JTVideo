@@ -338,6 +338,11 @@
 		6B310F666EAFD21030802E92C280E849 /* ConcurrentDispatchQueueScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FE46A73C9BB592399DF4E039710102 /* ConcurrentDispatchQueueScheduler.swift */; };
 		6B32920BB4CF28C41FEF4C60D5CB723C /* Disposables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D65DE0F8593BE69B99457977061E0B /* Disposables.swift */; };
 		6B846FE7BB9C38F64F9C80C08CA863DF /* NSImage+Compatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B975658297939081B0D76608C59BF3 /* NSImage+Compatibility.m */; };
+		6B9DFE872B2C30B7004C26EC /* JTVClassDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9DFE862B2C30B7004C26EC /* JTVClassDetailViewModel.swift */; };
+		6B9DFE892B2C32CA004C26EC /* JTVClassDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9DFE882B2C32CA004C26EC /* JTVClassDetailView.swift */; };
+		6B9DFE8B2B2C5759004C26EC /* JTClassPlayVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9DFE8A2B2C5759004C26EC /* JTClassPlayVC.swift */; };
+		6B9DFE8D2B2C576F004C26EC /* JTClassPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9DFE8C2B2C576E004C26EC /* JTClassPlayView.swift */; };
+		6B9DFE8F2B2C57F2004C26EC /* JTClassPlayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9DFE8E2B2C57F2004C26EC /* JTClassPlayViewModel.swift */; };
 		6BAAA9667D2E33B124404EC907BEA036 /* PrimitiveSequence+Zip+arity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6576CF2752C65A7556E7F52755DFD036 /* PrimitiveSequence+Zip+arity.swift */; };
 		6C2B117FAFE051D2525AA22083C46EC2 /* SnapKit-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B7E522AE1E698B9D6C3CBE5E82ADD99 /* SnapKit-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6CF9B4B8DDB2DB4EE0EE9EFC166CD527 /* MJRefreshAutoGifFooter.h in Headers */ = {isa = PBXBuildFile; fileRef = E4628163BE1761AA8F595C1A219F7293 /* MJRefreshAutoGifFooter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1468,6 +1473,11 @@
 		6A9C91B9A86746F8C7D233CCA1B80144 /* KVORepresentable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KVORepresentable.swift; path = RxCocoa/Foundation/KVORepresentable.swift; sourceTree = "<group>"; };
 		6AF7B03575F54D6F0E5E1D9BF167909F /* MJRefreshNormalTrailer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MJRefreshNormalTrailer.m; path = MJRefresh/Custom/Trailer/MJRefreshNormalTrailer.m; sourceTree = "<group>"; };
 		6B4441A99C089697E780F2CD727F1EA7 /* VirtualTimeScheduler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VirtualTimeScheduler.swift; path = RxSwift/Schedulers/VirtualTimeScheduler.swift; sourceTree = "<group>"; };
+		6B9DFE862B2C30B7004C26EC /* JTVClassDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVClassDetailViewModel.swift; sourceTree = "<group>"; };
+		6B9DFE882B2C32CA004C26EC /* JTVClassDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVClassDetailView.swift; sourceTree = "<group>"; };
+		6B9DFE8A2B2C5759004C26EC /* JTClassPlayVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTClassPlayVC.swift; sourceTree = "<group>"; };
+		6B9DFE8C2B2C576E004C26EC /* JTClassPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTClassPlayView.swift; sourceTree = "<group>"; };
+		6B9DFE8E2B2C57F2004C26EC /* JTClassPlayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTClassPlayViewModel.swift; sourceTree = "<group>"; };
 		6BD6D448221E411977A164524F914922 /* SynchronizedUnsubscribeType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SynchronizedUnsubscribeType.swift; path = RxSwift/Concurrency/SynchronizedUnsubscribeType.swift; sourceTree = "<group>"; };
 		6C188F98BDFEFFE9317318055F27BF29 /* SVProgressHUD.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SVProgressHUD.m; path = SVProgressHUD/SVProgressHUD.m; sourceTree = "<group>"; };
 		6C5583A64D6156292C12D0201DB07CBD /* Pods-JTVideo_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-JTVideo_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -2723,6 +2733,7 @@
 				F44CA0F599A2098C34E12B653DDDB35C /* JTClassHomeVC.swift */,
 				CC51A7D382D029C4777237DDE11A0EE7 /* JTVClassDetailVC.swift */,
 				60EF616C4A2A14BA3FA23A0A8FFA0E3E /* JTVRecommandVideListVC.swift */,
+				6B9DFE8A2B2C5759004C26EC /* JTClassPlayVC.swift */,
 				771E0B3D0FB5CB44638C8975603C3FB8 /* view */,
 				9A5BC8C0D8AE2DAC8B15CA6EEA78D1B4 /* viewmodel */,
 			);
@@ -2750,6 +2761,8 @@
 				A2C60D7ECCEE563B6AF02C2DD66683A3 /* JTVHomeBannerView.swift */,
 				691E4E29BB51CF5D0BC3524CDA936911 /* JTVHomeCollectionView.swift */,
 				76B79AAE7FC019B2D5A769A56DA406D4 /* JTVRecommandVideList.swift */,
+				6B9DFE882B2C32CA004C26EC /* JTVClassDetailView.swift */,
+				6B9DFE8C2B2C576E004C26EC /* JTClassPlayView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -2951,6 +2964,8 @@
 			children = (
 				401427418856516A3D340B7AB15FE81F /* JTVHomeViewModel.swift */,
 				B68F2A1915B456F7A007F35A9CC617BD /* JTVRecommandVideoViewModel.swift */,
+				6B9DFE862B2C30B7004C26EC /* JTVClassDetailViewModel.swift */,
+				6B9DFE8E2B2C57F2004C26EC /* JTClassPlayViewModel.swift */,
 			);
 			path = viewmodel;
 			sourceTree = "<group>";
@@ -5117,6 +5132,7 @@
 				28DDB9E4D023CA4F97ED88710325077A /* JTClassHomeVC.swift in Sources */,
 				06A33F6CFCC23663156897550D0FC9D4 /* JTEnterPlayerFullTransition.swift in Sources */,
 				973517401C31857631F76FAC61F50CFF /* JTExitPlayerFullTransition.swift in Sources */,
+				6B9DFE8F2B2C57F2004C26EC /* JTClassPlayViewModel.swift in Sources */,
 				239C2091D5247AADDD246A594D216CD8 /* JTListVideoPlayerView.swift in Sources */,
 				70B0F83C28A4CA21B8E910B6B5B96F76 /* JTOpenClassViewModel.swift in Sources */,
 				907CD9F5060883042BC0DFC2EA707E72 /* JTOpenLessonVC.swift in Sources */,
@@ -5129,10 +5145,12 @@
 				0F6BE705E6506C47F4AB47B4EB2AD5A0 /* JTVHomeCollectionView.swift in Sources */,
 				9A7DCF0B16444AFBC48A1DF9B0F81AD0 /* JTVHomeViewModel.swift in Sources */,
 				D49EA1E7BBBE03619C8921092EA72900 /* JTVideo-dummy.m in Sources */,
+				6B9DFE8B2B2C5759004C26EC /* JTClassPlayVC.swift in Sources */,
 				4534F9DC9E3D57945D1FC4580D44595A /* JTVideoBaseModel.swift in Sources */,
 				81B3667E005C5325C1FA07FA87ACE693 /* JTVideoBaseVC.swift in Sources */,
 				1B3570202D90AB80D6F606504F431EC5 /* JTVideoBaseViewModel.swift in Sources */,
 				49D693790990BF5BC41FE052EB11CD15 /* JTVideoBundleTool.swift in Sources */,
+				6B9DFE892B2C32CA004C26EC /* JTVClassDetailView.swift in Sources */,
 				0C8C4BDAB1CDDFD2B66C0B0759E5008D /* JTVideoButtonExtraExtension.swift in Sources */,
 				836C85936FCEEB2EC1469398F2F91E2E /* JTVideoCommon.swift in Sources */,
 				110C36F43D68C5E49ADB69DF639A5A56 /* JTVideoControlBar.swift in Sources */,
@@ -5147,10 +5165,12 @@
 				D3A2A7A3203DE8DE5DC40BE2F37B0ED4 /* JTVideoProgressSliderView.swift in Sources */,
 				2346C760750F20631D3CEB7C364BCA4B /* JTVMineListView.swift in Sources */,
 				2C73BC408F5CF9B2BB11C1AAC38DAE74 /* JTVMineViewModel.swift in Sources */,
+				6B9DFE872B2C30B7004C26EC /* JTVClassDetailViewModel.swift in Sources */,
 				0282AE3BBCFB33BD7E19004D4A20636E /* JTVRecommandVideList.swift in Sources */,
 				F6C980F05C43DF48AC64055DCDB6C370 /* JTVRecommandVideListVC.swift in Sources */,
 				6987DC889D1A1FBC03B034F0F539C419 /* JTVRecommandVideoViewModel.swift in Sources */,
 				20A87DC0F17FA7FE60C0DB9ACA019310 /* ScrollView+Extension.swift in Sources */,
+				6B9DFE8D2B2C576F004C26EC /* JTClassPlayView.swift in Sources */,
 				1326B1B2A54EBD1AD888DD521D0AA6AF /* VideoHomeViewModel.swift in Sources */,
 				DEF21079708D1D92C99C58A6BACAEB76 /* VideoNetServiceManager.swift in Sources */,
 			);

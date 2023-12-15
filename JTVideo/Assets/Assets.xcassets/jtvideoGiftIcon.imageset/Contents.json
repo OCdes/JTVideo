@@ -1,15 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "jtopenclass-selected.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "jtvideoGiftIcon@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "jtvideoGiftIcon@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

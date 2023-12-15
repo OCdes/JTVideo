@@ -43,7 +43,8 @@ class JTVHomeCollectionView: UICollectionView {
         let sectionModel = dataArr[btn.tag]
         let sectionType = sectionModel.sectionType
         if sectionType == .recommandVideoType {
-            
+            let vc = JTVRecommandVideListVC()
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
         if sectionType == .recommandTeacherType {
             
@@ -87,19 +88,19 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
         } else if sectionType == .recommandVideoType {
             let item = sectionModel.sectionItems[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVRecommandVideoItem", for: indexPath) as! JTVRecommandVideoItem
-            cell.imgv.kf.setImage(with: URL(string: item.coverImage), placeholder: JTVideoBundleTool.getBundleImg(with: "JTVideoPlaceHolder"))
+            cell.imgv.kf.setImage(with: URL(string: item.coverImage), placeholder: jtVideoPlaceHolderImage())
             cell.titleLa.text = item.name
-            let attris: [NSAttributedString.Key:Any] = [.strikethroughStyle : NSUnderlineStyle.single, .strikethroughColor : HEX_COLOR(hexStr: "#919191")]
-            let attext = NSMutableAttributedString(string: item.price)
+            let attris: [NSAttributedString.Key:Any] = [.strikethroughStyle : 1,.baselineOffset: 1]
+            let attext = NSMutableAttributedString(string: "¥\(item.price)")
             attext.addAttributes(attris, range: NSRange(location: 0, length: attext.length))
             cell.priceLa.attributedText = attext
-            cell.currentPriceLa.text = item.price
-            cell.followNumLa.text = "\(66)人订阅"
+            cell.currentPriceLa.text = "¥\(item.price)"
+            cell.followNumLa.text = "\(86)人订阅"
             return cell
         } else {
             let item = sectionModel.sectionItems[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVRecommandTeacherItem", for: indexPath) as! JTVRecommandTeacherItem
-            cell.imgv.kf.setImage(with: URL(string: item.avatarUrl), placeholder: JTVideoBundleTool.getBundleImg(with: "JTVideoPlaceHolder"))
+            cell.imgv.kf.setImage(with: URL(string: item.avatarUrl), placeholder: jtVideoPlaceHolderImage())
             cell.nameLa.text = item.name
             cell.typeLa.text = "优秀"
             cell.teacherInfoLa.text = item.description
@@ -272,6 +273,8 @@ class JTVCategoryItem: UICollectionViewCell {
 class JTVRecommandVideoItem: UICollectionViewCell {
     lazy var imgv: UIImageView = {
         let imgv = UIImageView()
+        imgv.contentMode = .scaleAspectFill
+        imgv.clipsToBounds = true
         return imgv
     }()
     lazy var titleLa: UILabel = {
@@ -368,6 +371,8 @@ class JTVRecommandTeacherItem: UICollectionViewCell {
     
     lazy var imgv: UIImageView = {
         let imv = UIImageView()
+        imv.contentMode = .scaleAspectFill
+        imv.clipsToBounds = true
         return imv
     }()
     
@@ -444,7 +449,7 @@ class JTVRecommandTeacherItem: UICollectionViewCell {
             make.left.equalTo(self.imgv.snp_right).offset(12)
             make.top.equalTo(self.typeLa.snp_bottom).offset(13)
             make.right.equalTo(self.nameLa)
-            make.bottom.lessThanOrEqualTo(self.followNumLa)
+            make.bottom.lessThanOrEqualTo(self.followNumLa.snp_top)
         }
         
     }
@@ -525,5 +530,27 @@ class JTVHomeSectionHeaderView: UICollectionReusableView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class JTVSearchBarButton: UIButton {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUpUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setUpUI()
+    }
+    
+    private func setUpUI() {
+        setTitle("    搜索", for: .normal)
+        titleLabel?.font = UIFont.systemFont(ofSize: 20)
+        setTitleColor(HEX_COLOR(hexStr: "#919191"), for: .normal)
+        setImage(JTVideoBundleTool.getBundleImg(with: "homeSearch"), for: .normal)
+        layer.cornerRadius = 18.5
+        layer.masksToBounds = true
+        backgroundColor = HEX_COLOR(hexStr: "#ECECEC")
     }
 }

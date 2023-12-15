@@ -239,16 +239,29 @@ func timeExchange(time: String)-> String {
     }
 }
 
+func jtVideoPlaceHolderImage()->UIImage {
+    return JTVideoBundleTool.getBundleImg(with: "JTVideoPlaceHolder") ?? UIImage()
+}
+
+var dateFt: DateFormatter?
+
+func yyyymmddWithDotFormatter()-> DateFormatter {
+    if dateFt == nil {
+        dateFt = DateFormatter()
+        dateFt?.dateFormat = "yyyy.MM.dd"
+    }
+    return dateFt!
+}
+
 //--------------------------------------------------------------
 let kIsFlagShip = JTVideoManager.manager.isFlagShip
 let HEX_FFF = HEX_COLOR(hexStr: "#FFFFFF")
-let HEX_333 = kIsFlagShip ? HEX_FFF : HEX_COLOR(hexStr: "#333333")
+let HEX_333 = kIsFlagShip ? HEX_FFF : HEX_COLOR(hexStr: "#262626")
 let HEX_666 = HEX_COLOR(hexStr: "#666666")
-let HEX_999 = HEX_COLOR(hexStr: "#999999")
+let HEX_999 = HEX_COLOR(hexStr: "#919191")
 let HEX_ThemeColor = HEX_COLOR(hexStr: "#2899F9")
 let HEX_NavColor = HEX_COLOR(hexStr: "#ECECEC")
 let HEX_VIEWBACKCOLOR = HEX_COLOR(hexStr: "#F6F6F6")
-
 
 let APPWINDOW: UIWindow = UIApplication.shared.windows.first { $0.isKeyWindow }!
 //云端地址
@@ -270,5 +283,9 @@ let REQUEST_NOPAYUSER: Int = 2001
 
 //视频首页
 let POST_JTVHOME = "/api/video/homeData"
-//视频列表
+//视频集列表
 let POST_JTVVIDEOS = "/api/video/allVideoCollections"
+//视频集详情
+let POST_JTVVIDEODETAILS = "/api/video/queryVideoDetail"
+//生成播放链接
+let POST_GENERATEURL = "/api/video/generatePlayUrl"
