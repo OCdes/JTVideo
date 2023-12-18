@@ -53,6 +53,9 @@ import AliyunPlayer
         }
     }
     
+    weak var parentView: UIView?
+    var parentFrame: CGRect = CGRectZero
+    var toVCFrame: CGRect = CGRectZero
     lazy var player: AliPlayer = {
         let p = AliPlayer.init()
         return p!
@@ -398,6 +401,7 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     
     //在画中画即将停止前,通知恢复用户交互接口,这里恢复playerview的布局
     public func picture(_ pictureInPictureController: AVPictureInPictureController?, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: ((Bool) -> Void)? = nil) {
+        completionHandler?(true)
         if let de = delegate, isForeground == true {
             if !isFullScreen {
                 playerSurface.snp_remakeConstraints { make in

@@ -21,11 +21,16 @@ extension JTEnterPlayerFullTransition: UIViewControllerAnimatedTransitioning {
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toView = transitionContext.view(forKey: .to), let _ = transitionContext.viewController(forKey: .to) else { return }
+        guard let toView = transitionContext.view(forKey: .to), let fromView = transitionContext.view(forKey: .from) else { return }
         let originCenter = transitionContext.containerView.convert(playerView.center, from: playerView)
         transitionContext.containerView.addSubview(toView)
         toView.addSubview(playerView)
-        toView.bounds = playerView.bounds
+        if let pv = self.playerView as? JTPlayerView {
+            toView.bounds = pv.toVCFrame
+        } else {
+            toView.bounds = playerView.frame
+        }
+        
         toView.center = originCenter
         toView.transform = CGAffineTransformMakeRotation(Double.pi/2)
         UIView.animate(withDuration: transitionDuration(using: transitionContext),delay: 0, options: .layoutSubviews) {

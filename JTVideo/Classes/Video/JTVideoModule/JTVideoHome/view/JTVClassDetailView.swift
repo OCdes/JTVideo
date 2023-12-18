@@ -109,15 +109,32 @@ extension JTVClassDetailView: UITableViewDelegate, UITableViewDataSource {
             if model.userPaid {
                 cell.priceTypeLa.isHidden = true
                 cell.playBtn.isSelected = true
+                cell.playBtn.isUserInteractionEnabled = true
             } else {
                 cell.priceTypeLa.isHidden = indexPath.row != 0
                 cell.playBtn.isSelected = indexPath.row == 0
+                cell.playBtn.isUserInteractionEnabled = indexPath.row == 0
             }
+            cell.playBtn.tag = indexPath.row
+            cell.playBtn.addTarget(self, action: #selector(playBtnClicked(btn:)), for: .touchUpInside)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "JTVClassDetailInfoCell", for: indexPath) as! JTVClassDetailInfoCell
             cell.textV.text = self.viewModel.detailModel.info.description
             return cell
+        }
+        
+    }
+    
+    @objc func playBtnClicked(btn: UIButton) {
+        let model = dataArr[btn.tag]
+        if let vc = classPlayVC, vc.viewModel.id == model.id {
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+        } else {
+            let vc = JTClassPlayVC()
+            vc.viewModel.detailModel = self.viewModel.detailModel
+            vc.viewModel.id = model.id
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
         
     }
@@ -150,6 +167,8 @@ extension JTVClassDetailView: UITableViewDelegate, UITableViewDataSource {
     
     
     
+    
+    
 }
 
 class JTVClassDetailInfoCell: UITableViewCell {
@@ -159,10 +178,12 @@ class JTVClassDetailInfoCell: UITableViewCell {
         tv.isUserInteractionEnabled = false
         tv.layer.cornerRadius = 8
         tv.layer.masksToBounds = true
+        tv.font = UIFont.systemFont(ofSize: 16)
         return tv
     }()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         backgroundColor = HEX_VIEWBACKCOLOR
         contentView.addSubview(self.textV)
         self.textV.snp_makeConstraints { make in

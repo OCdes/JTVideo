@@ -6,31 +6,87 @@
 //
 
 import UIKit
-
-class JTClassPlayVC: JTVideoBaseVC {
+var classPlayVC: JTClassPlayVC?
+class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransitioningDelegate {
+    func playerWillEnterPictureInPicture() {
+        classPlayVC = self
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
+        if let navc = nav, navc.viewControllers.contains(self) != true {
+            classPlayVC = nil
+            navc.pushViewController(self, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.2, execute: DispatchWorkItem(block: {
+                completionHandler?(true)
+            }))
+        }
+        completionHandler?(true)
+    }
+    
+    func requirePopVC() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    public func requireFullScreen(fullScreen: Bool) {
+        isFullScreen = fullScreen
+        if isFullScreen {
+            
+            self.playView.headerV.playView.parentView = self.playView.headerV
+            self.playView.headerV.playView.parentFrame = self.playView.headerV.playView.frame
+            self.playView.headerV.playView.toVCFrame = self.playView.headerV.convert(self.playView.headerV.playView.frame, to: APPWINDOW)
+            let enterFullVC = JTPlayerFullVC()
+            enterFullVC.playerSurface = self.playView.headerV.playView
+            enterFullVC.modalPresentationStyle = .fullScreen
+            enterFullVC.transitioningDelegate = self
+            fullVC = enterFullVC
+            self.present(enterFullVC, animated: true)
+        } else {
+            self.fullVC?.dismiss(animated: true)
+        }
+        
+    }
+    //MARK: 进场出场模态动画
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTEnterPlayerFullTransition(playerView: self.playView.headerV.playView)
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTExitPlayerFullTransition(playerView: self.playView.headerV.playView, fromVc: self)
+    }
+    weak var fullVC: UIViewController?
+    weak var nav: UINavigationController?
+    var isFullScreen: Bool = false
+    
     var viewModel: JTClassPlayViewModel = JTClassPlayViewModel()
     lazy var playView: JTClassPlayView = {
         let pv = JTClassPlayView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .grouped, viewModel: self.viewModel)
+        pv.headerV.playView.delegate = self
         return pv
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let pv = classPlayVC, pv == self {
+            pv.playView.headerV.playView.stopPip()
+            classPlayVC = nil
+//            pv.playView.headerV.playView.controlBar.playerBtnClicked()
+        }
+        nav = self.navigationController
+        if self.viewModel.id.count > 0 && self.viewModel.url.count == 0 {
+            self.viewModel.generateUrlBy(id: self.viewModel.id)
+        }
+        
+    }
    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.addSubview(self.playView)
+        self.playView.snp_makeConstraints { make in
+            make.edges.equalTo(UIEdgeInsets.zero)
+        }
         // Do any additional setup after loading the view.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 

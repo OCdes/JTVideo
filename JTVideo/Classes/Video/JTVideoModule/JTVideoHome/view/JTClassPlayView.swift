@@ -26,8 +26,14 @@ class JTClassPlayView: UITableView {
         delegate = self
         dataSource = self
         tableHeaderView = self.headerV
-        self.headerV.playView.delegate = self
         register(JTVClassDetailItemCell.self, forCellReuseIdentifier: "JTVClassDetailItemCell")
+        let _ = viewModel.rx.observeWeakly(String.self, "url").subscribe { [weak self]ustr in
+            if let strongSelf = self, let url = self?.viewModel.url, (url.count != 0), let darr = self?.viewModel.detailModel.playDetails {
+                strongSelf.dataArr =  darr
+                strongSelf.headerV.playView.urlSource = url
+            }
+            
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -36,25 +42,9 @@ class JTClassPlayView: UITableView {
     
 }
 
-extension JTClassPlayView: JTPlayerViewDelegate {
-    func playerWillEnterPictureInPicture() {
-        
-    }
-    
-    func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
-        
-    }
-    
-    func requirePopVC() {
-        
-    }
-    
-    
-}
-
 extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.dataArr.count
+        return dataArr.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -69,6 +59,16 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
             cell.priceTypeLa.isHidden = indexPath.row != 0
             cell.playBtn.isSelected = indexPath.row == 0
         }
+        
+        if model.id == self.viewModel.id {
+            self.headerV.titleLa.text = model.title
+            self.headerV.subTitleLa.text = "已经更新\(self.viewModel.detailModel.info.videoNumber)期|89人订阅"
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.15, execute: DispatchWorkItem(block: {
+                self.scrollToRow(at: indexPath, at: .top, animated: false)
+            }))
+            
+        }
+        
         return cell
     }
     
@@ -83,8 +83,8 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let v = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 44))
-        let la = UILabel(frame: CGRect(x: 23, y: 11, width: 40, height: 20))
+        let v = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 60))
+        let la = UILabel(frame: CGRect(x: 23, y: 0, width: self.frame.width, height: 60))
         la.text = "目录"
         la.font = UIFont.systemFont(ofSize: 20)
         v.addSubview(la)
@@ -110,7 +110,8 @@ class JTVClassPlayerHeaderView: UIView {
     
     lazy var playView: JTPlayerView = {
         let pv = JTPlayerView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.width*(294/428)))
-        pv.controlBar.isListMode = false
+        pv.controlBar.backBtn.isHidden = true
+        pv.controlBar.titleLa.isHidden = true
         return pv
     }()
     
@@ -139,19 +140,14 @@ class JTVClassPlayerHeaderView: UIView {
         super.init(frame: frame)
         
         backgroundColor = HEX_FFF
-        let f: Float = 294/428
-        addSubview(coverImgv)
-        coverImgv.snp_makeConstraints { make in
-            make.left.top.right.equalTo(self)
-            make.height.equalTo(self.coverImgv.snp_width).multipliedBy(f)
-        }
+        addSubview(playView)
         
         
         addSubview(titleLa)
         titleLa.snp_makeConstraints { make in
             make.left.equalTo(self).offset(18)
             make.right.equalTo(self).offset(-18)
-            make.top.equalTo(self.coverImgv.snp_bottom).offset(38)
+            make.top.equalTo(self).offset(38+self.playView.frame.height)
         }
         
         addSubview(subTitleLa)
@@ -164,9 +160,5 @@ class JTVClassPlayerHeaderView: UIView {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-    }
-    
-    func setupUI() {
-        
     }
 }

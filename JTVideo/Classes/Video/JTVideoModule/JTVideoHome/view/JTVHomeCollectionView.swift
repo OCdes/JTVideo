@@ -207,6 +207,20 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             return UIEdgeInsets(top: 0, left: 13, bottom: 10, right: 13)
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sectionModel = dataArr[indexPath.section]
+        let sectionType = sectionModel.sectionType
+        if sectionType == .recommandVideoType {
+            let sectionItemModel = sectionModel.sectionItems[indexPath.item]
+            let vc = JTVClassDetailVC()
+            vc.viewModel.collectionID = sectionItemModel.id
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+        }
+        if sectionType == .recommandTeacherType {
+            
+        }
+    }
 }
 
 class JTVHomeBannerItem: UICollectionViewCell {
