@@ -349,6 +349,12 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
                 // Fallback on earlier versions
             }
         }
+        if newStatus == AVPStatus(3) {
+            self.controlBar.playBtn.isSelected = true
+        }
+        if newStatus == AVPStatus(4) || newStatus == AVPStatus(5) {
+            self.controlBar.playBtn.isSelected = false
+        }
     }
     
     /*

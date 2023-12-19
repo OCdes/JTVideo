@@ -280,7 +280,7 @@ let REQUEST_NOTOKEN: Int = 6601
 let REQUEST_UNVALIDTOKEN: Int = 1005
 let REQUEST_TODIVCELOGIN: Int = 6603
 let REQUEST_NOPAYUSER: Int = 2001
-
+/*------------------首页--------------------------*/
 //视频首页
 let POST_JTVHOME = "/api/video/homeData"
 //视频集列表
@@ -289,3 +289,16 @@ let POST_JTVVIDEOS = "/api/video/allVideoCollections"
 let POST_JTVVIDEODETAILS = "/api/video/queryVideoDetail"
 //生成播放链接
 let POST_GENERATEURL = "/api/video/generatePlayUrl"
+//全部老师列表
+let POST_TEACHERLIST = "/api/video/allTeachers"
+//老师详情
+let POST_TEACHERINFO = "/api/video/moreTeacherCourse"
+//老师全部课程
+let POST_TEACHERSALLVIDEO = "/api/video/moreTeacherCourse"
+/*------------------公开课--------------------------*/
+//公开课首页
+let POST_OPENCLASSHOMEPAGE = "/api/video/commonVideoCourse"
+
+/*------------------我的--------------------------*/
+//个人资料
+let POST_MINEPROFILE = "/api/my/accountInfo"

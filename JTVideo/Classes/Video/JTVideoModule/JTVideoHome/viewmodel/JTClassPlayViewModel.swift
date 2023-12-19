@@ -12,6 +12,7 @@ class JTClassPlayViewModel: JTVideoBaseViewModel {
     var id: String = ""
     @objc dynamic var url: String = ""
     func generateUrlBy(id: String) {
+        self.id = id
         SVPShow(content: "正在生成播放链...")
         let _ = VideoNetServiceManager.manager.requestByType(requestType: .RequestTypePost, api: POST_GENERATEURL, params: ["videoId":id]) { [weak self]msg, code, response, data in
             SVPDismiss()

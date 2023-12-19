@@ -47,7 +47,8 @@ class JTVHomeCollectionView: UICollectionView {
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
         if sectionType == .recommandTeacherType {
-            
+            let vc = JTVTeachersListVC()
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
     }
     
@@ -66,7 +67,7 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
         let sectionModel = dataArr[section]
         let sectionType = sectionModel.sectionType
         if sectionType == .bannerType {
-            return 1
+            return sectionModel.imgUrls.count > 0 ? 1 : 0
         } else {
             return sectionModel.sectionItems.count
         }

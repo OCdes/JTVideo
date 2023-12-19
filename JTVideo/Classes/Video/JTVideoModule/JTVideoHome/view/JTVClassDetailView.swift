@@ -112,7 +112,7 @@ extension JTVClassDetailView: UITableViewDelegate, UITableViewDataSource {
                 cell.playBtn.isUserInteractionEnabled = true
             } else {
                 cell.priceTypeLa.isHidden = indexPath.row != 0
-                cell.playBtn.isSelected = indexPath.row == 0
+                cell.playBtn.isEnabled = indexPath.row == 0
                 cell.playBtn.isUserInteractionEnabled = indexPath.row == 0
             }
             cell.playBtn.tag = indexPath.row
@@ -141,7 +141,7 @@ extension JTVClassDetailView: UITableViewDelegate, UITableViewDataSource {
     
     func getDateByInterval(interval: TimeInterval)-> String {
         let dateFormatter = yyyymmddWithDotFormatter()
-        let date = Date.init(timeIntervalSince1970: interval)
+        let date = Date.init(timeIntervalSince1970: interval/1000)
         return dateFormatter.string(from: date)
     }
     
@@ -226,8 +226,10 @@ class JTVClassDetailItemCell: UITableViewCell {
     
     lazy var playBtn: UIButton = {
         let pb = UIButton()
-        pb.setImage(JTVideoBundleTool.getBundleImg(with: "menuPlayeIcon"), for: .selected)
-        pb.setImage(JTVideoBundleTool.getBundleImg(with: "jtvideLock"), for: .normal)
+        
+        pb.setImage(JTVideoBundleTool.getBundleImg(with: "menuPauseIcon"), for: .selected)
+        pb.setImage(JTVideoBundleTool.getBundleImg(with: "menuPlayeIcon"), for: .normal)
+        pb.setImage(JTVideoBundleTool.getBundleImg(with: "jtvideLock"), for: .disabled)
         pb.isUserInteractionEnabled = false
         return pb
     }()

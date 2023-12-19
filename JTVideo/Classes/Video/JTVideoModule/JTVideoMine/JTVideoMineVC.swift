@@ -8,10 +8,23 @@
 import UIKit
 
 class JTVideoMineVC: JTVideoBaseVC {
-
+    var viewModel: JTVMineViewModel = JTVMineViewModel()
+    lazy var listView: JTVMineListView = {
+        let layout = UICollectionViewFlowLayout()
+        let lv = JTVMineListView(frame: CGRectZero, collectionViewLayout: layout, viewModel: self.viewModel)
+        return lv
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.addSubview(self.listView)
+        self.listView.snp_makeConstraints { make in
+            make.edges.equalTo(UIEdgeInsets.zero)
+        }
+        
+        _ = self.listView.jt_addRefreshHeader {
+            self.viewModel.refreshData(scrollView: self.listView)
+        }
+        self.listView.jt_startRefresh()
         // Do any additional setup after loading the view.
     }
     

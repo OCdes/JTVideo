@@ -65,12 +65,21 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         return pv
     }()
     
+    lazy var scribeBtn: UIButton = {
+        let sb = UIButton()
+        sb.layer.cornerRadius = 20
+        sb.layer.masksToBounds = true
+        sb.backgroundColor = HEX_ThemeColor
+        sb.setTitleColor(HEX_FFF, for: .normal)
+        sb.setTitle("立即订阅", for: .normal)
+        return sb
+    }()
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let pv = classPlayVC, pv == self {
             pv.playView.headerV.playView.stopPip()
             classPlayVC = nil
-//            pv.playView.headerV.playView.controlBar.playerBtnClicked()
         }
         nav = self.navigationController
         if self.viewModel.id.count > 0 && self.viewModel.url.count == 0 {
@@ -83,7 +92,14 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         super.viewDidLoad()
         view.addSubview(self.playView)
         self.playView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets.zero)
+            make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
+        }
+        
+        view.addSubview(scribeBtn)
+        scribeBtn.snp_makeConstraints { make in
+            make.centerX.equalTo(self.playView)
+            make.top.equalTo(self.playView.snp_bottom).offset(12)
+            make.size.equalTo(CGSize(width: UIScreen.main.bounds.width-28, height: 40))
         }
         // Do any additional setup after loading the view.
     }

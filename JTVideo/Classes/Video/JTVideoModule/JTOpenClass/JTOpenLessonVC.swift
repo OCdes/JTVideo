@@ -9,15 +9,21 @@ import UIKit
 
 class JTOpenLessonVC: JTVideoBaseVC {
 
-    var viewModel: JTVRecommandVideoViewModel = JTVRecommandVideoViewModel()
-    lazy var listView: JTVRecommandVideList = {
-        let lv = JTVRecommandVideList(frame: CGRect(x:0, y:0, width: self.view.frame.width, height: self.view.frame.height), style: .grouped, viewModel: self.viewModel)
+    var viewModel: JTOpenClassViewModel = JTOpenClassViewModel()
+    lazy var listView: JTOpenClassHomeView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width-27, height: 134)
+        layout.minimumLineSpacing = 13
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 14, bottom: 20, right: 13)
+        let lv = JTOpenClassHomeView(frame: CGRect.zero, collectionViewLayout: layout, viewModel: self.viewModel)
         return lv
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "视频课程"
         self.tabBarItem.title = "公开课"
+        viewModel.navigationVC = self.navigationController
         view.backgroundColor = HEX_VIEWBACKCOLOR
         view.addSubview(listView)
         listView.snp_makeConstraints { make in
@@ -25,13 +31,7 @@ class JTOpenLessonVC: JTVideoBaseVC {
         }
         
         _ = listView.jt_addRefreshHeader {
-            self.viewModel.pageNum = 1
-            self.viewModel.refreshData(withScrollView: self.listView)
-        }
-        
-        _ = listView.jt_addRefreshFooter {
-            self.viewModel.pageNum += 1
-            self.viewModel.refreshData(withScrollView: self.listView)
+            self.viewModel.refreshData(scrollView: self.listView)
         }
         
         self.listView.jt_startRefresh()

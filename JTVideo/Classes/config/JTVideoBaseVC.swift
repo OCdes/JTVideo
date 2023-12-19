@@ -14,7 +14,7 @@ open class JTVideoBaseVC: UIViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = HEX_VIEWBACKCOLOR
         setupNavBtns()
         // Do any additional setup after loading the view.
     }

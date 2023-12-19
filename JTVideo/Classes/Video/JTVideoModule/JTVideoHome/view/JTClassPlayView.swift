@@ -31,9 +31,20 @@ class JTClassPlayView: UITableView {
             if let strongSelf = self, let url = self?.viewModel.url, (url.count != 0), let darr = self?.viewModel.detailModel.playDetails {
                 strongSelf.dataArr =  darr
                 strongSelf.headerV.playView.urlSource = url
+                strongSelf.headerV.playView.player.isAutoPlay = true
             }
-            
         }
+    }
+    
+    @objc func playBtnClicked(btn: UIButton) {
+        btn.isSelected = !btn.isSelected
+        if btn.isSelected {
+            let model = dataArr[btn.tag]
+            self.viewModel.generateUrlBy(id: model.id)
+        } else {
+            self.headerV.playView.controlBar.playerBtnClicked()
+        }
+        
     }
     
     required init?(coder: NSCoder) {
@@ -53,12 +64,16 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
         cell.titleLa.text = model.title
         cell.subTitleLa.text = "\(getDateByInterval(interval: model.createTime))|95次学习"
         if model.userPaid {
+            cell.playBtn.isEnabled = true
             cell.priceTypeLa.isHidden = true
-            cell.playBtn.isSelected = true
+            cell.playBtn.isSelected = model.id == self.viewModel.id
         } else {
             cell.priceTypeLa.isHidden = indexPath.row != 0
-            cell.playBtn.isSelected = indexPath.row == 0
+            cell.playBtn.isEnabled = indexPath.row == 0
+            cell.playBtn.isSelected = model.id == self.viewModel.id
+            cell.playBtn.isUserInteractionEnabled = indexPath.row == 0
         }
+        cell.playBtn.addTarget(self, action: #selector(playBtnClicked(btn:)), for: .touchUpInside)
         
         if model.id == self.viewModel.id {
             self.headerV.titleLa.text = model.title
@@ -74,7 +89,7 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     
     func getDateByInterval(interval: TimeInterval)-> String {
         let dateFormatter = yyyymmddWithDotFormatter()
-        let date = Date.init(timeIntervalSince1970: interval)
+        let date = Date.init(timeIntervalSince1970: interval/1000)
         return dateFormatter.string(from: date)
     }
     
@@ -100,8 +115,7 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let model = dataArr[indexPath.row]
-        self.viewModel.generateUrlBy(id: model.id)
+        
     }
     
 }

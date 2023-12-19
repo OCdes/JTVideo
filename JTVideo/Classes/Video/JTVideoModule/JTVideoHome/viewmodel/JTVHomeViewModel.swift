@@ -103,7 +103,7 @@ class JTVHomeSectionItemModel: JTVideoBaseModel {
     var videoNumber: String = ""
     var teacherName: String = ""
     var ownerUserid: String = ""
-    var updateTime: String = ""
+    var updateTime: TimeInterval = 0
     //teacher
     var phone: String = ""
     var gender: Int = 0

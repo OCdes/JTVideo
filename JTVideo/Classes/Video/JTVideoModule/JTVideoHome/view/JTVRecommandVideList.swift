@@ -155,7 +155,7 @@ class JTVRecommandVideListCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        selectionStyle = .none
         backgroundColor = HEX_FFF
         layer.cornerRadius = 8
         layer.masksToBounds = true
