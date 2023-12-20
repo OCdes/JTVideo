@@ -219,7 +219,17 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
         if sectionType == .recommandTeacherType {
-            
+            let itemModel = sectionModel.sectionItems[indexPath.item]
+            let model = JTVTeacherListItemModel()
+            model.name = itemModel.name
+            model.description = itemModel.description
+            model.id = itemModel.id
+            model.avatarUrl = itemModel.avatarUrl
+            model.phone = itemModel.phone
+            model.agentUserid = itemModel.agentUserid
+            let vc = JTVTeachInfoVC()
+            vc.viewModel.model = model
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
     }
 }

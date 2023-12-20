@@ -26,7 +26,6 @@ extension JTExitPlayerFullTransition: UIViewControllerAnimatedTransitioning {
         guard let fromView = transitionContext.view(forKey: .from), let toView = transitionContext.view(forKey: .to) else { return }
         toView.frame = toView.bounds
         var toVcBounds = self.fromVC.view.bounds
-        var toPlayerFrame = self.fromVC.view.bounds
         var parentView = self.fromVC.view
         var toPlayBounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.height, height: 300)
         if let pv = self.playerView as? JTPlayerView, let parentV = pv.parentView {
@@ -35,7 +34,7 @@ extension JTExitPlayerFullTransition: UIViewControllerAnimatedTransitioning {
             toPlayBounds = pv.parentFrame
         }
         fromView.bounds = toVcBounds
-        var finalCenter = CGPointMake(toVcBounds.width/2+toVcBounds.origin.x, toVcBounds.height/2+toVcBounds.origin.y)
+        let finalCenter = CGPointMake(toVcBounds.width/2+toVcBounds.origin.x, toVcBounds.height/2+toVcBounds.origin.y)
         transitionContext.containerView.insertSubview(toView, belowSubview: fromView)
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: .layoutSubviews) {
             fromView.transform = CGAffineTransform.identity

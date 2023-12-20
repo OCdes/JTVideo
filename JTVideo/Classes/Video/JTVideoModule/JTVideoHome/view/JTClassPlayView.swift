@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import RxSwift
 class JTClassPlayView: UITableView {
     var viewModel: JTClassPlayViewModel = JTClassPlayViewModel()
     var dataArr: [JTVClassDetailItemModel] = [] {
@@ -15,34 +15,25 @@ class JTClassPlayView: UITableView {
         }
     }
     
-    lazy var headerV: JTVClassPlayerHeaderView = {
-        let hv = JTVClassPlayerHeaderView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 125 + self.frame.width*(294/428)))
-        return hv
-    }()
+    var tapPlaySubject: PublishSubject<Any> = PublishSubject<Any>()
     
     init(frame: CGRect, style: UITableView.Style, viewModel vm: JTClassPlayViewModel) {
         super.init(frame: frame, style: style)
         viewModel = vm
         delegate = self
         dataSource = self
-        tableHeaderView = self.headerV
         register(JTVClassDetailItemCell.self, forCellReuseIdentifier: "JTVClassDetailItemCell")
         let _ = viewModel.rx.observeWeakly(String.self, "url").subscribe { [weak self]ustr in
             if let strongSelf = self, let url = self?.viewModel.url, (url.count != 0), let darr = self?.viewModel.detailModel.playDetails {
                 strongSelf.dataArr =  darr
-                strongSelf.headerV.playView.urlSource = url
-                strongSelf.headerV.playView.player.isAutoPlay = true
             }
         }
     }
     
     @objc func playBtnClicked(btn: UIButton) {
-        btn.isSelected = !btn.isSelected
-        if btn.isSelected {
-            let model = dataArr[btn.tag]
+        let model = dataArr[btn.tag]
+        if self.viewModel.id != model.id {
             self.viewModel.generateUrlBy(id: model.id)
-        } else {
-            self.headerV.playView.controlBar.playerBtnClicked()
         }
         
     }
@@ -76,12 +67,9 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
         cell.playBtn.addTarget(self, action: #selector(playBtnClicked(btn:)), for: .touchUpInside)
         
         if model.id == self.viewModel.id {
-            self.headerV.titleLa.text = model.title
-            self.headerV.subTitleLa.text = "已经更新\(self.viewModel.detailModel.info.videoNumber)期|89人订阅"
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.15, execute: DispatchWorkItem(block: {
                 self.scrollToRow(at: indexPath, at: .top, animated: false)
             }))
-            
         }
         
         return cell
@@ -115,7 +103,10 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let model = dataArr[indexPath.row]
+        if self.viewModel.id != model.id {
+            self.viewModel.generateUrlBy(id: model.id)
+        }
     }
     
 }

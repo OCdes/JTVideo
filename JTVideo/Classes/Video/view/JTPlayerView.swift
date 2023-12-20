@@ -124,6 +124,8 @@ import AliyunPlayer
         } 
         if pipController == nil && currentPlayerStatus == AVPStatus(3) {
             player.pause()
+        } else {
+            self.player.setPictureInPictureEnable(true)
         }
     }
     @objc func appenterForeground() {
@@ -160,17 +162,20 @@ import AliyunPlayer
     func playBtnClicked(btn: UIButton) {
         if btn.isSelected {
             self.player.start()
-            if #available(iOS 15, *) {
-                self.player.setPictureInPictureEnable(true)
+            if classPlayVC == nil {
+                if #available(iOS 15, *) {
+                    self.player.setPictureInPictureEnable(true)
+                }
             }
         } else {
             self.player.pause()
-            if self.pipController != nil {
-                if #available(iOS 15, *) {
-                    self.player.setPictureInPictureEnable(false)
+            if classPlayVC == nil {
+                if self.pipController != nil {
+                    if #available(iOS 15, *) {
+                        self.player.setPictureInPictureEnable(false)
+                    }
                 }
             }
-            
         }
     }
     
@@ -351,9 +356,22 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
         }
         if newStatus == AVPStatus(3) {
             self.controlBar.playBtn.isSelected = true
+            if classPlayVC == nil {
+                if #available(iOS 15, *) {
+                    self.player.setPictureInPictureEnable(true)
+                }
+            }
+            
         }
         if newStatus == AVPStatus(4) || newStatus == AVPStatus(5) {
             self.controlBar.playBtn.isSelected = false
+            if classPlayVC == nil {
+                if self.pipController == nil {
+                    if #available(iOS 15, *) {
+                        self.player.setPictureInPictureEnable(false)
+                    }
+                }
+            }
         }
     }
     
@@ -407,7 +425,6 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     
     //在画中画即将停止前,通知恢复用户交互接口,这里恢复playerview的布局
     public func picture(_ pictureInPictureController: AVPictureInPictureController?, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: ((Bool) -> Void)? = nil) {
-        completionHandler?(true)
         if let de = delegate, isForeground == true {
             if !isFullScreen {
                 playerSurface.snp_remakeConstraints { make in
@@ -477,6 +494,9 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     
     
     public func picture(_ pictureInPictureController: AVPictureInPictureController, setPlaying playing: Bool) {
+        if classPlayVC == nil {
+            return
+        }
         if !playing {
             self.player.pause()
             self.controlBar.playBtn.isSelected = false

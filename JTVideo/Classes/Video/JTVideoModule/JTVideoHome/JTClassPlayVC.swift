@@ -14,11 +14,23 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
     }
     
     func playerWillStopPictureInPicture(completionHandler: ((Bool) -> Void)?) {
+        
+        if miniprograms.count > 0 {
+           let enterVC = miniprograms[0]
+            if !enterVC.isShow {
+                if let fromvc = enterVC.fromVc {
+                    fromvc.present(enterVC, animated: true)
+                }
+            }
+        }
+        
         if let navc = nav, navc.viewControllers.contains(self) != true {
             classPlayVC = nil
+            
             navc.pushViewController(self, animated: true)
+            let block = completionHandler
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.2, execute: DispatchWorkItem(block: {
-                completionHandler?(true)
+                block?(true)
             }))
         }
         completionHandler?(true)
@@ -32,11 +44,11 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         isFullScreen = fullScreen
         if isFullScreen {
             
-            self.playView.headerV.playView.parentView = self.playView.headerV
-            self.playView.headerV.playView.parentFrame = self.playView.headerV.playView.frame
-            self.playView.headerV.playView.toVCFrame = self.playView.headerV.convert(self.playView.headerV.playView.frame, to: APPWINDOW)
+            self.headerV.playView.parentView = self.headerV
+            self.headerV.playView.parentFrame = self.headerV.playView.frame
+            self.headerV.playView.toVCFrame = self.headerV.convert(self.headerV.playView.frame, to: APPWINDOW)
             let enterFullVC = JTPlayerFullVC()
-            enterFullVC.playerSurface = self.playView.headerV.playView
+            enterFullVC.playerSurface = self.headerV.playView
             enterFullVC.modalPresentationStyle = .fullScreen
             enterFullVC.transitioningDelegate = self
             fullVC = enterFullVC
@@ -48,11 +60,11 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
     }
     //MARK: 进场出场模态动画
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return JTEnterPlayerFullTransition(playerView: self.playView.headerV.playView)
+        return JTEnterPlayerFullTransition(playerView: self.headerV.playView)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return JTExitPlayerFullTransition(playerView: self.playView.headerV.playView, fromVc: self)
+        return JTExitPlayerFullTransition(playerView: self.headerV.playView, fromVc: self)
     }
     weak var fullVC: UIViewController?
     weak var nav: UINavigationController?
@@ -61,8 +73,13 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
     var viewModel: JTClassPlayViewModel = JTClassPlayViewModel()
     lazy var playView: JTClassPlayView = {
         let pv = JTClassPlayView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .grouped, viewModel: self.viewModel)
-        pv.headerV.playView.delegate = self
         return pv
+    }()
+    
+    lazy var headerV: JTVClassPlayerHeaderView = {
+        let hv = JTVClassPlayerHeaderView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 125 + self.view.frame.width*(294/428)))
+        hv.playView.delegate  = self
+        return hv
     }()
     
     lazy var scribeBtn: UIButton = {
@@ -78,7 +95,7 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let pv = classPlayVC, pv == self {
-            pv.playView.headerV.playView.stopPip()
+            pv.headerV.playView.stopPip()
             classPlayVC = nil
         }
         nav = self.navigationController
@@ -90,9 +107,12 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.addSubview(self.headerV)
+        
         view.addSubview(self.playView)
         self.playView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
+            make.edges.equalTo(UIEdgeInsets(top: self.headerV.frame.height, left: 0, bottom: 70, right: 0))
         }
         
         view.addSubview(scribeBtn)
@@ -101,6 +121,20 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
             make.top.equalTo(self.playView.snp_bottom).offset(12)
             make.size.equalTo(CGSize(width: UIScreen.main.bounds.width-28, height: 40))
         }
+        
+        let _ = viewModel.rx.observeWeakly(String.self, "url").subscribe { [weak self]ustr in
+            if let strongSelf = self, let url = self?.viewModel.url, (url.count != 0) {
+                strongSelf.headerV.playView.urlSource = url
+                strongSelf.headerV.playView.player.isAutoPlay = true
+                strongSelf.headerV.titleLa.text = strongSelf.viewModel.detailModel.info.name
+                strongSelf.headerV.subTitleLa.text = "已经更新\(strongSelf.viewModel.detailModel.info.videoNumber)期|89人订阅"
+            }
+        }
+        
+        _ = playView.tapPlaySubject.subscribe { [weak self]a in
+            self?.headerV.playView.controlBar.playerBtnClicked()
+        }
+        
         // Do any additional setup after loading the view.
     }
 

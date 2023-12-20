@@ -6,14 +6,14 @@
 //
 
 import UIKit
-var miniprograms: [UIViewController] = []
+var miniprograms: [JTVideoEntranceVC] = []
 @objc
 open class JTVideoEntranceVC: UITabBarController {
     var barItemColor: UIColor = HEX_COLOR(hexStr: "#bfbfbf")
     var barItemSelectedColor: UIColor = HEX_ThemeColor
     var barItemFont: CGFloat = 12
-    
-    
+    var isShow: Bool = false
+    weak var fromVc: UIViewController?
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
         return .portrait
     }
@@ -36,13 +36,25 @@ open class JTVideoEntranceVC: UITabBarController {
         } else {
             let vc = JTVideoEntranceVC()
             vc.modalPresentationStyle = .overFullScreen
+            vc.fromVc = fromVC
             miniprograms.append(vc)
             fromVC.present(vc, animated: true)
         }
     }
     
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.isShow = true
+    }
+    
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.isShow = false
+    }
+    
     open override func viewDidLoad() {
         super.viewDidLoad()
+//        self.transitioningDelegate = self
         initTabbar()
         // Do any additional setup after loading the view.
     }
@@ -76,4 +88,14 @@ open class JTVideoEntranceVC: UITabBarController {
     }
     
 
+}
+
+extension JTVideoEntranceVC: UIViewControllerTransitioningDelegate {
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTVEnterMiniprogramTransition()
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return JTVExitMiniprogramTransition()
+    }
 }

@@ -21,7 +21,7 @@ extension JTEnterPlayerFullTransition: UIViewControllerAnimatedTransitioning {
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toView = transitionContext.view(forKey: .to), let fromView = transitionContext.view(forKey: .from) else { return }
+        guard let toView = transitionContext.view(forKey: .to) else { return }
         let originCenter = transitionContext.containerView.convert(playerView.center, from: playerView)
         transitionContext.containerView.addSubview(toView)
         toView.addSubview(playerView)
