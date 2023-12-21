@@ -20,6 +20,7 @@ class JTClassPlayView: UITableView {
     init(frame: CGRect, style: UITableView.Style, viewModel vm: JTClassPlayViewModel) {
         super.init(frame: frame, style: style)
         viewModel = vm
+        showsVerticalScrollIndicator = false
         delegate = self
         dataSource = self
         register(JTVClassDetailItemCell.self, forCellReuseIdentifier: "JTVClassDetailItemCell")

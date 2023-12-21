@@ -107,7 +107,7 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = self.viewModel.detailModel.info.name
         view.addSubview(self.headerV)
         
         view.addSubview(self.playView)

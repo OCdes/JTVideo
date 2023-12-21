@@ -50,6 +50,10 @@ class JTVHomeCollectionView: UICollectionView {
             let vc = JTVTeachersListVC()
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
+        if sectionType == .documentResource {
+            let vc = JTVDocumentResouceVC()
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -98,14 +102,23 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             cell.currentPriceLa.text = "¥\(item.price)"
             cell.followNumLa.text = "\(86)人订阅"
             return cell
-        } else {
+        } else if sectionType == .recommandTeacherType {
             let item = sectionModel.sectionItems[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVRecommandTeacherItem", for: indexPath) as! JTVRecommandTeacherItem
             cell.imgv.kf.setImage(with: URL(string: item.avatarUrl), placeholder: jtVideoPlaceHolderImage())
             cell.nameLa.text = item.name
             cell.typeLa.text = "优秀"
-            cell.teacherInfoLa.text = item.description
+            cell.teacherInfoLa.text = "讲师简介:\(item.description)"
             cell.followNumLa.text = "\(66)人订阅"
+            return cell
+        } else {
+            let item = sectionModel.sectionItems[indexPath.item]
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVRecommandTeacherItem", for: indexPath) as! JTVRecommandTeacherItem
+            cell.imgv.kf.setImage(with: URL(string: item.avatarUrl), placeholder: jtVideoPlaceHolderImage())
+            cell.nameLa.text = item.title
+            cell.typeLa.text = "精品"
+            cell.teacherInfoLa.text = "资料简介:\(item.content)"
+            cell.followNumLa.text = "\(166)次查阅"
             return cell
         }
     }
@@ -212,6 +225,20 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sectionModel = dataArr[indexPath.section]
         let sectionType = sectionModel.sectionType
+        if sectionType == .categoryType {
+            let item = sectionModel.sectionItems[indexPath.item]
+            if item.name == "优秀讲师" {
+                let vc = JTVTeachersListVC()
+                self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+            } else if item.name == "视频课程" {
+                let vc = JTVRecommandVideListVC()
+                vc.viewModel.listType = .common
+                self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+            } else if item.name == "学习资料" {
+                let vc = JTVDocumentResouceVC()
+                self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+            }
+        }
         if sectionType == .recommandVideoType {
             let sectionItemModel = sectionModel.sectionItems[indexPath.item]
             let vc = JTVClassDetailVC()
@@ -229,6 +256,20 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             model.agentUserid = itemModel.agentUserid
             let vc = JTVTeachInfoVC()
             vc.viewModel.model = model
+            self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+        }
+        if sectionType == .documentResource {
+            let itemModel = sectionModel.sectionItems[indexPath.item]
+            let vc = JTVDocumentDetailVC()
+            let model = JTVDocumentListModel()
+            model.content = itemModel.content
+            model.coverImage = itemModel.coverImage
+            model.createTime = itemModel.createTime
+            model.updateTime = itemModel.updateTime
+            model.price = itemModel.price
+            model.content = itemModel.content
+            model.title = itemModel.title
+            vc.model = model
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
     }

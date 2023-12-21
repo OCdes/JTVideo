@@ -1,27 +1,28 @@
 //
-//  JTVTeachInfoVC.swift
+//  JTVDocumentResouceVC.swift
 //  JTVideo
 //
-//  Created by 袁炳生 on 2023/12/19.
+//  Created by 袁炳生 on 2023/12/21.
 //
 
 import UIKit
 
-class JTVTeachInfoVC: JTVideoBaseVC {
-    var viewModel: JTVTeacherInfoViewModel = JTVTeacherInfoViewModel()
-    lazy var listView: JTVTeacherInfoListView = {
+class JTVDocumentResouceVC: JTVideoBaseVC {
+    var viewModel: JTVDocumentListViewModel = JTVDocumentListViewModel()
+    lazy var listView: JTVDouctmenListView = {
         let layout = UICollectionViewFlowLayout()
-        let width = (UIScreen.main.bounds.width-28-4)/2
-        layout.itemSize = CGSize(width: width, height: width*145/204 + 108)
-        layout.minimumLineSpacing = 13
-        layout.minimumInteritemSpacing = 2
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 14, bottom: 20, right: 14)
-        let lv = JTVTeacherInfoListView(frame: CGRect.zero, collectionViewLayout: layout, viewModel: self.viewModel)
+        layout.minimumLineSpacing = 12
+        layout.minimumInteritemSpacing = 15
+        let itemWidth = (kScreenWidth-24-16)/2
+        let itemHeight = itemWidth*150/194 + 108
+        layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+        layout.sectionInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        let lv = JTVDouctmenListView(frame: CGRectZero, collectionViewLayout: layout, viewModel: self.viewModel)
         return lv
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = self.viewModel.model.name
+        self.title = "学习资料"
         viewModel.navigationVC = self.navigationController
         view.addSubview(listView)
         listView.snp_makeConstraints { make in
@@ -39,6 +40,8 @@ class JTVTeachInfoVC: JTVideoBaseVC {
         }
         
         listView.jt_startRefresh()
+        
+        // Do any additional setup after loading the view.
     }
     
 

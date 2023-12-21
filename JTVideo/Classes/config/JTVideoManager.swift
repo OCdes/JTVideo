@@ -30,6 +30,8 @@ open class JTVideoManager: NSObject {
             USERDEFAULT.set(AccessToken, forKey: "AccessToken")
         }
     }
+    
+    @objc open var name: String = ""
 
     @objc open var phone: String = "" {
         didSet {

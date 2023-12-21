@@ -23,7 +23,7 @@ class JTVClassDetailView: UITableView {
     lazy var infoBtn: UIButton = {
         let infoBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 72, height: 60))
         infoBtn.setAttributedTitle(NSAttributedString(string: "详情", attributes: [.foregroundColor : HEX_COLOR(hexStr: "#919191")]), for: .normal)
-        infoBtn.setAttributedTitle(NSAttributedString(string: "详情", attributes: [.foregroundColor: HEX_333, .underlineStyle: 1, .underlineColor: HEX_ThemeColor, .baselineOffset: 2]), for: .selected)
+        infoBtn.setAttributedTitle(NSAttributedString(string: "详情", attributes: [.foregroundColor: HEX_333, .underlineStyle: 2, .underlineColor: HEX_ThemeColor, .baselineOffset: 10]), for: .selected)
         infoBtn.titleLabel?.font = UIFont.systemFont(ofSize: 19)
         infoBtn.isSelected = true
         _ = infoBtn.rx.controlEvent(.touchUpInside).subscribe { [weak self]e in
@@ -39,7 +39,7 @@ class JTVClassDetailView: UITableView {
     lazy var menuBtn: UIButton = {
         let menuBtn = UIButton(frame: CGRect(x: 72, y: 0, width: 72, height: 60))
         menuBtn.setAttributedTitle(NSAttributedString(string: "目录", attributes: [.foregroundColor : HEX_COLOR(hexStr: "#919191")]), for: .normal)
-        menuBtn.setAttributedTitle(NSAttributedString(string: "目录", attributes: [.foregroundColor: HEX_333, .underlineStyle: 1, .underlineColor: HEX_ThemeColor, .baselineOffset: 2]), for: .selected)
+        menuBtn.setAttributedTitle(NSAttributedString(string: "目录", attributes: [.foregroundColor: HEX_333, .underlineStyle: 2, .underlineColor: HEX_ThemeColor, .baselineOffset: 10]), for: .selected)
         menuBtn.titleLabel?.font = UIFont.systemFont(ofSize: 19)
         _ = menuBtn.rx.controlEvent(.touchUpInside).subscribe { [weak self]e in
             self?.infoBtn.isSelected = false
@@ -61,6 +61,7 @@ class JTVClassDetailView: UITableView {
     init(frame: CGRect, style: UITableView.Style, viewModel vm: JTVClassDetailViewModel) {
         super.init(frame: frame, style: style)
         viewModel = vm
+        showsVerticalScrollIndicator = false
         backgroundColor = HEX_VIEWBACKCOLOR
         separatorStyle = .none
         delegate = self
@@ -175,7 +176,7 @@ class JTVClassDetailInfoCell: UITableViewCell {
     lazy var textV: UITextView = {
         let tv = UITextView()
         tv.textColor = HEX_333
-        tv.isUserInteractionEnabled = false
+        tv.isEditable = false
         tv.layer.cornerRadius = 8
         tv.layer.masksToBounds = true
         tv.font = UIFont.systemFont(ofSize: 16)

@@ -7,13 +7,20 @@
 
 import UIKit
 
+enum JTVVideoListType: Int {
+    case recommand = 1
+    case teacher
+    case common
+}
+
 class JTVRecommandVideoViewModel: JTVideoBaseViewModel {
     @objc dynamic var dataArr: [Any] = []
     var pageNum: Int = 1
     var teacherID: String = ""
+    var listType: JTVVideoListType = .recommand
     func refreshData(withScrollView: UIScrollView) {
         SVPShow(content: "加载中...")
-        let apistr = teacherID.count > 0 ? POST_TEACHERSALLVIDEO : POST_JTVVIDEOS
+        let apistr = (listType == .teacher) ? POST_TEACHERSALLVIDEO :((listType == .common) ? POST_ALLCOMMONVIDEOLIST : POST_JTVVIDEOS)
         var params: [String:Any] = ["pageNum":pageNum,"pageSize":"12"]
         if teacherID.count > 0 {
             params["teacherId"] = teacherID

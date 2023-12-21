@@ -27,7 +27,7 @@ class JTVClassDetailVC: JTVideoBaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel.navigationVC = self.navigationController
-        self.title = "课程详情"
+        self.title = self.viewModel.detailModel.info.name
         view.backgroundColor = HEX_VIEWBACKCOLOR
         view.addSubview(self.detailView)
         self.detailView.snp_makeConstraints { make in

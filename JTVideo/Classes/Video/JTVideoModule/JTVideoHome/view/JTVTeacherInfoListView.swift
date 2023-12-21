@@ -71,6 +71,7 @@ extension JTVTeacherInfoListView: UICollectionViewDelegate, UICollectionViewData
     
     @objc func moreBtnClicked(btn: UIButton) {
         let vc = JTVRecommandVideListVC()
+        vc.viewModel.listType = .teacher
         vc.viewModel.teacherID = self.viewModel.model.id
         self.viewModel.navigationVC?.pushViewController(vc, animated: true)
     }

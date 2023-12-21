@@ -295,9 +295,13 @@ let POST_TEACHERLIST = "/api/video/allTeachers"
 let POST_TEACHERINFO = "/api/video/moreTeacherCourse"
 //老师全部课程
 let POST_TEACHERSALLVIDEO = "/api/video/moreTeacherCourse"
+//全部资料
+let POST_ALLDOCUMENTRESOURCE = "/api/video/allDocuments"
 /*------------------公开课--------------------------*/
 //公开课首页
 let POST_OPENCLASSHOMEPAGE = "/api/video/commonVideoCourse"
+//所有的普通视频
+let POST_ALLCOMMONVIDEOLIST = "/api/video/moreCommonVideoCourse"
 
 /*------------------我的--------------------------*/
 //个人资料

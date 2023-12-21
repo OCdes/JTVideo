@@ -39,6 +39,7 @@ class JTOpenClassHomeView: UICollectionView {
         let sectionType = sectionModel.sectionType
         if sectionType == .recommandVideoType {
             let vc = JTVRecommandVideListVC()
+            vc.viewModel.listType = .common
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
     }

@@ -14,7 +14,7 @@ enum JTVHomeSectionType: Int {
     case categoryType = 2
     case recommandVideoType = 3
     case recommandTeacherType = 4
-    
+    case documentResource = 5
 }
 
 class JTVHomeViewModel: JTVideoBaseViewModel {
@@ -59,6 +59,15 @@ class JTVHomeViewModel: JTVideoBaseViewModel {
                         sectionModel.sectionItems = teacherModes
                         sectionArr.append(sectionModel)
                     }
+                    
+                    if let documentDict = dict["document"] as? [String:Any], let title = documentDict["key"] as? String, let items = documentDict["value"] as? [Any] , let documents = [JTVHomeSectionItemModel].deserialize(from: items) as? [JTVHomeSectionItemModel] {
+                        let sectionModel = JTVHomeSectionModel()
+                        sectionModel.sectionType = .documentResource
+                        sectionModel.sectionTitle = title
+                        sectionModel.sectionItems = documents
+                        sectionArr.append(sectionModel)
+                    }
+                    
                     self?.dataArr = sectionArr
                 }
             } else {
@@ -83,7 +92,7 @@ class JTVHomeSectionItemModel: JTVideoBaseModel {
     var name: String = ""
     var id: String = ""
     var description: String = ""
-    var createTime: String = ""
+    var createTime: TimeInterval = 0
     //banner
     var adUrl: String = ""
     var jumpUrl: String = ""
@@ -112,6 +121,10 @@ class JTVHomeSectionItemModel: JTVideoBaseModel {
     var avatarUrl: String = ""
     var agentUserid: String = ""
     var isPrivate: Bool = false
+    //
+    var title: String = ""
+    var content: String = ""
+    var source: String = ""
     override func mapping(mapper: HelpingMapper) {
         mapper <<<
             self.isPrivate <-- "private"

@@ -25,6 +25,7 @@ class JTVMineListView: UICollectionView {
         register(JTVMineHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "JTVMineHeaderView")
         register(JTVMineClassCell.self, forCellWithReuseIdentifier: "JTVMineClassCell")
         register(JTVMineMenuCell.self, forCellWithReuseIdentifier: "JTVMineMenuCell")
+        register(JTVMineProfileCell.self, forCellWithReuseIdentifier: "JTVMineProfileCell")
         _ = viewModel.rx.observeWeakly([Any].self, "dataArr").subscribe(onNext: { [weak self] arr in
             if let darr = arr as? [JTVMineSectionModel] {
                 self?.dataArr = darr
@@ -44,20 +45,44 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataArr[section].sectionItems.count
+        let sectionModel = dataArr[section]
+        switch sectionModel.sectionType {
+        case .profile:
+            return 1
+        case .course:
+            return sectionModel.sectionItems.count
+        case .menu:
+            return sectionModel.navTitles.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let sectionModel = dataArr[indexPath.section]
-        let sectionItem = sectionModel.sectionItems[indexPath.item]
-        if sectionModel.sectionType == .course {
+        if sectionModel.sectionType == .profile {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineProfileCell", for: indexPath) as! JTVMineProfileCell
+            cell.coinLa.attributedText = attributeText(inStr: "\(self.viewModel.model.jtcoin)\n我的账户", targetStr: self.viewModel.model.jtcoin)
+            cell.pointLa.attributedText = attributeText(inStr: "\(self.viewModel.model.point)\n我的积分", targetStr: self.viewModel.model.point)
+            return cell
+        } else if sectionModel.sectionType == .course {
+            let sectionItem = sectionModel.sectionItems[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineClassCell", for: indexPath) as! JTVMineClassCell
             return cell
         } else {
+            let navTitle = sectionModel.navTitles[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineMenuCell", for: indexPath) as! JTVMineMenuCell
+            cell.title = navTitle
             return cell
         }
     }
+    
+    func attributeText(inStr: String, targetStr: String)-> NSAttributedString {
+        let range = (inStr as NSString).range(of: targetStr)
+        var mattrStr = NSMutableAttributedString(string: inStr)
+        let attribute:[NSAttributedString.Key: Any] = [.font : UIFont.systemFont(ofSize: 24)]
+        mattrStr.addAttributes(attribute, range: range)
+        return mattrStr
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
@@ -99,9 +124,110 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
     }
 }
 
-class JTVMineHeaderView: UICollectionReusableView {
+class JTVMineProfileCell: UICollectionViewCell {
+    
+    lazy var portraitV: UIImageView = {
+        let pv = UIImageView()
+        pv.contentMode = .scaleAspectFill
+        pv.clipsToBounds = true
+        pv.layer.cornerRadius = 35
+        pv.layer.masksToBounds = true
+        pv.kf.setImage(with: URL(string: JTVideoManager.manager.avatarUrl), placeholder: JTVideoBundleTool.getBundleImg(with: "jtvportraitPlaceHolder"))
+        return pv
+    }()
+    
+    lazy var nameLa: UILabel = {
+        let nl = UILabel()
+        nl.textColor = HEX_FFF
+        nl.font = UIFont.systemFont(ofSize: 22)
+        nl.text = JTVideoManager.manager.name
+        return nl
+    }()
+    
+    lazy var coinLa: UILabel = {
+        let cl = UILabel()
+        cl.textColor = HEX_333
+        cl.font = UIFont.systemFont(ofSize: 18)
+        cl.textAlignment = .center
+        return cl
+    }()
+    
+    lazy var pointLa: UILabel = {
+        let cl = UILabel()
+        cl.textColor = HEX_333
+        cl.font = UIFont.systemFont(ofSize: 18)
+        cl.textAlignment = .center
+        return cl
+    }()
+    
+    lazy var chargeBtn: UIButton = {
+        let cb = UIButton()
+        cb.backgroundColor = HEX_ThemeColor
+        cb.setTitleColor(HEX_FFF, for: .normal)
+        cb.setTitle("充值", for: .normal)
+        cb.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        cb.layer.cornerRadius = 14
+        cb.layer.masksToBounds = true
+        return cb
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        let bgv = UIImageView()
+        bgv.image = JTVideoBundleTool.getBundleImg(with: "jtvMineBg")
+        let f: Float = 178/428
+        contentView.addSubview(bgv)
+        bgv.snp_makeConstraints { make in
+            make.left.right.top.equalTo(self.contentView)
+            make.height.equalTo(bgv.snp_width).multipliedBy(f)
+        }
+        
+        contentView.addSubview(portraitV)
+        portraitV.snp_makeConstraints { make in
+            make.centerY.equalTo(bgv)
+            make.left.equalTo(bgv).offset(18)
+            make.size.equalTo(CGSize(width: 70, height: 70))
+        }
+        
+        contentView.addSubview(nameLa)
+        nameLa.snp_makeConstraints { make in
+            make.top.equalTo(self.portraitV).offset(2)
+            make.left.equalTo(self.portraitV.snp_right).offset(27)
+            make.right.equalTo(bgv).offset(-18)
+        }
+        
+        let la = UILabel()
+        la.textColor = HEX_333
+        la.font = UIFont.systemFont(ofSize: 20)
+        la.text = "资产管理"
+        contentView.addSubview(la)
+        la.snp_makeConstraints { make in
+            make.left.equalTo(self).offset(18)
+            make.top.equalTo(bgv.snp_bottom).offset(24)
+            make.size.equalTo(CGSize(width: 88, height: 20))
+        }
+        let width = frame.width/3
+        contentView.addSubview(coinLa)
+        coinLa.snp_makeConstraints { make in
+            make.top.equalTo(la.snp_bottom).offset(30)
+            make.left.equalTo(self.contentView)
+            make.size.equalTo(CGSize(width: width, height: 88))
+        }
+        
+        contentView.addSubview(pointLa)
+        pointLa.snp_makeConstraints { make in
+            make.left.equalTo(self.coinLa.snp_right)
+            make.size.centerY.equalTo(self.coinLa)
+        }
+        
+        contentView.addSubview(chargeBtn)
+        chargeBtn.snp_makeConstraints { make in
+            make.centerY.equalTo(self.pointLa)
+            make.right.equalTo(self.contentView).offset(-16)
+            make.size.equalTo(CGSize(width: 67, height: 28))
+        }
+        
     }
     
     required init?(coder: NSCoder) {
@@ -110,8 +236,51 @@ class JTVMineHeaderView: UICollectionReusableView {
 }
 
 class JTVMineClassCell: UICollectionViewCell {
+    
+    lazy var imgv: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
+        return iv
+    }()
+    
+    lazy var titleLa: UILabel = {
+        let tl = UILabel()
+        tl.font = UIFont.systemFont(ofSize: 18)
+        tl.adjustsFontSizeToFitWidth = true
+        tl.textAlignment = .center
+        return tl
+    }()
+    
+    lazy var dateLa: UILabel = {
+        let dl = UILabel()
+        dl.textColor = HEX_999
+        dl.textAlignment = .center
+        dl.font = UIFont.systemFont(ofSize: 14)
+        return dl
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let f: Float = 89/111
+        contentView.addSubview(imgv)
+        imgv.snp_makeConstraints { make in
+            make.left.top.right.equalTo(self.contentView)
+            make.height.equalTo(self.imgv.snp_width).multipliedBy(f)
+        }
+        
+        contentView.addSubview(titleLa)
+        titleLa.snp_makeConstraints { make in
+            make.left.right.equalTo(self.contentView)
+            make.top.equalTo(self.imgv.snp_bottom)
+            make.height.equalTo(27)
+        }
+        
+        contentView.addSubview(dateLa)
+        dateLa.snp_makeConstraints { make in
+            make.top.equalTo(self.titleLa.snp_bottom)
+            make.left.height.right.equalTo(self.titleLa)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -120,11 +289,87 @@ class JTVMineClassCell: UICollectionViewCell {
 }
 
 class JTVMineMenuCell: UICollectionViewCell {
+    
+    var title: String = "" {
+        didSet {
+            self.imgv.image = JTVideoBundleTool.getBundleImg(with: title)
+            self.titleLa.text = title
+        }
+    }
+    
+    lazy var imgv: UIImageView = {
+        let iv = UIImageView()
+        return iv
+    }()
+    
+    lazy var titleLa: UILabel = {
+        let tl = UILabel()
+        tl.font = UIFont.systemFont(ofSize: 14)
+        tl.adjustsFontSizeToFitWidth = true
+        tl.textAlignment = .center
+        return tl
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        backgroundColor = HEX_VIEWBACKCOLOR
+        let centerV = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+        centerV.addSubview(self.imgv)
+        self.imgv.snp_makeConstraints { make in
+            make.size.equalTo(CGSize(width: 35, height: 35))
+            make.top.centerX.equalTo(centerV)
+        }
+        centerV.addSubview(self.titleLa)
+        self.titleLa.snp_makeConstraints { make in
+            make.top.equalTo(self.imgv.snp_bottom)
+            make.left.bottom.right.equalTo(centerV)
+        }
+        self.contentView.addSubview(centerV)
+        centerV.snp_makeConstraints { make in
+            make.center.equalTo(self.contentView)
+            make.size.equalTo(CGSize(width: 65, height: 60))
+        }
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+}
+
+class JTVMineHeaderView: UICollectionReusableView {
+    
+    lazy var titleLa: UILabel = {
+        let tl = UILabel()
+        tl.font = UIFont.systemFont(ofSize: 20)
+        return tl
+    }()
+    
+    lazy var moreBtn: UIButton = {
+        let mb = UIButton()
+        mb.setImage(JTVideoBundleTool.getBundleImg(with: "seeMore"), for: .normal)
+        return mb
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(titleLa)
+        titleLa.snp_makeConstraints { make in
+            make.left.equalTo(self).offset(19)
+            make.top.bottom.equalTo(self)
+            make.width.equalTo(120)
+        }
+        
+        addSubview(moreBtn)
+        moreBtn.snp_makeConstraints { make in
+            make.right.equalTo(self)
+            make.top.bottom.equalTo(self)
+            make.width.equalTo(60)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

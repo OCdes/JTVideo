@@ -22,6 +22,7 @@ class JTVTeachersListVC: JTVideoBaseVC {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "全部导师"
         viewModel.navigationVC = self.navigationController
         view.addSubview(listView)
         listView.snp_makeConstraints { make in
