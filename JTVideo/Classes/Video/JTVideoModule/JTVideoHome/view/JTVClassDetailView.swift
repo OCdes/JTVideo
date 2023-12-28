@@ -108,8 +108,8 @@ extension JTVClassDetailView: UITableViewDelegate, UITableViewDataSource {
             cell.titleLa.text = model.title
             cell.subTitleLa.text = "\(getDateByInterval(interval: model.createTime))|95次学习"
             if model.userPaid {
+                cell.playBtn.isEnabled = true
                 cell.priceTypeLa.isHidden = true
-                cell.playBtn.isSelected = true
                 cell.playBtn.isUserInteractionEnabled = true
             } else {
                 cell.priceTypeLa.isHidden = indexPath.row != 0

@@ -335,6 +335,15 @@
 		6A4F34D4AE24B9B1E2EA6C05C96AEDD0 /* CredentialsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D250F83CCB57A1A871F7355033F3D79 /* CredentialsPlugin.swift */; };
 		6B0DEFF59C938BDD97E34065ED02967F /* KFOptionsSetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ABC112F5DC3E33251451CB2D2AF7BE /* KFOptionsSetter.swift */; };
 		6B135DCF3A83C7B498238ECEC0DF9E83 /* SDWeakProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = E2DF753CC6A3629800CCE97EB3358E69 /* SDWeakProxy.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		6B2FDFA72B355E430075D45C /* JTVTaskListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFA62B355E430075D45C /* JTVTaskListVC.swift */; };
+		6B2FDFA92B355E660075D45C /* JTVTaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFA82B355E660075D45C /* JTVTaskListView.swift */; };
+		6B2FDFAB2B355E810075D45C /* JTVTaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFAA2B355E810075D45C /* JTVTaskListViewModel.swift */; };
+		6B2FDFAD2B355F930075D45C /* JTVBuyClassVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFAC2B355F930075D45C /* JTVBuyClassVC.swift */; };
+		6B2FDFAF2B355FB10075D45C /* JTVBuyClassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFAE2B355FB10075D45C /* JTVBuyClassView.swift */; };
+		6B2FDFB12B355FCE0075D45C /* JTVBuyClassViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFB02B355FCE0075D45C /* JTVBuyClassViewModel.swift */; };
+		6B2FDFB32B358FE70075D45C /* JTVPowerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFB22B358FE60075D45C /* JTVPowerVC.swift */; };
+		6B2FDFB72B3590260075D45C /* JTVPowerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFB62B3590260075D45C /* JTVPowerViewModel.swift */; };
+		6B2FDFB92B35903F0075D45C /* JTVPowerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FDFB82B35903F0075D45C /* JTVPowerView.swift */; };
 		6B310F666EAFD21030802E92C280E849 /* ConcurrentDispatchQueueScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FE46A73C9BB592399DF4E039710102 /* ConcurrentDispatchQueueScheduler.swift */; };
 		6B32920BB4CF28C41FEF4C60D5CB723C /* Disposables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D65DE0F8593BE69B99457977061E0B /* Disposables.swift */; };
 		6B5EC1D32B312CF4002DB40A /* JTVTeachersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5EC1D22B312CF4002DB40A /* JTVTeachersListVC.swift */; };
@@ -1487,6 +1496,15 @@
 		6A82582E259FE99910C4FFA33C1ED388 /* JTVideo-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "JTVideo-Info.plist"; sourceTree = "<group>"; };
 		6A9C91B9A86746F8C7D233CCA1B80144 /* KVORepresentable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KVORepresentable.swift; path = RxCocoa/Foundation/KVORepresentable.swift; sourceTree = "<group>"; };
 		6AF7B03575F54D6F0E5E1D9BF167909F /* MJRefreshNormalTrailer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MJRefreshNormalTrailer.m; path = MJRefresh/Custom/Trailer/MJRefreshNormalTrailer.m; sourceTree = "<group>"; };
+		6B2FDFA62B355E430075D45C /* JTVTaskListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVTaskListVC.swift; sourceTree = "<group>"; };
+		6B2FDFA82B355E660075D45C /* JTVTaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVTaskListView.swift; sourceTree = "<group>"; };
+		6B2FDFAA2B355E810075D45C /* JTVTaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVTaskListViewModel.swift; sourceTree = "<group>"; };
+		6B2FDFAC2B355F930075D45C /* JTVBuyClassVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVBuyClassVC.swift; sourceTree = "<group>"; };
+		6B2FDFAE2B355FB10075D45C /* JTVBuyClassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVBuyClassView.swift; sourceTree = "<group>"; };
+		6B2FDFB02B355FCE0075D45C /* JTVBuyClassViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVBuyClassViewModel.swift; sourceTree = "<group>"; };
+		6B2FDFB22B358FE60075D45C /* JTVPowerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVPowerVC.swift; sourceTree = "<group>"; };
+		6B2FDFB62B3590260075D45C /* JTVPowerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVPowerViewModel.swift; sourceTree = "<group>"; };
+		6B2FDFB82B35903F0075D45C /* JTVPowerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVPowerView.swift; sourceTree = "<group>"; };
 		6B4441A99C089697E780F2CD727F1EA7 /* VirtualTimeScheduler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VirtualTimeScheduler.swift; path = RxSwift/Schedulers/VirtualTimeScheduler.swift; sourceTree = "<group>"; };
 		6B5EC1D22B312CF4002DB40A /* JTVTeachersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVTeachersListVC.swift; sourceTree = "<group>"; };
 		6B5EC1D42B312D09002DB40A /* JTVTeacherListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVTeacherListView.swift; sourceTree = "<group>"; };
@@ -2199,6 +2217,7 @@
 			isa = PBXGroup;
 			children = (
 				FC60CE44A20785804227CF98FF4932FD /* JTVMineViewModel.swift */,
+				6B2FDFB62B3590260075D45C /* JTVPowerViewModel.swift */,
 			);
 			path = viewmodel;
 			sourceTree = "<group>";
@@ -2222,6 +2241,7 @@
 			isa = PBXGroup;
 			children = (
 				06B17E5757FAC2BF06BAC30B045BBDE5 /* JTVMineListView.swift */,
+				6B2FDFB82B35903F0075D45C /* JTVPowerView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -2760,6 +2780,7 @@
 			isa = PBXGroup;
 			children = (
 				3E4366500C8DEBE35A4C0183C6933F80 /* JTVideoMineVC.swift */,
+				6B2FDFB22B358FE60075D45C /* JTVPowerVC.swift */,
 				2300FDD634E8ABD49A3F238E6B396A08 /* view */,
 				0C4C3EAC5E31C5167718485637785519 /* viewmodel */,
 			);
@@ -2777,6 +2798,8 @@
 				6B5EC1D82B3142D5002DB40A /* JTVTeachInfoVC.swift */,
 				6BDC10B02B33E3B20085229D /* JTVDocumentResouceVC.swift */,
 				6BDC10B62B3418CA0085229D /* JTVDocumentDetailVC.swift */,
+				6B2FDFA62B355E430075D45C /* JTVTaskListVC.swift */,
+				6B2FDFAC2B355F930075D45C /* JTVBuyClassVC.swift */,
 				771E0B3D0FB5CB44638C8975603C3FB8 /* view */,
 				9A5BC8C0D8AE2DAC8B15CA6EEA78D1B4 /* viewmodel */,
 			);
@@ -2810,6 +2833,8 @@
 				6B5EC1DC2B314425002DB40A /* JTVTeacherInfoListView.swift */,
 				6BDC10B22B33E4050085229D /* JTVDouctmenListView.swift */,
 				6BDC10B82B3418F60085229D /* JTVDocumentDetailView.swift */,
+				6B2FDFA82B355E660075D45C /* JTVTaskListView.swift */,
+				6B2FDFAE2B355FB10075D45C /* JTVBuyClassView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -3017,6 +3042,8 @@
 				6B5EC1DA2B3142EA002DB40A /* JTVTeacherInfoViewModel.swift */,
 				6BDC10B42B33E43A0085229D /* JTVDocumentListViewModel.swift */,
 				6BDC10BA2B3419750085229D /* JTVDocumentDetailViewModel.swift */,
+				6B2FDFAA2B355E810075D45C /* JTVTaskListViewModel.swift */,
+				6B2FDFB02B355FCE0075D45C /* JTVBuyClassViewModel.swift */,
 			);
 			path = viewmodel;
 			sourceTree = "<group>";
@@ -5191,6 +5218,7 @@
 				239C2091D5247AADDD246A594D216CD8 /* JTListVideoPlayerView.swift in Sources */,
 				70B0F83C28A4CA21B8E910B6B5B96F76 /* JTOpenClassViewModel.swift in Sources */,
 				907CD9F5060883042BC0DFC2EA707E72 /* JTOpenLessonVC.swift in Sources */,
+				6B2FDFB92B35903F0075D45C /* JTVPowerView.swift in Sources */,
 				6BDC10B92B3418F60085229D /* JTVDocumentDetailView.swift in Sources */,
 				D4304DE447B5422A091C8CE20C618B9B /* JTPlayerFullVC.swift in Sources */,
 				E215372FEC9508CD263C2154C341485B /* JTPlayerListVC.swift in Sources */,
@@ -5204,7 +5232,9 @@
 				D49EA1E7BBBE03619C8921092EA72900 /* JTVideo-dummy.m in Sources */,
 				6B9DFE8B2B2C5759004C26EC /* JTClassPlayVC.swift in Sources */,
 				4534F9DC9E3D57945D1FC4580D44595A /* JTVideoBaseModel.swift in Sources */,
+				6B2FDFAB2B355E810075D45C /* JTVTaskListViewModel.swift in Sources */,
 				6B5EC1D72B312DBB002DB40A /* JTVTeacherListViewModel.swift in Sources */,
+				6B2FDFAD2B355F930075D45C /* JTVBuyClassVC.swift in Sources */,
 				81B3667E005C5325C1FA07FA87ACE693 /* JTVideoBaseVC.swift in Sources */,
 				1B3570202D90AB80D6F606504F431EC5 /* JTVideoBaseViewModel.swift in Sources */,
 				49D693790990BF5BC41FE052EB11CD15 /* JTVideoBundleTool.swift in Sources */,
@@ -5212,16 +5242,20 @@
 				6BDC10BB2B3419750085229D /* JTVDocumentDetailViewModel.swift in Sources */,
 				0C8C4BDAB1CDDFD2B66C0B0759E5008D /* JTVideoButtonExtraExtension.swift in Sources */,
 				836C85936FCEEB2EC1469398F2F91E2E /* JTVideoCommon.swift in Sources */,
+				6B2FDFA72B355E430075D45C /* JTVTaskListVC.swift in Sources */,
 				6B5EC1D52B312D09002DB40A /* JTVTeacherListView.swift in Sources */,
 				110C36F43D68C5E49ADB69DF639A5A56 /* JTVideoControlBar.swift in Sources */,
 				2796009A9582E8D168F1F0CE755DBF8F /* JTVideoDetailVC.swift in Sources */,
 				DD22C462312A28FB713403DD235C6A7A /* JTVideoEntranceVC.swift in Sources */,
+				6B2FDFAF2B355FB10075D45C /* JTVBuyClassView.swift in Sources */,
+				6B2FDFB72B3590260075D45C /* JTVPowerViewModel.swift in Sources */,
 				6B5EC1D92B3142D5002DB40A /* JTVTeachInfoVC.swift in Sources */,
 				6BDC10B12B33E3B20085229D /* JTVDocumentResouceVC.swift in Sources */,
 				36908FA9EFD3E45AE187C33A21BF1083 /* JTVideoHomeListView.swift in Sources */,
 				282237060C44DC0ECA474B0CC3E7AE1F /* JTVideoHomeVC.swift in Sources */,
 				98D0CAC501FF2D946429AE857AB55B00 /* JTVideoListPlayerControlBar.swift in Sources */,
 				6B5EC1DB2B3142EA002DB40A /* JTVTeacherInfoViewModel.swift in Sources */,
+				6B2FDFA92B355E660075D45C /* JTVTaskListView.swift in Sources */,
 				4BD7A637A81A8F948EBEB2951CF40089 /* JTVideoManager.swift in Sources */,
 				6B643DE12B32F22B00B76A95 /* JTVExitMiniprogramTransition.swift in Sources */,
 				2E57881815BB6792C246E1BFB84CF55B /* JTVideoMineVC.swift in Sources */,
@@ -5232,6 +5266,7 @@
 				2C73BC408F5CF9B2BB11C1AAC38DAE74 /* JTVMineViewModel.swift in Sources */,
 				6B5EC1D32B312CF4002DB40A /* JTVTeachersListVC.swift in Sources */,
 				6B9DFE872B2C30B7004C26EC /* JTVClassDetailViewModel.swift in Sources */,
+				6B2FDFB12B355FCE0075D45C /* JTVBuyClassViewModel.swift in Sources */,
 				0282AE3BBCFB33BD7E19004D4A20636E /* JTVRecommandVideList.swift in Sources */,
 				F6C980F05C43DF48AC64055DCDB6C370 /* JTVRecommandVideListVC.swift in Sources */,
 				6987DC889D1A1FBC03B034F0F539C419 /* JTVRecommandVideoViewModel.swift in Sources */,
@@ -5241,6 +5276,7 @@
 				6B9DFE8D2B2C576F004C26EC /* JTClassPlayView.swift in Sources */,
 				1326B1B2A54EBD1AD888DD521D0AA6AF /* VideoHomeViewModel.swift in Sources */,
 				DEF21079708D1D92C99C58A6BACAEB76 /* VideoNetServiceManager.swift in Sources */,
+				6B2FDFB32B358FE70075D45C /* JTVPowerVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

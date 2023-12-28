@@ -56,6 +56,7 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
         cell.titleLa.text = model.title
         cell.subTitleLa.text = "\(getDateByInterval(interval: model.createTime))|95次学习"
         if model.userPaid {
+//            cell.playBtn.isUserInteractionEnabled = true
             cell.playBtn.isEnabled = true
             cell.priceTypeLa.isHidden = true
             cell.playBtn.isSelected = model.id == self.viewModel.id
@@ -105,8 +106,12 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let model = dataArr[indexPath.row]
-        if self.viewModel.id != model.id {
-            self.viewModel.generateUrlBy(id: model.id)
+        if model.userPaid {
+            if self.viewModel.id != model.id {
+                self.viewModel.generateUrlBy(id: model.id)
+            }
+        } else {
+            
         }
     }
     

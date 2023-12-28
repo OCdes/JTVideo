@@ -12,10 +12,34 @@ class JTVideoMineVC: JTVideoBaseVC {
     lazy var listView: JTVMineListView = {
         let layout = UICollectionViewFlowLayout()
         let lv = JTVMineListView(frame: CGRectZero, collectionViewLayout: layout, viewModel: self.viewModel)
+        if #available(iOS 11.0, *) {
+            lv.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+            self.automaticallyAdjustsScrollViewInsets = false
+        }
         return lv
     }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let nav = self.navigationController as? JTVideoNavController {
+            nav.setClearNavBg()
+            nav.navigationBar.isTranslucent = true
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let nav = self.navigationController as? JTVideoNavController {
+            nav.setupNavAppearence()
+            nav.navigationBar.isTranslucent = false
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.isTranslucent = true
         view.addSubview(self.listView)
         self.listView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets.zero)

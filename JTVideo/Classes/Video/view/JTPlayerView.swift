@@ -124,8 +124,6 @@ import AliyunPlayer
         } 
         if pipController == nil && currentPlayerStatus == AVPStatus(3) {
             player.pause()
-        } else {
-            self.player.setPictureInPictureEnable(true)
         }
     }
     @objc func appenterForeground() {

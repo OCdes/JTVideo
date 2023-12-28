@@ -79,6 +79,7 @@ open class JTVideoEntranceVC: UITabBarController {
         UITabBarItem.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: barItemFont), .foregroundColor: barItemColor], for: .normal)
         UITabBarItem.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: barItemFont), .foregroundColor: barItemSelectedColor], for: .selected)
         self.tabBar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        self.tabBar.isTranslucent = false
         
     }
     

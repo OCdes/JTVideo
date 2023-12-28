@@ -49,4 +49,5 @@ class JTVDocumentListModel: JTVideoBaseModel {
     var content: String = ""
     var createTime: TimeInterval = 0
     var updateTime: TimeInterval = 0
+    var userPaid: Bool = false
 }

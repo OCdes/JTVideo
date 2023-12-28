@@ -297,6 +297,12 @@ let POST_TEACHERINFO = "/api/video/moreTeacherCourse"
 let POST_TEACHERSALLVIDEO = "/api/video/moreTeacherCourse"
 //全部资料
 let POST_ALLDOCUMENTRESOURCE = "/api/video/allDocuments"
+//资料详情
+let POST_DOCUMENTRESOURCEDETAIL = "/api/video/documentDetail"
+//购买课程或者资料
+let POST_BUYCOURSEDOCUMENT = "/api/order/doBuyVideoCourseOrDocument"
+//购买入场券
+let POST_BUYENTRANCETICKET = "/api/my/getExchangeAmount"
 /*------------------公开课--------------------------*/
 //公开课首页
 let POST_OPENCLASSHOMEPAGE = "/api/video/commonVideoCourse"

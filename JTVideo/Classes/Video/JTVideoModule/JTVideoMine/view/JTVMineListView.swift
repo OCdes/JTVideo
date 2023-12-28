@@ -19,10 +19,11 @@ class JTVMineListView: UICollectionView {
     init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, viewModel vm: JTVMineViewModel) {
         super.init(frame: frame, collectionViewLayout: layout)
         viewModel = vm
-        backgroundColor = HEX_VIEWBACKCOLOR
+        backgroundColor = HEX_FFF
         delegate = self
         dataSource = self
         register(JTVMineHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "JTVMineHeaderView")
+        register(JTVMineFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "JTVMineFooterView")
         register(JTVMineClassCell.self, forCellWithReuseIdentifier: "JTVMineClassCell")
         register(JTVMineMenuCell.self, forCellWithReuseIdentifier: "JTVMineMenuCell")
         register(JTVMineProfileCell.self, forCellWithReuseIdentifier: "JTVMineProfileCell")
@@ -60,8 +61,8 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
         let sectionModel = dataArr[indexPath.section]
         if sectionModel.sectionType == .profile {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineProfileCell", for: indexPath) as! JTVMineProfileCell
-            cell.coinLa.attributedText = attributeText(inStr: "\(self.viewModel.model.jtcoin)\n我的账户", targetStr: self.viewModel.model.jtcoin)
-            cell.pointLa.attributedText = attributeText(inStr: "\(self.viewModel.model.point)\n我的积分", targetStr: self.viewModel.model.point)
+            cell.coinLa.attributedText = attributeText(inStr: "¥\(self.viewModel.model.jtcoin)\n我的账户", targetStr: self.viewModel.model.jtcoin)
+            cell.pointLa.attributedText = attributeText(inStr: "¥\(self.viewModel.model.point)\n我的积分", targetStr: self.viewModel.model.point)
             return cell
         } else if sectionModel.sectionType == .course {
             let sectionItem = sectionModel.sectionItems[indexPath.item]
@@ -77,7 +78,7 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
     
     func attributeText(inStr: String, targetStr: String)-> NSAttributedString {
         let range = (inStr as NSString).range(of: targetStr)
-        var mattrStr = NSMutableAttributedString(string: inStr)
+        let mattrStr = NSMutableAttributedString(string: inStr)
         let attribute:[NSAttributedString.Key: Any] = [.font : UIFont.systemFont(ofSize: 24)]
         mattrStr.addAttributes(attribute, range: range)
         return mattrStr
@@ -86,19 +87,24 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
+            let sectionModel = dataArr[indexPath.section]
             let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "JTVMineHeaderView", for: indexPath) as! JTVMineHeaderView
+            v.titleLa.text = sectionModel.sectionTitle
+            v.moreBtn.isHidden = sectionModel.sectionType != .course
             return v
         } else {
-            return UICollectionReusableView()
+            let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "JTVMineFooterView", for: indexPath)
+            return v
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: kScreenWidth, height: 200)
+        let sectionModel = dataArr[section]
+        return sectionModel.sectionType == .profile ? CGSizeZero : CGSize(width: kScreenWidth, height: 45)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSizeZero
+        return section == dataArr.count-1 ? CGSizeZero : CGSize(width: kScreenWidth, height: 10)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -107,6 +113,10 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             let width = (kScreenWidth - 48 - 50)/3
             let height = width*89/111
             return CGSize(width: width, height: height)
+        } else if sectionModel.sectionType == .profile {
+            let width = kScreenWidth
+            let height = 182 + width*178/428
+            return CGSizeMake(width, height)
         } else {
             let width = kScreenWidth/5
             return CGSize(width: width, height: 91)
@@ -116,7 +126,6 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let sectionModel = dataArr[section]
         if sectionModel.sectionType == .course {
-            
             return UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         } else {
             return UIEdgeInsets.zero
@@ -149,6 +158,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         cl.textColor = HEX_333
         cl.font = UIFont.systemFont(ofSize: 18)
         cl.textAlignment = .center
+        cl.numberOfLines = 2
         return cl
     }()
     
@@ -157,6 +167,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         cl.textColor = HEX_333
         cl.font = UIFont.systemFont(ofSize: 18)
         cl.textAlignment = .center
+        cl.numberOfLines = 2
         return cl
     }()
     
@@ -186,7 +197,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         contentView.addSubview(portraitV)
         portraitV.snp_makeConstraints { make in
             make.centerY.equalTo(bgv)
-            make.left.equalTo(bgv).offset(18)
+            make.left.equalTo(bgv).offset(28)
             make.size.equalTo(CGSize(width: 70, height: 70))
         }
         
@@ -299,6 +310,7 @@ class JTVMineMenuCell: UICollectionViewCell {
     
     lazy var imgv: UIImageView = {
         let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
         return iv
     }()
     
@@ -312,8 +324,6 @@ class JTVMineMenuCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        backgroundColor = HEX_VIEWBACKCOLOR
         let centerV = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
         centerV.addSubview(self.imgv)
         self.imgv.snp_makeConstraints { make in
@@ -372,4 +382,16 @@ class JTVMineHeaderView: UICollectionReusableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+class JTVMineFooterView: UICollectionReusableView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = HEX_VIEWBACKCOLOR
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
 }

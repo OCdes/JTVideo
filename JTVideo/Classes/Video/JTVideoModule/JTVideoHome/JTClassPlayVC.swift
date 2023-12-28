@@ -89,6 +89,7 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         sb.backgroundColor = HEX_ThemeColor
         sb.setTitleColor(HEX_FFF, for: .normal)
         sb.setTitle("立即订阅", for: .normal)
+        sb.addTarget(self, action: #selector(subscribeBtnClicked), for: .touchUpInside)
         return sb
     }()
     
@@ -110,17 +111,19 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         self.title = self.viewModel.detailModel.info.name
         view.addSubview(self.headerV)
         
-        view.addSubview(self.playView)
-        self.playView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: self.headerV.frame.height, left: 0, bottom: 70, right: 0))
-        }
-        
         view.addSubview(scribeBtn)
         scribeBtn.snp_makeConstraints { make in
-            make.centerX.equalTo(self.playView)
-            make.top.equalTo(self.playView.snp_bottom).offset(12)
+            make.centerX.equalTo(self.view)
+            make.bottom.equalTo(self.view).offset(-16)
             make.size.equalTo(CGSize(width: UIScreen.main.bounds.width-28, height: 40))
         }
+        let bottomMargin: CGFloat = ((Float(self.viewModel.detailModel.info.price) ?? 0) > 0 || self.viewModel.detailModel.info.userPaid == false) ? 70 : 0
+        view.addSubview(self.playView)
+        self.playView.snp_makeConstraints { make in
+            make.edges.equalTo(UIEdgeInsets(top: self.headerV.frame.height, left: 0, bottom: bottomMargin, right: 0))
+        }
+        
+        
         
         let _ = viewModel.rx.observeWeakly(String.self, "url").subscribe { [weak self]ustr in
             if let strongSelf = self, let url = self?.viewModel.url, (url.count != 0) {
@@ -137,6 +140,12 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         
         // Do any additional setup after loading the view.
     }
-
+    
+    @objc func subscribeBtnClicked() {
+        self.headerV.playView.player.pause()
+        let vc = JTVBuyClassVC()
+        vc.viewModel.cmodel = self.viewModel.detailModel
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 

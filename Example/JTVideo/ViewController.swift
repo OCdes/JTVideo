@@ -41,8 +41,10 @@ class ViewController: UIViewController {
             self.navigationController?.pushViewController(vc, animated: true)
             break
         case "精特云课堂":
-            JTVideoManager().AccessToken = "dab531b2038a4b27b5789efb8d527def"
-            JTVideoManager().url = "http://vod.hzjtyh.com"
+            JTVideoManager.manager.AccessToken = "dab531b2038a4b27b5789efb8d527def"
+            JTVideoManager.manager.url = "http://vod.hzjtyh.com"
+            JTVideoManager.manager.name = "iOS 测试"
+            JTVideoManager.manager.avatarUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsafe-img.xhscdn.com%2Fbw1%2F76264826-a8a7-4481-8d93-8689c1f2107f%3FimageView2%2F2%2Fw%2F1080%2Fformat%2Fjpg&refer=http%3A%2F%2Fsafe-img.xhscdn.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1705826701&t=7ceb1a1975cc4aa557a72903cc604f1b"
             JTVideoEntranceVC.videoModuleEntrance(fromVC: self)
             break
         default:

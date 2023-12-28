@@ -93,6 +93,7 @@ open class JTVideoManager: NSObject {
     @objc open class func shareManager()->JTVideoManager {
         return manager
     }
+    
 }
 
 

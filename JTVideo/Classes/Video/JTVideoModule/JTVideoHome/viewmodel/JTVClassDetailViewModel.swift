@@ -46,12 +46,14 @@ class JTVClassDetailInfoModel: JTVideoBaseModel {
     var typeName: String = ""
     var teacherid: String = ""
     var buyerPlay: Bool = false
-    var price: String = ""
+    var price: String = "0"
     var createTime: String = ""
     var videoNumber: String = ""
     var teacherName: String = ""
     var name: String = ""
     var updateTime: String = ""
+    var userPaid: Bool = false
+    
 }
 
 class JTVClassDetailItemModel: JTVideoBaseModel {

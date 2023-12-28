@@ -57,7 +57,7 @@ extension JTVDouctmenListView: UICollectionViewDataSource, UICollectionViewDeleg
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let model = dataArr[indexPath.item]
         let vc = JTVDocumentDetailVC()
-        vc.model = model
+        vc.viewModel.model = model
         self.viewModel.navigationVC?.pushViewController(vc, animated: true)
     }
     

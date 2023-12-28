@@ -8,7 +8,7 @@
 import UIKit
 
 class JTVDocumentDetailVC: JTVideoBaseVC {
-    var model: JTVDocumentListModel = JTVDocumentListModel()
+    var viewModel: JTVDocumentDetailViewModel = JTVDocumentDetailViewModel()
     lazy var detailView: JTVDocutmentDetialHeaderView = {
         let dv = JTVDocutmentDetialHeaderView(frame: self.view.bounds)
         return dv
@@ -21,18 +21,28 @@ class JTVDocumentDetailVC: JTVideoBaseVC {
         sb.backgroundColor = HEX_ThemeColor
         sb.layer.cornerRadius = 20
         sb.layer.masksToBounds = true
+        sb.addTarget(self, action: #selector(subscribeBtnClicked), for: .touchUpInside)
         return sb
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = self.model.title
+        self.title = self.viewModel.model.title
         view.backgroundColor = HEX_VIEWBACKCOLOR
+        
+        view.addSubview(subcribeBtn)
+        subcribeBtn.snp_makeConstraints { make in
+            make.bottom.equalTo(self.view).offset(-16)
+            make.centerX.equalTo(self.view)
+            make.size.equalTo(CGSize(width: kScreenWidth-30, height: 40))
+        }
+        
         let tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.showsVerticalScrollIndicator = false
+        
         view.addSubview(tableView)
         tableView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
+            make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         }
         
         self.detailView.frame = tableView.frame
@@ -41,26 +51,32 @@ class JTVDocumentDetailVC: JTVideoBaseVC {
         tableView.sectionHeaderHeight = 0
         tableView.estimatedSectionFooterHeight = 0
         tableView.estimatedSectionHeaderHeight = 0
-        self.detailView.totalLa.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapMore)))
-        view.addSubview(subcribeBtn)
-        subcribeBtn.snp_makeConstraints { make in
-            make.top.equalTo(tableView.snp_bottom).offset(12)
-            make.left.equalTo(self.view).offset(15)
-            make.size.equalTo(CGSize(width: kScreenWidth-30, height: 40))
-        }
         
-        self.detailView.coverImgv.kf.setImage(with: URL(string: model.coverImage), placeholder: jtVideoPlaceHolderImage())
-        self.detailView.titleLa.text = model.title
-        let attris: [NSAttributedString.Key:Any] = [.strikethroughStyle : 1,.baselineOffset: 1]
-        let attext = NSMutableAttributedString(string: "¥\(model.price)")
-        attext.addAttributes(attris, range: NSRange(location: 0, length: attext.length))
-        self.detailView.priceLa.attributedText = attext
-        self.detailView.currentPriceLa.text = "¥\(model.price)"
-        self.detailView.titleLa.text = model.title
-        self.detailView.typeLa.text = "精品"
-        self.detailView.subTitleLa.text = "\(getDateByInterval(interval: model.createTime))|\(86)次学习"
-        self.detailView.totalLa.text = "共\(0)个文件"
-        self.detailView.textV.text = model.content
+        self.detailView.totalLa.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapMore)))
+        _ = viewModel.rx.observeWeakly(String.self, "suStr").subscribe(onNext: { [weak self]m in
+            if let strongSelf = self {
+                let model = strongSelf.viewModel.model
+                let bottmMargin: CGFloat = ((Float(model.price) ?? 0) > 0 || model.userPaid == false) ? 70 : 0
+                tableView.snp_remakeConstraints { make in
+                    make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: bottmMargin, right: 0))
+                }
+                
+                strongSelf.detailView.coverImgv.kf.setImage(with: URL(string: model.coverImage), placeholder: jtVideoPlaceHolderImage())
+                strongSelf.detailView.titleLa.text = model.title
+                let attris: [NSAttributedString.Key:Any] = [.strikethroughStyle : 1,.baselineOffset: 1]
+                let attext = NSMutableAttributedString(string: "¥\(model.price)")
+                attext.addAttributes(attris, range: NSRange(location: 0, length: attext.length))
+                strongSelf.detailView.priceLa.attributedText = attext
+                strongSelf.detailView.currentPriceLa.text = "¥\(model.price)"
+                strongSelf.detailView.titleLa.text = model.title
+                strongSelf.detailView.typeLa.text = "精品"
+                strongSelf.detailView.subTitleLa.text = "\(strongSelf.getDateByInterval(interval: model.createTime))|\(86)次学习"
+                strongSelf.detailView.totalLa.text = "共\(0)个文件"
+                strongSelf.detailView.textV.text = model.content
+            }
+        })
+        
+        
         
         // Do any additional setup after loading the view.
     }
@@ -73,6 +89,12 @@ class JTVDocumentDetailVC: JTVideoBaseVC {
         let dateFormatter = yyyymmddWithDotFormatter()
         let date = Date.init(timeIntervalSince1970: interval/1000)
         return dateFormatter.string(from: date)
+    }
+    
+    @objc func subscribeBtnClicked() {
+        let vc = JTVBuyClassVC()
+        vc.viewModel.dmodel = self.viewModel.model
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 
     /*

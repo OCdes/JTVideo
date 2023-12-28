@@ -269,7 +269,7 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             model.price = itemModel.price
             model.content = itemModel.content
             model.title = itemModel.title
-            vc.model = model
+            vc.viewModel.model = model
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
     }
