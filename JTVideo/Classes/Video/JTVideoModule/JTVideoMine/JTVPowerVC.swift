@@ -10,7 +10,7 @@ import UIKit
 class JTVPowerVC: JTVideoBaseVC {
     var viewModel: JTVPowerViewModel = JTVPowerViewModel()
     lazy var coinView: JTVPowerView = {
-        let cv = JTVPowerView(frame: self.view.bounds, viewModel: self.viewModel)
+        let cv = JTVPowerView(frame: self.view.bounds, style: .grouped, viewModel: self.viewModel)
         return cv
     }()
     
@@ -19,13 +19,17 @@ class JTVPowerVC: JTVideoBaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let tableView = UITableView(frame: self.view.bounds, style: .grouped)
-        tableView.showsVerticalScrollIndicator = false
-        tableView.tableHeaderView = coinView
-        view.addSubview(tableView)
-        tableView.snp_makeConstraints { make in
+        
+        view.addSubview(coinView)
+        coinView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         }
+        
+        _ = coinView.jt_addRefreshHeader {
+            self.viewModel.fetchCoins(scrollView: self.coinView)
+        }
+        
+        coinView.jt_startRefresh()
     }
     
 

@@ -24,16 +24,34 @@ var kScreenHeight: CGFloat {
     return UIScreen.main.bounds.height
 }
 //tabbar是否隐藏及其高度
-let kTabbarHidden: Bool = true
-let kTabBarHeight: CGFloat = 49
+let kTabbarHidden: Bool = false
+let kTabBarHeight: CGFloat = kTabbarHidden ? 0 : 49
 //机型判断
-let kDynamicIsland: Bool = (kScreenHeight == 852 || kScreenHeight == 932)
-let kiPhoneXOrXS: Bool = (kScreenHeight == 812 || kScreenHeight == 896 || kScreenHeight == 926)
+let kiPhone1415ProMax = kScreenHeight == 932
+let kiPhone1415Pro = kScreenHeight == 852
+let kiPhone12ProMax = kScreenHeight == 926
+let kiPhone12: Bool = kScreenHeight == 844
+let kiPhoneXSMax: Bool = kScreenHeight == 896
+let kiPhoneX: Bool = kScreenHeight == 812
+let kIsHomeButtonDevice: Bool = kiPhonePlus || kiPhonoe678
 let kiPhonePlus: Bool = kScreenHeight == 736 && kScreenWidth == 414
 let kiPhonoe678: Bool = kScreenHeight == 667 && kScreenWidth == 375
-let kiPhone45SC: Bool = kScreenHeight == 480 && kScreenHeight == 320
-let kNavibarHeight: CGFloat = (kiPhoneXOrXS ? 88 : (kDynamicIsland ? 98 : 64))
-let kBottomSafeHeight: CGFloat = ((kiPhoneXOrXS || kDynamicIsland) ? 34 : 0)
+let kNavibarHeight: CGFloat = UINavigationController().navigationBar.frame.size.height
+let kNavStatusBarHeight = kNavibarHeight + kStatusBarheight()
+let kBottomSafeHeight: CGFloat = (kiPhonePlus || kiPhonoe678) ? 0 : 34
+let kTabbarHiddenBottomHeight: CGFloat = kTabbarHidden ? kBottomSafeHeight : 0
+func kStatusBarheight()->CGFloat {
+    if kiPhoneX || kiPhoneXSMax {
+        return 44
+    } else if kiPhone12ProMax || kiPhone12 {
+        return 47
+    } else if kiPhone1415ProMax || kiPhone1415Pro {
+        return 59
+    } else {
+        return 20
+    }
+}
+
 struct NotificationHelper {
     static let kChatOnlineNotiName = Notification.Name("kChatOnlineNotiName")
     static let kChatOnGroupNotiName = Notification.Name("kChatOnGroupNotiName")
@@ -312,3 +330,5 @@ let POST_ALLCOMMONVIDEOLIST = "/api/video/moreCommonVideoCourse"
 /*------------------我的--------------------------*/
 //个人资料
 let POST_MINEPROFILE = "/api/my/accountInfo"
+//增能
+let POST_CHARJTC = "/api/order/rechargeJtCoin"

@@ -14,7 +14,6 @@ class JTOpenLessonVC: JTVideoBaseVC {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width-27, height: 134)
         layout.minimumLineSpacing = 13
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 14, bottom: 20, right: 13)
         let lv = JTOpenClassHomeView(frame: CGRect.zero, collectionViewLayout: layout, viewModel: self.viewModel)
         return lv
     }()

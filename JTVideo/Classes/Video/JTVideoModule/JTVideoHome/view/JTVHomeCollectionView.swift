@@ -169,9 +169,11 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             let width = UIScreen.main.bounds.width/5
             return CGSize(width: width, height: width)
         } else if sectionType == .recommandVideoType {
-            return CGSize(width: 194, height: 255)
+            let itemWidth = (UIScreen.main.bounds.width - 40)/2
+            return CGSize(width: itemWidth, height: itemWidth*145/194 + 112)
         } else {
-            return CGSize(width: 400, height: 134)
+            let itemWidth = UIScreen.main.bounds.width - 28
+            return CGSize(width: itemWidth, height: 134)
         }
     }
     
@@ -386,10 +388,12 @@ class JTVRecommandVideoItem: UICollectionViewCell {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         self.contentView.addSubview(self.imgv)
+        let itemWidth = (UIScreen.main.bounds.width - 40)/2
+        let imgHeight = itemWidth*145/194
         contentView.addSubview(imgv)
         imgv.snp_makeConstraints { make in
             make.left.top.right.equalTo(self.contentView)
-            make.height.equalTo(146)
+            make.height.equalTo(imgHeight)
         }
         
         contentView.addSubview(typeLa)

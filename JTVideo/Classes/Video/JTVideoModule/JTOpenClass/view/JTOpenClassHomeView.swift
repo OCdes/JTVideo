@@ -17,6 +17,7 @@ class JTOpenClassHomeView: UICollectionView {
     init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, viewModel vm: JTOpenClassViewModel) {
         super.init(frame: frame, collectionViewLayout: layout)
         viewModel = vm
+        showsVerticalScrollIndicator = false
         backgroundColor = HEX_VIEWBACKCOLOR
         delegate = self
         dataSource = self
@@ -85,6 +86,25 @@ extension JTOpenClassHomeView: UICollectionViewDelegate, UICollectionViewDataSou
         let dateFormatter = yyyymmddWithDotFormatter()
         let date = Date.init(timeIntervalSince1970: interval/1000)
         return dateFormatter.string(from: date)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let sectionModel = dataArr[indexPath.section]
+        if sectionModel.sectionType == .bannerType {
+            let width = UIScreen.main.bounds.width-28
+            return CGSize(width: UIScreen.main.bounds.width, height: width*217/400)
+        } else {
+            return CGSize(width: UIScreen.main.bounds.width-27, height: 134)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let sectionModel = dataArr[section]
+        if sectionModel.sectionType == .bannerType {
+            return UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        } else {
+            return UIEdgeInsets(top: 0, left: 14, bottom: 20, right: 13)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

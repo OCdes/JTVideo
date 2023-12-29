@@ -34,6 +34,11 @@ class JTVMineListView: UICollectionView {
         })
     }
     
+    @objc func chargeBtnClicked() {
+        let vc = JTVPowerVC()
+        self.viewModel.navigationVC?.pushViewController(vc, animated: true)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -63,6 +68,7 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineProfileCell", for: indexPath) as! JTVMineProfileCell
             cell.coinLa.attributedText = attributeText(inStr: "¥\(self.viewModel.model.jtcoin)\n我的账户", targetStr: self.viewModel.model.jtcoin)
             cell.pointLa.attributedText = attributeText(inStr: "¥\(self.viewModel.model.point)\n我的积分", targetStr: self.viewModel.model.point)
+            cell.chargeBtn.addTarget(self, action: #selector(chargeBtnClicked), for: .touchUpInside)
             return cell
         } else if sectionModel.sectionType == .course {
             let sectionItem = sectionModel.sectionItems[indexPath.item]
@@ -115,7 +121,7 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             return CGSize(width: width, height: height)
         } else if sectionModel.sectionType == .profile {
             let width = kScreenWidth
-            let height = 182 + width*178/428
+            let height = 182 + 126 + kNavStatusBarHeight
             return CGSizeMake(width, height)
         } else {
             let width = kScreenWidth/5
@@ -187,16 +193,16 @@ class JTVMineProfileCell: UICollectionViewCell {
         
         let bgv = UIImageView()
         bgv.image = JTVideoBundleTool.getBundleImg(with: "jtvMineBg")
-        let f: Float = 178/428
+        let f: CGFloat = 126 + kNavStatusBarHeight
         contentView.addSubview(bgv)
         bgv.snp_makeConstraints { make in
             make.left.right.top.equalTo(self.contentView)
-            make.height.equalTo(bgv.snp_width).multipliedBy(f)
+            make.height.equalTo(f)
         }
         
         contentView.addSubview(portraitV)
         portraitV.snp_makeConstraints { make in
-            make.centerY.equalTo(bgv)
+            make.bottom.equalTo(bgv).offset(-56)
             make.left.equalTo(bgv).offset(28)
             make.size.equalTo(CGSize(width: 70, height: 70))
         }

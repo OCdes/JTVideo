@@ -39,6 +39,7 @@ class JTVideoMineVC: JTVideoBaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.viewModel.navigationVC = self.navigationController
         self.navigationController?.navigationBar.isTranslucent = true
         view.addSubview(self.listView)
         self.listView.snp_makeConstraints { make in
