@@ -117,7 +117,7 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
             make.bottom.equalTo(self.view).offset(-16)
             make.size.equalTo(CGSize(width: UIScreen.main.bounds.width-28, height: 40))
         }
-        let bottomMargin: CGFloat = ((Float(self.viewModel.detailModel.info.price) ?? 0) > 0 || self.viewModel.detailModel.info.userPaid == false) ? 70 : 0
+        let bottomMargin: CGFloat = (self.viewModel.detailModel.info.buyerPlay == true && self.viewModel.detailModel.info.userPaid == false) ? 70 : 0
         view.addSubview(self.playView)
         self.playView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: self.headerV.frame.height, left: 0, bottom: bottomMargin, right: 0))
@@ -145,6 +145,21 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         self.headerV.playView.player.pause()
         let vc = JTVBuyClassVC()
         vc.viewModel.cmodel = self.viewModel.detailModel
+        _ = vc.viewModel.paidSuccessSubject.subscribe { [weak self]b in
+            if let strongSelf = self {
+                strongSelf.viewModel.detailModel.info.userPaid = true
+                for m in strongSelf.viewModel.detailModel.playDetails {
+                    m.userPaid = true
+                }
+                
+                strongSelf.playView.snp_remakeConstraints { make in
+                    make.edges.equalTo(UIEdgeInsets(top: strongSelf.headerV.frame.height, left: 0, bottom: 0, right: 0))
+                }
+                
+                strongSelf.playView.reloadData()
+            }
+            
+        }
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

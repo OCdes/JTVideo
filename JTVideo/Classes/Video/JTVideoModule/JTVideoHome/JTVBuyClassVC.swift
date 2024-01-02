@@ -35,7 +35,7 @@ class JTVBuyClassVC: JTVideoBaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        viewModel.navigationVC = self.navigationController
         view.addSubview(buyView)
         buyView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
@@ -48,7 +48,7 @@ class JTVBuyClassVC: JTVideoBaseVC {
         la.snp_makeConstraints { make in
             make.left.equalTo(self.view).offset(24)
             make.top.equalTo(self.buyView.snp_bottom).offset(25)
-            make.width.equalTo(88)
+            make.width.equalTo(92)
         }
         
         view.addSubview(payBtn)

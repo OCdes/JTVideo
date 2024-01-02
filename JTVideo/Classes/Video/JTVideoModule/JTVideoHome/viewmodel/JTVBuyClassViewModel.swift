@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 enum BuyItemType: Int {
     case course = 1
@@ -26,6 +27,7 @@ class JTVBuyClassViewModel: JTVideoBaseViewModel {
     }
     var remark: String = ""
     var type: BuyItemType = .course
+    var paidSuccessSubject: PublishSubject<Bool> = PublishSubject<Bool>()
     func buyClass() {
         SVPShow(content: "请求中...")
         var param:[String:Any] = ["remark":remark, "type":type.rawValue]
@@ -38,6 +40,7 @@ class JTVBuyClassViewModel: JTVideoBaseViewModel {
         let _ = VideoNetServiceManager.manager.requestByType(requestType: .RequestTypePost, api: POST_BUYCOURSEDOCUMENT, params: param) { msg, code, response, data in
             if code == 0 {
                 SVPShowSuccess(content: "购买成功")
+                self.paidSuccessSubject.onNext(true)
                 self.navigationVC?.popViewController(animated: true)
             } else {
                 SVPShowError(content: msg)

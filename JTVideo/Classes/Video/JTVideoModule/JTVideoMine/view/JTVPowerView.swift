@@ -110,7 +110,7 @@ class JTVPowerHeaderView: UIView {
         addSubview(titleLa2)
         titleLa2.snp_makeConstraints { make in
             make.left.equalTo(self.balanceLa.snp_right).offset(10)
-            make.bottom.equalTo(self.balanceLa).offset(-10)
+            make.bottom.equalTo(self.balanceLa).offset(-5)
             make.size.equalTo(CGSize(width: 50, height: 15))
         }
         
@@ -131,7 +131,6 @@ class JTVPowerHeaderView: UIView {
         
         _ = payBtn.rx.controlEvent(.touchUpInside).subscribe(onNext: { [weak self] in
             if let strongSelf = self {
-                strongSelf.isUserInteractionEnabled = false
                 strongSelf.viewModel.charJTC()
             }
         })
@@ -146,7 +145,7 @@ class JTVPowerHeaderView: UIView {
 
 class JTVCoinCollectionView: UICollectionView {
     var viewModel: JTVPowerViewModel = JTVPowerViewModel()
-    var payways = ["WEIXIN","ALIPAY"]
+    var payways = ["ALIPAY"]//"WEIXIN",
     init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, viewModel vm: JTVPowerViewModel) {
         super.init(frame: frame, collectionViewLayout: layout)
         viewModel = vm
@@ -252,12 +251,13 @@ extension JTVPowerHeaderView: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     @objc func selePayWayBtn(btn: UIButton) {
-        self.viewModel.payChannel = self.listView.payways[btn.tag]
+        let payway = self.listView.payways[btn.tag]
+        if payway == "WEIXIN" {
+            SVPShowError(content: "暂不支持当前支付方式")
+            return
+        }
+        self.viewModel.payChannel = payway
         self.listView.reloadData()
-    }
-    
-    @objc func textFieldChanged(tf: UITextField) {
-        
     }
     
     
@@ -404,6 +404,7 @@ class JTVCoinCollectionTFCell: UICollectionViewCell {
         f.textAlignment = .center
         f.font = UIFont.systemFont(ofSize: 18)
         f.isUserInteractionEnabled = false
+        f.returnKeyType = .done
         return f
     }()
     
@@ -531,19 +532,28 @@ class JTVCoinCollectionHeaderView: UICollectionReusableView {
     }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let bezierPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 8, height: 8))
+        
+        let bgv = UIView(frame: frame)
+
+        addSubview(bgv)
+        bgv.snp_makeConstraints { make in
+            make.edges.equalTo(UIEdgeInsets.zero)
+        }
+        
+        let bezierPath = UIBezierPath(roundedRect: bgv.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 8, height: 8))
         let slayer = CAShapeLayer()
-        slayer.frame = bounds
+        slayer.frame = bgv.bounds
         slayer.path = bezierPath.cgPath
         slayer.masksToBounds  = true
         slayer.fillColor = HEX_FFF.cgColor
-        layer.addSublayer(slayer)
-        backgroundColor = HEX_FFF
+        bgv.layer.addSublayer(slayer)
         addSubview(titleLa)
         titleLa.snp_makeConstraints { make in
             make.left.equalTo(self).offset(22)
             make.top.bottom.right.equalTo(self)
         }
+        
+        backgroundColor = HEX_VIEWBACKCOLOR
     }
     
     required init?(coder: NSCoder) {

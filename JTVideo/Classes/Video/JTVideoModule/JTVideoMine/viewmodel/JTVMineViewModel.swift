@@ -45,11 +45,17 @@ class JTVMineViewModel: JTVideoBaseViewModel {
                     sectionModel3.sectionTitle = "我的测试"
                     marr.append(sectionModel3)
                     
-                    let sectionModel4 = JTVMineSectionModel()
-                    sectionModel4.sectionType = .menu
-                    sectionModel4.navTitles = ["我的订单"]
-                    sectionModel4.sectionTitle = "常用工具"
-                    marr.append(sectionModel4)
+                    let sectionModel5 = JTVMineSectionModel()
+                    sectionModel5.sectionType = .menu
+                    sectionModel5.navTitles = ["发布任务","任务列表"]
+                    sectionModel5.sectionTitle = "场所管理"
+                    marr.append(sectionModel5)
+                    
+//                    let sectionModel4 = JTVMineSectionModel()
+//                    sectionModel4.sectionType = .menu
+//                    sectionModel4.navTitles = ["我的订单"]
+//                    sectionModel4.sectionTitle = "常用工具"
+//                    marr.append(sectionModel4)
                     
                     self?.dataArr = marr
                 }
@@ -66,6 +72,9 @@ class JTVMineViewModel: JTVideoBaseViewModel {
 class JTVMineModel: JTVideoBaseModel {
     var jtcoin: String = "0"
     var point: String = "0"
+    var setTask: Bool = false
+    var nickname: String = ""
+    var avatarUrl: String = ""
     var course: [JTVMineSectionItemModel] = []
 }
 
@@ -77,5 +86,9 @@ class JTVMineSectionModel: JTVideoBaseModel {
 }
 
 class JTVMineSectionItemModel: JTVideoBaseModel {
-    
+    var coverImage: String = ""
+    var id: String = ""
+    var payTime: TimeInterval = 0
+    var payAmount: String = ""
+    var name: String = ""
 }

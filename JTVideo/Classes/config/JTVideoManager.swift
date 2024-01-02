@@ -30,17 +30,10 @@ open class JTVideoManager: NSObject {
             USERDEFAULT.set(AccessToken, forKey: "AccessToken")
         }
     }
-    
-    @objc open var name: String = ""
 
     @objc open var phone: String = "" {
         didSet {
             USERDEFAULT.set(phone, forKey: "phone")
-        }
-    }
-    @objc open var avatarUrl: String = "" {
-        didSet {
-            USERDEFAULT.set(phone, forKey: "JTavatarUrl")
         }
     }
     @objc open var isWaterShow: Bool = false {

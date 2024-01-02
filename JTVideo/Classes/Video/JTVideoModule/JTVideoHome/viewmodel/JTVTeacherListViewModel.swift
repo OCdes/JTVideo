@@ -16,7 +16,7 @@ class JTVTeacherListViewModel: JTVideoBaseViewModel {
             scrollView.jt_endRefresh()
             SVPDismiss()
             if code == 0 {
-                if let dataDict = data["data"] as? [String: Any], let listData = dataDict["list"] as? [[String:Any]], let lastPage = dataDict["lastPage"] as? Bool, let arr = [JTVTeacherListItemModel].deserialize(from: listData) {
+                if let dataDict = data["data"] as? [String: Any], let listData = dataDict["list"] as? [[String:Any]], let lastPage = dataDict["isLastPage"] as? Bool, let arr = [JTVTeacherListItemModel].deserialize(from: listData) {
                     if self.pageNum == 1 {
                         self.dataArr = arr as [Any]
                     } else {

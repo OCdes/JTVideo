@@ -25,6 +25,11 @@ class JTVDocumentDetailVC: JTVideoBaseVC {
         return sb
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewModel.refreshData(scrollView: UIScrollView())
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = self.viewModel.model.title

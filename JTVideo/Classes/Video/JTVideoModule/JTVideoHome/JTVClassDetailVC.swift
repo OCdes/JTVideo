@@ -25,6 +25,11 @@ class JTVClassDetailVC: JTVideoBaseVC {
         return sb
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewModel.refreshData(scrollView: self.detailView)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel.navigationVC = self.navigationController
@@ -43,24 +48,25 @@ class JTVClassDetailVC: JTVideoBaseVC {
         }
         
         _ = viewModel.rx.observeWeakly([Any].self, "dataArr").subscribe(onNext: { [weak self]arr in
-            if let p = Float(self?.viewModel.detailModel.info.price ?? "0"), p > 0 {
-                self?.detailView.snp_remakeConstraints { make in
-                    make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
+            
+            if let bp = self?.viewModel.detailModel.info.buyerPlay, bp == true {
+                if let strongSelf = self, strongSelf.viewModel.detailModel.info.userPaid == false {
+                    strongSelf.detailView.snp_remakeConstraints { make in
+                        make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
+                    }
+                } else {
+                    self?.detailView.snp_remakeConstraints { make in
+                        make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+                    }
                 }
             }
-            if let strongSelf = self, strongSelf.viewModel.detailModel.info.userPaid == false {
-                self?.detailView.snp_remakeConstraints { make in
-                    make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0))
-                }
-            }
+            
             self?.title = self?.viewModel.detailModel.info.name
         })
         
         let _ = self.detailView.jt_addRefreshHeader {
             self.viewModel.refreshData(scrollView: self.detailView)
         }
-        
-        self.detailView.jt_startRefresh()
         
     }
     

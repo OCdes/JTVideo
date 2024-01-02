@@ -332,3 +332,9 @@ let POST_ALLCOMMONVIDEOLIST = "/api/video/moreCommonVideoCourse"
 let POST_MINEPROFILE = "/api/my/accountInfo"
 //增能
 let POST_CHARJTC = "/api/order/rechargeJtCoin"
+//查询结果
+let POST_QUERYRESUlT = "/api/order/platformOrderPaymentResult"
+//获取考卷
+let POST_FETCHEXAMINATIONS = "/api/my/queryTestPaper"
+//更多我的课程
+let POST_FETCHMYCOURSE = "/api/my/morePurchaseCourse"

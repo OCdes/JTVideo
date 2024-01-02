@@ -10,8 +10,8 @@ import UIKit
 class JTVPowerViewModel: JTVideoBaseViewModel {
     
     var model: JTVCoinModel = JTVCoinModel()
-    var paywaysArr: [String] = ["微信","支付宝"]
-    var payChannel: String = "WEIXIN"//WEIXIN//ALIPAY
+    var paywaysArr: [String] = ["支付宝"]//"微信",
+    var payChannel: String = "ALIPAY"//WEIXIN//ALIPAY
     var amount: Int = 0
     @objc dynamic var resultStr: String = ""
     func fetchCoins(scrollView: UIScrollView) {
@@ -56,7 +56,7 @@ class JTVPowerViewModel: JTVideoBaseViewModel {
     static var count = 0
     func payResult(orderNo: String, terminalTime: String, merchantNo: String) {
         SVPNoUserinteractShow(content: "支付结果查询中。。。")
-        _ = VideoNetServiceManager.manager.requestByType(requestType: .RequestTypePost, api: "/v1/recharge/fineOrderPaymentResult", params: ["payTerminalTrace":orderNo,"payTerminalTime":terminalTime,"payMerchantNo":merchantNo], success: { msg, code, response, data in
+        _ = VideoNetServiceManager.manager.requestByType(requestType: .RequestTypePost, api: POST_QUERYRESUlT, params: ["orderNo":orderNo,"timestamp":terminalTime,"merchantNo":merchantNo], success: { msg, code, response, data in
             guard let dataDict = data["data"] as? [String:Any] else { return }
             guard let result_code = dataDict["result_code"] as? String else { return }
             if result_code == "01" {

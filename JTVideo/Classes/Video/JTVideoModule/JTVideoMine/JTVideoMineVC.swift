@@ -27,6 +27,7 @@ class JTVideoMineVC: JTVideoBaseVC {
             nav.setClearNavBg()
             nav.navigationBar.isTranslucent = true
         }
+        self.viewModel.refreshData(scrollView: self.listView)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -49,7 +50,6 @@ class JTVideoMineVC: JTVideoBaseVC {
         _ = self.listView.jt_addRefreshHeader {
             self.viewModel.refreshData(scrollView: self.listView)
         }
-        self.listView.jt_startRefresh()
         // Do any additional setup after loading the view.
     }
     

@@ -26,7 +26,7 @@ class JTOpenLessonVC: JTVideoBaseVC {
         view.backgroundColor = HEX_VIEWBACKCOLOR
         view.addSubview(listView)
         listView.snp_makeConstraints { make in
-            make.edges.equalTo(UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14))
+            make.edges.equalTo(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         }
         
         _ = listView.jt_addRefreshHeader {

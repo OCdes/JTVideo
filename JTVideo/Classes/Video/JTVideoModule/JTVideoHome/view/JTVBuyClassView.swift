@@ -149,7 +149,7 @@ class JTVBuyClassOperationCell: UITableViewCell {
     lazy var textF: UITextField = {
         let tf = UITextField()
         tf.textColor = HEX_333
-        tf.font = UIFont.systemFont(ofSize: 18)
+        tf.font = UIFont.systemFont(ofSize: 14)
         tf.textAlignment = .right
         let rightv = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 44))
         let rightBtn = UIButton(frame: rightv.frame)

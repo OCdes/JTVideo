@@ -68,11 +68,16 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineProfileCell", for: indexPath) as! JTVMineProfileCell
             cell.coinLa.attributedText = attributeText(inStr: "¥\(self.viewModel.model.jtcoin)\n我的账户", targetStr: self.viewModel.model.jtcoin)
             cell.pointLa.attributedText = attributeText(inStr: "¥\(self.viewModel.model.point)\n我的积分", targetStr: self.viewModel.model.point)
+            cell.portraitV.kf.setImage(with: URL(string: self.viewModel.model.avatarUrl), placeholder: JTVideoBundleTool.getBundleImg(with: "jtvportraitPlaceHolder"))
+            cell.nameLa.text = self.viewModel.model.nickname
             cell.chargeBtn.addTarget(self, action: #selector(chargeBtnClicked), for: .touchUpInside)
             return cell
         } else if sectionModel.sectionType == .course {
             let sectionItem = sectionModel.sectionItems[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JTVMineClassCell", for: indexPath) as! JTVMineClassCell
+            cell.imgv.kf.setImage(with: URL(string: sectionItem.coverImage), placeholder: jtVideoPlaceHolderImage())
+            cell.titleLa.text = sectionItem.name
+            cell.dateLa.text = getDateByInterval(interval: sectionItem.payTime)
             return cell
         } else {
             let navTitle = sectionModel.navTitles[indexPath.item]
@@ -80,6 +85,12 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             cell.title = navTitle
             return cell
         }
+    }
+    
+    func getDateByInterval(interval: TimeInterval)-> String {
+        let dateFormatter = yyyymmddWithDotFormatter()
+        let date = Date.init(timeIntervalSince1970: interval/1000)
+        return dateFormatter.string(from: date)
     }
     
     func attributeText(inStr: String, targetStr: String)-> NSAttributedString {
@@ -97,6 +108,10 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "JTVMineHeaderView", for: indexPath) as! JTVMineHeaderView
             v.titleLa.text = sectionModel.sectionTitle
             v.moreBtn.isHidden = sectionModel.sectionType != .course
+            _ = v.moreBtn.rx.controlEvent(.touchUpInside).subscribe { [weak self]a in
+                let vc = JTVPaperListVC()
+                self?.viewModel.navigationVC?.pushViewController(vc, animated: true)
+            }
             return v
         } else {
             let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "JTVMineFooterView", for: indexPath)
@@ -117,7 +132,7 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
         let sectionModel = dataArr[indexPath.section]
         if sectionModel.sectionType == .course {
             let width = (kScreenWidth - 48 - 50)/3
-            let height = width*89/111
+            let height = width*89/111 + 65
             return CGSize(width: width, height: height)
         } else if sectionModel.sectionType == .profile {
             let width = kScreenWidth
@@ -137,6 +152,21 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             return UIEdgeInsets.zero
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sectionModel = dataArr[indexPath.section]
+        if sectionModel.sectionType == .menu {
+            let menuStr = sectionModel.navTitles[indexPath.item]
+            if menuStr == "试卷" {
+                let vc = JTVPaperListVC()
+                viewModel.navigationVC?.pushViewController(vc, animated: true)
+            } else if menuStr == "成绩" {
+                
+            } else if menuStr == "我的订单" {
+                
+            }
+        }
+    }
 }
 
 class JTVMineProfileCell: UICollectionViewCell {
@@ -147,7 +177,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         pv.clipsToBounds = true
         pv.layer.cornerRadius = 35
         pv.layer.masksToBounds = true
-        pv.kf.setImage(with: URL(string: JTVideoManager.manager.avatarUrl), placeholder: JTVideoBundleTool.getBundleImg(with: "jtvportraitPlaceHolder"))
+        pv.image = JTVideoBundleTool.getBundleImg(with: "jtvportraitPlaceHolder")
         return pv
     }()
     
@@ -155,7 +185,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         let nl = UILabel()
         nl.textColor = HEX_FFF
         nl.font = UIFont.systemFont(ofSize: 22)
-        nl.text = JTVideoManager.manager.name
+        nl.text = "佚名"
         return nl
     }()
     
@@ -258,13 +288,14 @@ class JTVMineClassCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.layer.cornerRadius = 8
+        iv.layer.masksToBounds = true
         return iv
     }()
     
     lazy var titleLa: UILabel = {
         let tl = UILabel()
-        tl.font = UIFont.systemFont(ofSize: 18)
-        tl.adjustsFontSizeToFitWidth = true
+        tl.font = UIFont.systemFont(ofSize: 14)
         tl.textAlignment = .center
         return tl
     }()

@@ -18,6 +18,14 @@ class JTVClassDetailViewModel: JTVideoBaseViewModel {
             SVPDismiss()
             if code == 0 {
                 if let dataDict = data["data"] as? [String: Any] , let model = JTVClassDetailModel.deserialize(from: dataDict){
+                    var b = false
+                    for m in model.playDetails {
+                        if m.userPaid {
+                            b = true
+                            break
+                        }
+                    }
+                    model.info.userPaid = b
                     self?.detailModel = model
                     self?.dataArr = model.playDetails
                 }
