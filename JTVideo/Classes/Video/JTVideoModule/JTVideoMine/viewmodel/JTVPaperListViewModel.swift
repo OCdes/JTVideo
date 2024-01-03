@@ -7,8 +7,14 @@
 
 import UIKit
 
+enum PaperListType: Int {
+    case paper = 1
+    case course = 2
+    case result = 3
+}
+
 class JTVPaperListViewModel: JTVideoBaseViewModel {
-    
+    var type: PaperListType = .paper
     var pageNum: Int = 1
     @objc dynamic var dataArr: [Any] = []
     

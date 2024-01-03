@@ -18,7 +18,7 @@ class JTClassPlayView: UITableView {
     var tapPlaySubject: PublishSubject<Any> = PublishSubject<Any>()
     
     init(frame: CGRect, style: UITableView.Style, viewModel vm: JTClassPlayViewModel) {
-        super.init(frame: frame, style: style)
+        super.init(frame: frame, style: .plain)
         viewModel = vm
         showsVerticalScrollIndicator = false
         delegate = self
@@ -70,7 +70,7 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
         
         if model.id == self.viewModel.id {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.15, execute: DispatchWorkItem(block: {
-                self.scrollToRow(at: indexPath, at: .top, animated: false)
+                self.scrollToRow(at: indexPath, at: .middle, animated: false)
             }))
         }
         
@@ -88,8 +88,8 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let v = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 60))
-        let la = UILabel(frame: CGRect(x: 23, y: 0, width: self.frame.width, height: 60))
+        let v = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 30))
+        let la = UILabel(frame: CGRect(x: 23, y: 0, width: self.frame.width, height: 30))
         la.text = "目录"
         la.font = UIFont.systemFont(ofSize: 20)
         v.addSubview(la)
@@ -97,7 +97,7 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 60
+        return 30
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

@@ -271,6 +271,7 @@ extension JTVHomeCollectionView: UICollectionViewDelegate, UICollectionViewDataS
             model.price = itemModel.price
             model.content = itemModel.content
             model.title = itemModel.title
+            model.id = itemModel.id
             vc.viewModel.model = model
             self.viewModel.navigationVC?.pushViewController(vc, animated: true)
         }

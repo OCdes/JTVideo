@@ -108,15 +108,19 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "JTVMineHeaderView", for: indexPath) as! JTVMineHeaderView
             v.titleLa.text = sectionModel.sectionTitle
             v.moreBtn.isHidden = sectionModel.sectionType != .course
-            _ = v.moreBtn.rx.controlEvent(.touchUpInside).subscribe { [weak self]a in
-                let vc = JTVPaperListVC()
-                self?.viewModel.navigationVC?.pushViewController(vc, animated: true)
-            }
+            v.moreBtn.addTarget(self, action: #selector(moreBtnClicked), for: .touchUpInside)
             return v
         } else {
             let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "JTVMineFooterView", for: indexPath)
             return v
         }
+    }
+    
+    @objc func moreBtnClicked() {
+        let vc = JTVPaperListVC()
+        vc.viewModel.type = .course
+        vc.title = "我的课程"
+        self.viewModel.navigationVC?.pushViewController(vc, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -159,12 +163,21 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             let menuStr = sectionModel.navTitles[indexPath.item]
             if menuStr == "试卷" {
                 let vc = JTVPaperListVC()
+                vc.viewModel.type = .paper
+                vc.title = "试卷"
                 viewModel.navigationVC?.pushViewController(vc, animated: true)
             } else if menuStr == "成绩" {
-                
-            } else if menuStr == "我的订单" {
-                
+                let vc = JTVPaperListVC()
+                vc.viewModel.type = .result
+                vc.title = "成绩"
+                viewModel.navigationVC?.pushViewController(vc, animated: true)
             }
+        } else if sectionModel.sectionType == .course {
+            let item = sectionModel.sectionItems[indexPath.item]
+            let vc = JTVClassDetailVC()
+            vc.viewModel.collectionID = item.id
+            vc.title = item.name
+            viewModel.navigationVC?.pushViewController(vc, animated: true)
         }
     }
 }

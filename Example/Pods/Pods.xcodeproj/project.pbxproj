@@ -371,6 +371,12 @@
 		6BD59DF42B43FA8800E99C86 /* JTVReleaseTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DF32B43FA8700E99C86 /* JTVReleaseTaskVC.swift */; };
 		6BD59DF62B43FAA300E99C86 /* JTVReleaseTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DF52B43FAA300E99C86 /* JTVReleaseTaskView.swift */; };
 		6BD59DF82B43FABE00E99C86 /* JTVReleaseTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DF72B43FABE00E99C86 /* JTVReleaseTaskViewModel.swift */; };
+		6BD59DFA2B45035600E99C86 /* JTVAnswerCardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DF92B45035600E99C86 /* JTVAnswerCardVC.swift */; };
+		6BD59DFC2B45066800E99C86 /* JTVAnswerCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DFB2B45066800E99C86 /* JTVAnswerCardView.swift */; };
+		6BD59DFE2B45069400E99C86 /* JTVAnswerCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DFD2B45069400E99C86 /* JTVAnswerCardViewModel.swift */; };
+		6BD59E002B454E8200E99C86 /* JTVExamanationResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59DFF2B454E8100E99C86 /* JTVExamanationResultVC.swift */; };
+		6BD59E022B454EAD00E99C86 /* JTVExaminationResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59E012B454EAD00E99C86 /* JTVExaminationResultView.swift */; };
+		6BD59E042B454EC900E99C86 /* JTVExaminationResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD59E032B454EC900E99C86 /* JTVExaminationResultViewModel.swift */; };
 		6BDC10B12B33E3B20085229D /* JTVDocumentResouceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC10B02B33E3B20085229D /* JTVDocumentResouceVC.swift */; };
 		6BDC10B32B33E4050085229D /* JTVDouctmenListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC10B22B33E4050085229D /* JTVDouctmenListView.swift */; };
 		6BDC10B52B33E43A0085229D /* JTVDocumentListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC10B42B33E43A0085229D /* JTVDocumentListViewModel.swift */; };
@@ -1538,6 +1544,12 @@
 		6BD59DF32B43FA8700E99C86 /* JTVReleaseTaskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVReleaseTaskVC.swift; sourceTree = "<group>"; };
 		6BD59DF52B43FAA300E99C86 /* JTVReleaseTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVReleaseTaskView.swift; sourceTree = "<group>"; };
 		6BD59DF72B43FABE00E99C86 /* JTVReleaseTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVReleaseTaskViewModel.swift; sourceTree = "<group>"; };
+		6BD59DF92B45035600E99C86 /* JTVAnswerCardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVAnswerCardVC.swift; sourceTree = "<group>"; };
+		6BD59DFB2B45066800E99C86 /* JTVAnswerCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVAnswerCardView.swift; sourceTree = "<group>"; };
+		6BD59DFD2B45069400E99C86 /* JTVAnswerCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVAnswerCardViewModel.swift; sourceTree = "<group>"; };
+		6BD59DFF2B454E8100E99C86 /* JTVExamanationResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVExamanationResultVC.swift; sourceTree = "<group>"; };
+		6BD59E012B454EAD00E99C86 /* JTVExaminationResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVExaminationResultView.swift; sourceTree = "<group>"; };
+		6BD59E032B454EC900E99C86 /* JTVExaminationResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVExaminationResultViewModel.swift; sourceTree = "<group>"; };
 		6BD6D448221E411977A164524F914922 /* SynchronizedUnsubscribeType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SynchronizedUnsubscribeType.swift; path = RxSwift/Concurrency/SynchronizedUnsubscribeType.swift; sourceTree = "<group>"; };
 		6BDC10B02B33E3B20085229D /* JTVDocumentResouceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVDocumentResouceVC.swift; sourceTree = "<group>"; };
 		6BDC10B22B33E4050085229D /* JTVDouctmenListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTVDouctmenListView.swift; sourceTree = "<group>"; };
@@ -2237,8 +2249,10 @@
 				FC60CE44A20785804227CF98FF4932FD /* JTVMineViewModel.swift */,
 				6B2FDFB62B3590260075D45C /* JTVPowerViewModel.swift */,
 				6BD59DF12B43DE5700E99C86 /* JTVPaperListViewModel.swift */,
+				6BD59DFD2B45069400E99C86 /* JTVAnswerCardViewModel.swift */,
 				6BD59DEB2B43A95B00E99C86 /* JTVExaminationPaperViewModel.swift */,
 				6BD59DF72B43FABE00E99C86 /* JTVReleaseTaskViewModel.swift */,
+				6BD59E032B454EC900E99C86 /* JTVExaminationResultViewModel.swift */,
 			);
 			path = viewmodel;
 			sourceTree = "<group>";
@@ -2264,8 +2278,10 @@
 				06B17E5757FAC2BF06BAC30B045BBDE5 /* JTVMineListView.swift */,
 				6B2FDFB82B35903F0075D45C /* JTVPowerView.swift */,
 				6BD59DEF2B43DE3C00E99C86 /* JTVPaperListView.swift */,
+				6BD59DFB2B45066800E99C86 /* JTVAnswerCardView.swift */,
 				6BD59DE92B43A67200E99C86 /* JTVExaminationPaperView.swift */,
 				6BD59DF52B43FAA300E99C86 /* JTVReleaseTaskView.swift */,
+				6BD59E012B454EAD00E99C86 /* JTVExaminationResultView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -2806,8 +2822,10 @@
 				3E4366500C8DEBE35A4C0183C6933F80 /* JTVideoMineVC.swift */,
 				6B2FDFB22B358FE60075D45C /* JTVPowerVC.swift */,
 				6BD59DE72B43A62F00E99C86 /* JTVExaminationPaperVC.swift */,
+				6BD59DF92B45035600E99C86 /* JTVAnswerCardVC.swift */,
 				6BD59DED2B43DE2900E99C86 /* JTVPaperListVC.swift */,
 				6BD59DF32B43FA8700E99C86 /* JTVReleaseTaskVC.swift */,
+				6BD59DFF2B454E8100E99C86 /* JTVExamanationResultVC.swift */,
 				2300FDD634E8ABD49A3F238E6B396A08 /* view */,
 				0C4C3EAC5E31C5167718485637785519 /* viewmodel */,
 			);
@@ -5237,6 +5255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28DDB9E4D023CA4F97ED88710325077A /* JTClassHomeVC.swift in Sources */,
+				6BD59DFA2B45035600E99C86 /* JTVAnswerCardVC.swift in Sources */,
 				06A33F6CFCC23663156897550D0FC9D4 /* JTEnterPlayerFullTransition.swift in Sources */,
 				973517401C31857631F76FAC61F50CFF /* JTExitPlayerFullTransition.swift in Sources */,
 				6B9DFE8F2B2C57F2004C26EC /* JTClassPlayViewModel.swift in Sources */,
@@ -5248,9 +5267,12 @@
 				907CD9F5060883042BC0DFC2EA707E72 /* JTOpenLessonVC.swift in Sources */,
 				6B2FDFB92B35903F0075D45C /* JTVPowerView.swift in Sources */,
 				6BDC10B92B3418F60085229D /* JTVDocumentDetailView.swift in Sources */,
+				6BD59DFC2B45066800E99C86 /* JTVAnswerCardView.swift in Sources */,
 				D4304DE447B5422A091C8CE20C618B9B /* JTPlayerFullVC.swift in Sources */,
 				E215372FEC9508CD263C2154C341485B /* JTPlayerListVC.swift in Sources */,
 				6BDC10B72B3418CB0085229D /* JTVDocumentDetailVC.swift in Sources */,
+				6BD59DFE2B45069400E99C86 /* JTVAnswerCardViewModel.swift in Sources */,
+				6BD59E002B454E8200E99C86 /* JTVExamanationResultVC.swift in Sources */,
 				B839754B8FABB3E12EE49C066713CB3C /* JTPlayerView.swift in Sources */,
 				6BD59DEE2B43DE2900E99C86 /* JTVPaperListVC.swift in Sources */,
 				9FA56BE9A2D9B437D3924C6AFA15D826 /* JTShortVideoVC.swift in Sources */,
@@ -5266,6 +5288,7 @@
 				6B2FDFAB2B355E810075D45C /* JTVTaskListViewModel.swift in Sources */,
 				6B5EC1D72B312DBB002DB40A /* JTVTeacherListViewModel.swift in Sources */,
 				6B2FDFAD2B355F930075D45C /* JTVBuyClassVC.swift in Sources */,
+				6BD59E022B454EAD00E99C86 /* JTVExaminationResultView.swift in Sources */,
 				81B3667E005C5325C1FA07FA87ACE693 /* JTVideoBaseVC.swift in Sources */,
 				1B3570202D90AB80D6F606504F431EC5 /* JTVideoBaseViewModel.swift in Sources */,
 				49D693790990BF5BC41FE052EB11CD15 /* JTVideoBundleTool.swift in Sources */,
@@ -5302,6 +5325,7 @@
 				6B2FDFB12B355FCE0075D45C /* JTVBuyClassViewModel.swift in Sources */,
 				0282AE3BBCFB33BD7E19004D4A20636E /* JTVRecommandVideList.swift in Sources */,
 				F6C980F05C43DF48AC64055DCDB6C370 /* JTVRecommandVideListVC.swift in Sources */,
+				6BD59E042B454EC900E99C86 /* JTVExaminationResultViewModel.swift in Sources */,
 				6987DC889D1A1FBC03B034F0F539C419 /* JTVRecommandVideoViewModel.swift in Sources */,
 				20A87DC0F17FA7FE60C0DB9ACA019310 /* ScrollView+Extension.swift in Sources */,
 				6B5EC1DD2B314425002DB40A /* JTVTeacherInfoListView.swift in Sources */,

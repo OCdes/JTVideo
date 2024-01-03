@@ -1,22 +1,20 @@
 //
-//  JTVExaminationPaperViewModel.swift
+//  JTVExaminationViewModel.swift
 //  JTVideo
 //
-//  Created by 袁炳生 on 2024/1/2.
+//  Created by 袁炳生 on 2024/1/3.
 //
 
 import UIKit
 
-class JTVExaminationPaperViewModel: JTVideoBaseViewModel {
+class JTVExaminationResultViewModel: JTVideoBaseViewModel {
     
     var collectionId: String = ""
     @objc dynamic var dataArr: [Any] = []
-    func fetchExaminations(scrollView: UIScrollView) {
-        SVPShow(content: "正在获取试卷....")
-        
-        _ = VideoNetServiceManager.manager.requestByType(requestType: .RequestTypePost, api: POST_FETCHEXAMINATIONS, params: ["collectionId":self.collectionId], success: { [weak self](msg, code, response, data) in
+    
+    func refreshData(scrollView: UIScrollView) {
+        _ = VideoNetServiceManager.manager.requestByType(requestType: .RequestTypePost, api: POST_QUERYRESULT, params: ["collectionId":self.collectionId], success: { [weak self](msg, code, response, data) in
             scrollView.jt_endRefresh()
-            SVPDismiss()
             if code == 0 {
                 if let dataDict = data["data"] as? [[String:Any]], let dataList = [JTVExaminationPaperModel].deserialize(from: dataDict) {
                     var marr: [JTVExaminationPaperModel] = []
@@ -55,30 +53,7 @@ class JTVExaminationPaperViewModel: JTVideoBaseViewModel {
             }
         }, fail: { error in
             scrollView.jt_endRefresh()
+            SVPShowError(content: error.message)
         })
     }
-    
-}
-
-
-class JTVExaminationPaperModel: JTVideoBaseModel {
-    var content: String = ""
-    var id: String = ""
-    var title: String = ""
-    var teacherId: String = ""
-    var correct: String = ""
-    var teacherName: String = ""
-    var createTime: TimeInterval = 0
-    var verbs: [JTVVerbsModel] = []
-    var answeredItem: String = ""
-    var isAnswered: Bool = false
-    var isCorrect: Bool?
-    var answer: String = ""
-    var wrong: Bool = false
-}
-
-class JTVVerbsModel: JTVideoBaseModel {
-    var titleStr: String = ""
-    var contentStr: String = ""
-    var isSelected: Bool = false
 }

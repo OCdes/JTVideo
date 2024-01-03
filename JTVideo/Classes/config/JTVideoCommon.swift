@@ -338,3 +338,7 @@ let POST_QUERYRESUlT = "/api/order/platformOrderPaymentResult"
 let POST_FETCHEXAMINATIONS = "/api/my/queryTestPaper"
 //更多我的课程
 let POST_FETCHMYCOURSE = "/api/my/morePurchaseCourse"
+//提交分数
+let POST_SUBMITSCORE = "/api/my/commitExamResult"
+//查询答题卡
+let POST_QUERYRESULT = "/api/my/queryExamResult"

@@ -10,7 +10,7 @@ import RxSwift
 class JTVExaminationPaperView: UICollectionView {
     var viewModel: JTVExaminationPaperViewModel = JTVExaminationPaperViewModel()
     var dataArr: [JTVExaminationPaperModel] = []
-    var scrollSubject: PublishSubject<Int> = PublishSubject<Int>()
+    var scrollSubject: PublishSubject<Any> = PublishSubject<Any>()
     init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, viewModel vm: JTVExaminationPaperViewModel) {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
@@ -47,25 +47,21 @@ extension JTVExaminationPaperView: UICollectionViewDelegate, UICollectionViewDat
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSizeZero
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.01
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSizeZero
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        return UICollectionReusableView()
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.01
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: kScreenWidth, height: self.frame.height-48)
+        return CGSize(width: kScreenWidth, height: self.frame.height)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentOffsetIndex = Int(scrollView.contentOffset.x/kScreenWidth)
-        self.scrollSubject.onNext(contentOffsetIndex)
+        self.scrollSubject.onNext(contentOffsetIndex+1)
     }
     
 }
@@ -114,18 +110,18 @@ class JTVExaminationPaperCountHeader: UIView {
 class JTVExaminationPaperCell: UICollectionViewCell {
     var model: JTVExaminationPaperModel = JTVExaminationPaperModel() {
         didSet {
-            examView.dataArr = model.verbs
+            examView.model = model
         }
     }
     
     lazy var examView: JTVExaminationTableView = {
-        let exv = JTVExaminationTableView(frame: CGRectZero, style: .grouped)
+        let exv = JTVExaminationTableView(frame: self.bounds, style: .grouped)
         return exv
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(examView)
+        contentView.addSubview(examView)
         examView.snp_makeConstraints { make in
             make.edges.equalTo(UIEdgeInsets.zero)
         }
@@ -137,18 +133,69 @@ class JTVExaminationPaperCell: UICollectionViewCell {
     
 }
 
+class JTVEXaminationQuestionHeader: UIView {
+    
+    lazy var titleLa: UILabel = {
+        let tl = UILabel()
+        tl.textColor = HEX_333
+        tl.font = UIFont.systemFont(ofSize: 18)
+        tl.numberOfLines = 0
+        return tl
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = HEX_VIEWBACKCOLOR
+        addSubview(titleLa)
+        titleLa.snp_makeConstraints { make in
+            make.left.equalTo(self).offset(27)
+            make.top.bottom.equalTo(self)
+            make.right.equalTo(self).offset(-27)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+}
+
 class JTVExaminationTableView: UITableView {
-    var dataArr: [JTVVerbsModel] = [] {
+    private var dataArr: [JTVVerbsModel] = [] {
         didSet {
             reloadData()
         }
     }
+    
+    var model: JTVExaminationPaperModel = JTVExaminationPaperModel() {
+        didSet {
+            dataArr = model.verbs
+            headerView.titleLa.text = model.title
+            let titleHeight = getTitleHeight(by: model.title)
+            if (titleHeight+32) > 50 {
+                let frame = CGRect(x: 0, y: 0, width: kScreenWidth, height: 32 + titleHeight)
+                headerView.frame = frame
+            }
+        }
+    }
+    
+    lazy var headerView: JTVEXaminationQuestionHeader = {
+        let hv = JTVEXaminationQuestionHeader(frame: CGRect(x: 0, y: 0, width: kScreenWidth, height: 50))
+        return hv
+    }()
+    
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         separatorStyle = .none
+        tableHeaderView = headerView
         delegate = self
         dataSource = self
         register(JTVExaminationTableCell.self, forCellReuseIdentifier: "JTVExaminationTableCell")
+        
+    }
+    
+    func getTitleHeight(by string: String)->CGFloat {
+        let height = (string as NSString).boundingRect(with: CGSize(width: kScreenWidth-54, height: CGFLOAT_MAX), options: .usesLineFragmentOrigin, attributes: [.font: UIFont.systemFont(ofSize: 18)], context: nil).size.height
+        return height
         
     }
     
@@ -170,28 +217,37 @@ extension JTVExaminationTableView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 40
+        let verbm = dataArr[indexPath.row]
+        let height = (verbm.contentStr as NSString).boundingRect(with: CGSize(width: kScreenWidth-90, height: CGFLOAT_MAX), options: .usesLineFragmentOrigin, attributes: [.font : UIFont.systemFont(ofSize: 10)], context: nil).size.height
+        if (height+30) > 50 {
+            return height+30
+        } else {
+            return 50
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return nil
+        return UIView()
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return nil
+        return UIView()
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.01
+        return 0
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.01
+        return 0
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let m = dataArr[indexPath.row]
         m.isSelected = true
+        model.isAnswered = true
+        model.answeredItem = m.titleStr
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

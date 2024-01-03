@@ -13,6 +13,7 @@ class JTVPaperListVC: JTVideoBaseVC {
         let lv = JTVPaperListView(frame: CGRectZero, style: .grouped, viewModel: self.viewModel)
         return lv
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.navigationVC = self.navigationController
