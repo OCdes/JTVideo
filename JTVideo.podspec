@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'JTVideo'
-    s.version          = '0.0.2'
+    s.version          = '0.0.3'
     s.summary          = '精特视频组件'
     s.description      = <<-DESC
     优化视频全屏方案

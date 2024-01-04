@@ -44,7 +44,7 @@ class JTVMineViewModel: JTVideoBaseViewModel {
                     sectionModel3.navTitles = ["试卷","成绩"]
                     sectionModel3.sectionTitle = "我的测试"
                     marr.append(sectionModel3)
-                    if model.setTask == false {
+                    if model.setTask == true {
                         let sectionModel5 = JTVMineSectionModel()
                         sectionModel5.sectionType = .menu
                         sectionModel5.navTitles = ["发布任务","任务列表"]
