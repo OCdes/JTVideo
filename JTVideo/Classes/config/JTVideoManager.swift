@@ -46,6 +46,13 @@ open class JTVideoManager: NSObject {
             USERDEFAULT.set(isAutoResizeBottom, forKey: "isAutoResizeBottom")
         }
     }
+    
+    @objc open var isHiddenPrice: Bool = false {
+        didSet {
+            USERDEFAULT.set(isHiddenPrice, forKey: "isHiddenPrice")
+        }
+    }
+    
     @objc open var isHideBottom: Bool = false {
         didSet {
             USERDEFAULT.set(isHideBottom, forKey: "isHideBottom")

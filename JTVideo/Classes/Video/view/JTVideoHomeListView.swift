@@ -98,6 +98,7 @@ class JTVideoHomeListItem: UICollectionViewCell {
         pl.font = UIFont.systemFont(ofSize: 14)
         pl.textColor = UIColor.orange
         pl.adjustsFontSizeToFitWidth = true
+        pl.isHidden = isHiddenPrice
         return pl
     }()
     

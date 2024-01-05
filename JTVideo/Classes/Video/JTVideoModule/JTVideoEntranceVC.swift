@@ -53,7 +53,7 @@ open class JTVideoEntranceVC: UITabBarController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-//        self.transitioningDelegate = self
+        //        self.transitioningDelegate = self
         initTabbar()
         // Do any additional setup after loading the view.
     }
@@ -77,7 +77,7 @@ open class JTVideoEntranceVC: UITabBarController {
         self.viewControllers = [homeNav, openClassNav, mineNav]
         UITabBarItem.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: barItemFont), .foregroundColor: barItemColor], for: .normal)
         UITabBarItem.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: barItemFont), .foregroundColor: barItemSelectedColor], for: .selected)
-        self.tabBar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        self.tabBar.backgroundColor = UIColor.white
         self.tabBar.isTranslucent = false
         
     }
@@ -87,7 +87,7 @@ open class JTVideoEntranceVC: UITabBarController {
         playerVC?.playerView.destroyPlayerView()
     }
     
-
+    
 }
 
 extension JTVideoEntranceVC: UIViewControllerTransitioningDelegate {

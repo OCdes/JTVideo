@@ -66,6 +66,11 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
             cell.playBtn.isSelected = model.id == self.viewModel.id
             cell.playBtn.isUserInteractionEnabled = indexPath.row == 0
         }
+        if isHiddenPrice {
+            cell.priceTypeLa.isHidden = true
+            cell.playBtn.isEnabled = true
+            cell.playBtn.isUserInteractionEnabled = true
+        }
         cell.playBtn.addTarget(self, action: #selector(playBtnClicked(btn:)), for: .touchUpInside)
         
         if model.id == self.viewModel.id {
@@ -89,6 +94,7 @@ extension JTClassPlayView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let v = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 30))
+        v.backgroundColor = .white
         let la = UILabel(frame: CGRect(x: 23, y: 0, width: self.frame.width, height: 30))
         la.text = "目录"
         la.font = UIFont.systemFont(ofSize: 20)

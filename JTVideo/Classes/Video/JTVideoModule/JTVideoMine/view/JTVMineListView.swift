@@ -140,7 +140,7 @@ extension JTVMineListView: UICollectionViewDelegate, UICollectionViewDataSource,
             return CGSize(width: width, height: height)
         } else if sectionModel.sectionType == .profile {
             let width = kScreenWidth
-            let height = 182 + 126 + kNavStatusBarHeight
+            let height = (isHiddenPrice ? 0 : 182) + 126 + kNavStatusBarHeight
             return CGSizeMake(width, height)
         } else {
             let width = kScreenWidth/5
@@ -208,6 +208,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         cl.font = UIFont.systemFont(ofSize: 18)
         cl.textAlignment = .center
         cl.numberOfLines = 2
+        cl.isHidden = isHiddenPrice
         return cl
     }()
     
@@ -217,6 +218,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         cl.font = UIFont.systemFont(ofSize: 18)
         cl.textAlignment = .center
         cl.numberOfLines = 2
+        cl.isHidden = isHiddenPrice
         return cl
     }()
     
@@ -228,6 +230,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         cb.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         cb.layer.cornerRadius = 14
         cb.layer.masksToBounds = true
+        cb.isHidden = isHiddenPrice
         return cb
     }()
     
@@ -261,6 +264,7 @@ class JTVMineProfileCell: UICollectionViewCell {
         la.textColor = HEX_333
         la.font = UIFont.systemFont(ofSize: 20)
         la.text = "资产管理"
+        la.isHidden = isHiddenPrice
         contentView.addSubview(la)
         la.snp_makeConstraints { make in
             make.left.equalTo(self).offset(18)

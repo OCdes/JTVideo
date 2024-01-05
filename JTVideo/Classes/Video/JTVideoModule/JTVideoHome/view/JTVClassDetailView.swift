@@ -116,6 +116,11 @@ extension JTVClassDetailView: UITableViewDelegate, UITableViewDataSource {
                 cell.playBtn.isEnabled = indexPath.row == 0
                 cell.playBtn.isUserInteractionEnabled = indexPath.row == 0
             }
+            if isHiddenPrice {
+                cell.priceTypeLa.isHidden = true
+                cell.playBtn.isEnabled = true
+                cell.playBtn.isUserInteractionEnabled = true
+            }
             cell.playBtn.tag = indexPath.row
             cell.playBtn.addTarget(self, action: #selector(playBtnClicked(btn:)), for: .touchUpInside)
             return cell
@@ -222,6 +227,7 @@ class JTVClassDetailItemCell: UITableViewCell {
         ptl.layer.cornerRadius = 4
         ptl.layer.masksToBounds = true
         ptl.backgroundColor = HEX_ThemeColor
+
         return ptl
     }()
     
@@ -286,6 +292,7 @@ class JTVClassDetailHeaderView: UIView {
         let pl = UILabel()
         pl.textColor = HEX_COLOR(hexStr: "#F03B1D")
         pl.font = UIFont.systemFont(ofSize: 18)
+        pl.isHidden = isHiddenPrice
         return pl
     }()
     

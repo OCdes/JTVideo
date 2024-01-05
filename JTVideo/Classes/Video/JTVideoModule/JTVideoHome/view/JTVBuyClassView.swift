@@ -108,6 +108,7 @@ class JTVBuyClassDetailCell: UITableViewCell {
         let pl = UILabel()
         pl.textColor = HEX_COLOR(hexStr: "#F03B1D")
         pl.font = UIFont.systemFont(ofSize: 24)
+        pl.isHidden = isHiddenPrice
         return pl
     }()
     

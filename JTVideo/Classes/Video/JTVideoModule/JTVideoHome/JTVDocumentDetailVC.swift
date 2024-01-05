@@ -21,6 +21,7 @@ class JTVDocumentDetailVC: JTVideoBaseVC {
         sb.backgroundColor = HEX_ThemeColor
         sb.layer.cornerRadius = 20
         sb.layer.masksToBounds = true
+        sb.isHidden = isHiddenPrice
         sb.addTarget(self, action: #selector(subscribeBtnClicked), for: .touchUpInside)
         return sb
     }()

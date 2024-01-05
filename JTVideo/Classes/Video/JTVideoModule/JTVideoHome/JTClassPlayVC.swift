@@ -89,6 +89,7 @@ class JTClassPlayVC: JTVideoBaseVC, JTPlayerViewDelegate, UIViewControllerTransi
         sb.backgroundColor = HEX_ThemeColor
         sb.setTitleColor(HEX_FFF, for: .normal)
         sb.setTitle("立即订阅", for: .normal)
+        sb.isHidden = isHiddenPrice
         sb.addTarget(self, action: #selector(subscribeBtnClicked), for: .touchUpInside)
         return sb
     }()

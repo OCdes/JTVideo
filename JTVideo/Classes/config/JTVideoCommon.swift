@@ -23,6 +23,8 @@ var kScreenWidth: CGFloat {
 var kScreenHeight: CGFloat {
     return UIScreen.main.bounds.height
 }
+
+var isHiddenPrice: Bool = USERDEFAULT.bool(forKey: "isHiddenPrice")
 //tabbar是否隐藏及其高度
 let kTabbarHidden: Bool = false
 let kTabBarHeight: CGFloat = kTabbarHidden ? 0 : 49

@@ -356,12 +356,14 @@ class JTVRecommandVideoItem: UICollectionViewCell {
         let cp = UILabel()
         cp.textColor = HEX_COLOR(hexStr: "#F03B1D")
         cp.font = UIFont.systemFont(ofSize: 18)
+        cp.isHidden = isHiddenPrice
         return cp
     }()
     lazy var priceLa: UILabel = {
         let pl = UILabel()
         pl.textColor = HEX_COLOR(hexStr: "#919191")
         pl.font = UIFont.systemFont(ofSize: 16)
+        pl.isHidden = isHiddenPrice
         return pl
     }()
     lazy var followNumLa: UILabel = {

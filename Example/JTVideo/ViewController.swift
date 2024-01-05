@@ -43,6 +43,7 @@ class ViewController: UIViewController {
         case "精特云课堂":
             JTVideoManager.manager.AccessToken = "d799f4c352b0445ea2ff2297533680c6"
             JTVideoManager.manager.url = "http://vod.hzjtyh.com"
+            JTVideoManager.manager.isHiddenPrice = true
             JTVideoEntranceVC.videoModuleEntrance(fromVC: self)
             break
         default:

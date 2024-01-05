@@ -25,6 +25,7 @@ class JTVDocutmentDetialHeaderView: UIView {
         let pl = UILabel()
         pl.textColor = HEX_COLOR(hexStr: "#F03B1D")
         pl.font = UIFont.systemFont(ofSize: 34)
+        pl.isHidden = isHiddenPrice
         return pl
     }()
     
@@ -32,6 +33,7 @@ class JTVDocutmentDetialHeaderView: UIView {
         let pl = UILabel()
         pl.textColor = HEX_999
         pl.font = UIFont.systemFont(ofSize: 18)
+        pl.isHidden = isHiddenPrice
         return pl
     }()
     
