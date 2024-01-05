@@ -125,9 +125,12 @@ open class JTVideoBaseVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func closeBtnClicked() {
-        if let vc = self.navigationController?.viewControllers.first {
-            vc.dismiss(animated: true)
-        }
+        let enterVC = miniprograms[0]
+        enterVC.isShow = false
+        enterVC.dismiss(animated: true)
+//        if let vc = self.navigationController?.viewControllers.first {
+//            vc.dismiss(animated: true)
+//        }
     }
     
 

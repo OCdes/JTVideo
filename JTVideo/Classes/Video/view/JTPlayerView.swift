@@ -116,24 +116,12 @@ import AliyunPlayer
     
     @objc func appenterBackground() {
         isForeground = false
-        if !isFullScreen {
-            playerSurface.snp_remakeConstraints { make in
-                make.center.equalTo(self)
-                make.size.equalTo(self.hwscaleSize)
-            }
-        } 
         if pipController == nil && currentPlayerStatus == AVPStatus(3) {
             player.pause()
         }
     }
     @objc func appenterForeground() {
         isForeground = true
-        if !isFullScreen {
-            playerSurface.snp_remakeConstraints { make in
-                make.edges.equalTo(UIEdgeInsets.zero)
-            }
-        }
-        
         if pipController == nil && currentPlayerStatus == AVPStatus(4) {
             player.start()
         }
@@ -406,11 +394,11 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     //画中画已经关闭
     public func pictureInPictureControllerDidStopPicture(inPicture pictureInPictureController: AVPictureInPictureController?) {
         if isForeground == true {
-            if !isFullScreen {
-                playerSurface.snp_remakeConstraints { make in
-                    make.edges.equalTo(UIEdgeInsets.zero)
-                }
-            }
+//            if !isFullScreen {
+//                playerSurface.snp_remakeConstraints { make in
+//                    make.edges.equalTo(UIEdgeInsets.zero)
+//                }
+//            }
             if #available(iOS 15.0, *) {
                 pictureInPictureController?.invalidatePlaybackState()
             } else {
@@ -424,11 +412,6 @@ extension JTPlayerView: AVPDelegate, AliPlayerPictureInPictureDelegate {
     //在画中画即将停止前,通知恢复用户交互接口,这里恢复playerview的布局
     public func picture(_ pictureInPictureController: AVPictureInPictureController?, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: ((Bool) -> Void)? = nil) {
         if let de = delegate, isForeground == true {
-            if !isFullScreen {
-                playerSurface.snp_remakeConstraints { make in
-                    make.edges.equalTo(UIEdgeInsets.zero)
-                }
-            }
             de.playerWillStopPictureInPicture(completionHandler: completionHandler)
         }
     }
@@ -527,12 +510,6 @@ extension JTPlayerView:JTVideoControlBarDelegate {
         if self.controlBar.prepared {
             if #available(iOS 15, *) {
                 if let pip = self.pipController {
-                    if !isFullScreen {
-                        playerSurface.snp_remakeConstraints { make in
-                            make.center.equalTo(self)
-                            make.size.equalTo(self.hwscaleSize)
-                        }
-                    }
                     pip.startPictureInPicture()
                 }
                 

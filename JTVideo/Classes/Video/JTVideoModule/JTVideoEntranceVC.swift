@@ -49,7 +49,6 @@ open class JTVideoEntranceVC: UITabBarController {
     
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.isShow = false
     }
     
     open override func viewDidLoad() {
