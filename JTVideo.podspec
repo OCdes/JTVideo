@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
     s.description      = <<-DESC
     优化视频全屏方案
     DESC
-    s.homepage         = 'git@github.com:OCdes/JTVideo.git'
+    s.homepage         = 'https://github.com/OCdes/JTVideo.git'
     s.license          = { :type => 'MIT', :file => 'LICENSE' }
     s.author           = { 'OCdes' => '76515226@qq.com' }
     s.source           = { :git => 'git@github.com:OCdes/JTVideo.git', :tag => s.version.to_s }
